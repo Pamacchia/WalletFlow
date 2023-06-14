@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         registrationBtn = findViewById(R.id.btn_register)
 
         registrationBtn.setOnClickListener {
-            val intent = Intent(this, Registration::class.java)
+            val intent = Intent(this, RegistrationActivity::class.java)
             startActivity(intent)
         }
     }
