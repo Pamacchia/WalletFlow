@@ -59,17 +59,24 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     // below method is to get
     // all data from our database
-    fun getName(): Cursor? {
-
-        // here we are creating a readable
-        // variable of our database
-        // as we want to read value from it
+    fun checkLogin(username: String, password: String): Boolean {
         val db = this.readableDatabase
 
-        // below code returns a cursor to
-        // read data from the database
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null)
+        val selection = USERNAME_COL + " = ? AND " + PASSWORD_COL + " = ?" // Define the selection criteria
 
+        val selectionArgs = arrayOf(username, password) // Specify the username as the selection argument
+
+        val cursor = db.query(
+            TABLE_NAME,
+            null, // Retrieve all columns
+            selection, // Apply the selection criteria
+            selectionArgs, // Specify the selection arguments
+            null, // No group by
+            null, // No having
+            null // No order by
+        )
+
+        return (cursor != null && cursor.moveToFirst())
     }
 
     fun emptyTable() {

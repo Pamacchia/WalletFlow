@@ -10,6 +10,7 @@ import android.widget.Toast
 class RegistrationActivity : AppCompatActivity() {
 
     lateinit var submitBtn : Button
+    lateinit var registrationBtn : Button
     lateinit var usernameField : EditText
     lateinit var emailField : EditText
     lateinit var passwordField : EditText
@@ -25,6 +26,7 @@ class RegistrationActivity : AppCompatActivity() {
         passwordConfirmField = findViewById(R.id.registration_confirm_password)
 
         submitBtn = findViewById(R.id.btn_submit)
+        registrationBtn = findViewById(R.id.btn_back)
 
         submitBtn.setOnClickListener {
 
@@ -39,11 +41,17 @@ class RegistrationActivity : AppCompatActivity() {
 
                 if((password == passwordCheck)) {
                     val db = DBHelper(this, null)
-
                     db.addUser(username, email, password)
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
                 }
             }
 
+        }
+
+        registrationBtn.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
     }
 }
