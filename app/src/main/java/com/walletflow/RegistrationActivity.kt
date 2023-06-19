@@ -1,11 +1,15 @@
 package com.walletflow
 
+import android.content.ContentValues.TAG
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.firestore.FirebaseFirestore
+
 
 class RegistrationActivity : AppCompatActivity() {
 
@@ -40,8 +44,24 @@ class RegistrationActivity : AppCompatActivity() {
             } else {
 
                 if((password == passwordCheck)) {
-                    val db = DBHelper(this, null)
-                    db.addUser(username, email, password)
+                    val db = FirebaseFirestore.getInstance()
+                    // Create a new user with a first and last name
+                    // Create a new user with a first and last name
+                    val user: MutableMap<String, Any> = HashMap()
+                    user["first"] = "Ada"
+                    user["last"] = "Lovelace"
+                    user["born"] = 1815
+
+                    // Add a new document with a generated ID
+                    db.collection("users")
+                        .add(user)
+                        .addOnSuccessListener { documentReference ->
+                            Log.d(
+                                TAG,
+                                "DocumentSnapshot added with ID: " + documentReference.id
+                            )
+                        }
+                        .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                 }

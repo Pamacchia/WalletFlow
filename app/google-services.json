@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "591964007405",
+    "project_id": "walletflow-69048",
+    "storage_bucket": "walletflow-69048.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591964007405:android:344ae1eaf2444c9feed5e4",
+        "android_client_info": {
+          "package_name": "com.walletflow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "591964007405-83pbc20aqj2kpsa5kr96thu7miqhsb69.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4Z-47oQTZyepXs0Qp2_Us7rGE1rbrKJ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "591964007405-83pbc20aqj2kpsa5kr96thu7miqhsb69.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
