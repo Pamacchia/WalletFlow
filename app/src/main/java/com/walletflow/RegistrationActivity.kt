@@ -1,6 +1,5 @@
 package com.walletflow
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -39,6 +38,7 @@ class RegistrationActivity : AppCompatActivity() {
             val password = passwordField.text.toString()
             val passwordCheck = passwordConfirmField.text.toString()
 
+            // TODO: aggiungere controllo username
             if(username.isEmpty() || email.isEmpty() || password.isEmpty() || passwordCheck.isEmpty()){
                 Toast.makeText(this, "Please specify all the fields", Toast.LENGTH_LONG).show()
             } else {
@@ -46,22 +46,21 @@ class RegistrationActivity : AppCompatActivity() {
                 if((password == passwordCheck)) {
                     val db = FirebaseFirestore.getInstance()
                     // Create a new user with a first and last name
-                    // Create a new user with a first and last name
                     val user: MutableMap<String, Any> = HashMap()
-                    user["first"] = "Ada"
-                    user["last"] = "Lovelace"
-                    user["born"] = 1815
+                    user["username"] = username
+                    user["email"] = email
+                    user["password"] = password
 
                     // Add a new document with a generated ID
                     db.collection("users")
                         .add(user)
                         .addOnSuccessListener { documentReference ->
                             Log.d(
-                                TAG,
+                                this.localClassName,
                                 "DocumentSnapshot added with ID: " + documentReference.id
                             )
                         }
-                        .addOnFailureListener { e -> Log.w(TAG, "Error adding document", e) }
+                        .addOnFailureListener { e -> Log.w(this.localClassName, "Error adding document", e) }
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                 }

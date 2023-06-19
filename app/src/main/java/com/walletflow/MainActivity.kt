@@ -1,11 +1,17 @@
 package com.walletflow
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,20 +35,28 @@ class MainActivity : AppCompatActivity() {
         }
 
         loginBtn.setOnClickListener {
-            val db = DBHelper(this, null)
+            val db = FirebaseFirestore.getInstance()
 
             val username = usernameField.text.toString()
             val password = passwordField.text.toString()
 
-            if(db.checkLogin(username, password)){
-                val intent = Intent(this, HomeActivity::class.java)
-                startActivity(intent)
-            } else {
-                Toast.makeText(this, "Wrong credentials", Toast.LENGTH_LONG).show()
-                passwordField.text.clear()
-            }
+            db.collection("users")
+                .whereEqualTo("username", username)
+                .whereEqualTo("password", password).get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // TODO hashing psw
+                        if(!task.result.isEmpty()){
+                            val intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(this, "Wrong credentials", Toast.LENGTH_LONG).show()
+                            passwordField.text.clear()
+                        }
+                    } else {
+                        Log.w(this.localClassName, "Error getting documents.", task.exception)
+                    }
+                }
         }
-
-
     }
 }
