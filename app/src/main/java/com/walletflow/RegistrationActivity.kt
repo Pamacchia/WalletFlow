@@ -8,6 +8,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
+import java.security.MessageDigest
+import javax.xml.bind.DatatypeConverter
 
 
 class RegistrationActivity : AppCompatActivity() {
@@ -44,6 +46,12 @@ class RegistrationActivity : AppCompatActivity() {
             }
             else if (!isPasswordValid(password)){
                 Toast.makeText(this, "Please create a password with at least one uppercase, lowercase, digit and special character", Toast.LENGTH_LONG).show()
+            } else if(password != passwordCheck){
+                Toast.makeText(
+                    this,
+                    "The passwords don't match!",
+                    Toast.LENGTH_LONG
+                ).show()
             } else if(!isEmailValid(email)){
                 Toast.makeText(this, "Please insert a valid email", Toast.LENGTH_LONG).show()
             } else {
@@ -68,13 +76,11 @@ class RegistrationActivity : AppCompatActivity() {
                                                     Toast.LENGTH_LONG
                                                 ).show()
                                             } else {
-                                                if ((password == passwordCheck)) {
-
                                                     // Create a new user with a first and last name
                                                     val user: MutableMap<String, Any> = HashMap()
                                                     user["username"] = username
                                                     user["email"] = email
-                                                    user["password"] = password
+                                                    user["password"] = hashPassword(password)
 
                                                     // Add a new document with a generated ID
                                                     db.collection("users")
@@ -95,13 +101,6 @@ class RegistrationActivity : AppCompatActivity() {
                                                     val intent =
                                                         Intent(this, MainActivity::class.java)
                                                     startActivity(intent)
-                                                } else {
-                                                    Toast.makeText(
-                                                        this,
-                                                        "The passwords don't match!",
-                                                        Toast.LENGTH_LONG
-                                                    ).show()
-                                                }
                                             }
                                         } else {
                                             Log.w(this.localClassName, "Error getting documents checking email.", task.exception)
@@ -158,5 +157,25 @@ class RegistrationActivity : AppCompatActivity() {
     fun isEmailValid(email: String): Boolean {
         val emailRegex = Regex("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
         return email.matches(emailRegex)
+    }
+
+    fun hashPassword(password: String): String {
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+        val hashBytes = messageDigest.digest(password.toByteArray())
+        return bytesToHex(hashBytes)
+    }
+
+    fun bytesToHex(hashBytes: ByteArray): String {
+        val hexChars = "0123456789ABCDEF"
+        val hexBuilder = StringBuilder(hashBytes.size * 2)
+
+        for (byte in hashBytes) {
+            val highNibble = (byte.toInt() and 0xF0) ushr 4
+            val lowNibble = byte.toInt() and 0x0F
+            hexBuilder.append(hexChars[highNibble])
+            hexBuilder.append(hexChars[lowNibble])
+        }
+
+        return hexBuilder.toString()
     }
 }
