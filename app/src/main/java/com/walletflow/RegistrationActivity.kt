@@ -41,29 +41,75 @@ class RegistrationActivity : AppCompatActivity() {
             // TODO: aggiungere controllo username
             if(username.isEmpty() || email.isEmpty() || password.isEmpty() || passwordCheck.isEmpty()){
                 Toast.makeText(this, "Please specify all the fields", Toast.LENGTH_LONG).show()
+            }
+            else if (true){
+
             } else {
+                val db = FirebaseFirestore.getInstance()
+                db.collection("users")
+                    .whereEqualTo("username", username)
+                    .get()
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            if(!task.result.isEmpty()){
+                                Toast.makeText(this, "Already existing username!", Toast.LENGTH_LONG).show()
+                            } else {
+                                db.collection("users")
+                                    .whereEqualTo("email", email)
+                                    .get()
+                                    .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            if (!task.result.isEmpty()) {
+                                                Toast.makeText(
+                                                    this,
+                                                    "Already existing email!",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            } else {
+                                                if ((password == passwordCheck)) {
 
-                if((password == passwordCheck)) {
-                    val db = FirebaseFirestore.getInstance()
-                    // Create a new user with a first and last name
-                    val user: MutableMap<String, Any> = HashMap()
-                    user["username"] = username
-                    user["email"] = email
-                    user["password"] = password
+                                                    // Create a new user with a first and last name
+                                                    val user: MutableMap<String, Any> = HashMap()
+                                                    user["username"] = username
+                                                    user["email"] = email
+                                                    user["password"] = password
 
-                    // Add a new document with a generated ID
-                    db.collection("users")
-                        .add(user)
-                        .addOnSuccessListener { documentReference ->
-                            Log.d(
-                                this.localClassName,
-                                "DocumentSnapshot added with ID: " + documentReference.id
-                            )
+                                                    // Add a new document with a generated ID
+                                                    db.collection("users")
+                                                        .add(user)
+                                                        .addOnSuccessListener { documentReference ->
+                                                            Log.d(
+                                                                this.localClassName,
+                                                                "DocumentSnapshot added with ID: " + documentReference.id
+                                                            )
+                                                        }
+                                                        .addOnFailureListener { e ->
+                                                            Log.w(
+                                                                this.localClassName,
+                                                                "Error adding document",
+                                                                e
+                                                            )
+                                                        }
+                                                    val intent =
+                                                        Intent(this, MainActivity::class.java)
+                                                    startActivity(intent)
+                                                } else {
+                                                    Toast.makeText(
+                                                        this,
+                                                        "The passwords don't match!",
+                                                        Toast.LENGTH_LONG
+                                                    ).show()
+                                                }
+                                            }
+                                        } else {
+                                            Log.w(this.localClassName, "Error getting documents checking email.", task.exception)
+                                        }
+                                    }
+                            }
+                        } else {
+                            Log.w(this.localClassName, "Error getting documents checking username.", task.exception)
                         }
-                        .addOnFailureListener { e -> Log.w(this.localClassName, "Error adding document", e) }
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                }
+                    }
             }
 
         }

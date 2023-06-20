@@ -6,4 +6,94 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello, username"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="45dp"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/tvBudgetMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Budget left for today:"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvUsername"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="45dp"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/tvLeftBudget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="20dp"
+        android:text="38,00€"
+        android:textColor="@color/black"
+        android:textSize="50sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvBudgetMsg" />
+
+    <TextView
+        android:id="@+id/tvTotalBudget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="10dp"
+        android:text="out of 50,00€"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintStart_toEndOf="@id/tvLeftBudget"
+        app:layout_constraintTop_toBottomOf="@id/tvBudgetMsg" />
+
+    <TextView
+        android:id="@+id/tvMonthlyRecap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="45dp"
+        android:text="Monthly Recap"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvLeftBudget" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMonthlyRecap">
+
+        <Button
+            android:id="@+id/btnAddEarning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:textSize="45dp"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+
+            tools:layout_editor_absoluteX="92dp"
+            tools:layout_editor_absoluteY="520dp" />
+
+        <Button
+            android:id="@+id/btnAddExpenses"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textSize="45dp"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            tools:layout_editor_absoluteX="217dp"
+            tools:layout_editor_absoluteY="520dp" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
