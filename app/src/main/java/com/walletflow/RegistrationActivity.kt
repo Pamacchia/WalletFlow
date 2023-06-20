@@ -42,8 +42,10 @@ class RegistrationActivity : AppCompatActivity() {
             if(username.isEmpty() || email.isEmpty() || password.isEmpty() || passwordCheck.isEmpty()){
                 Toast.makeText(this, "Please specify all the fields", Toast.LENGTH_LONG).show()
             }
-            else if (true){
-
+            else if (!isPasswordValid(password)){
+                Toast.makeText(this, "Please create a password with at least one uppercase, lowercase, digit and special character", Toast.LENGTH_LONG).show()
+            } else if(!isEmailValid(email)){
+                Toast.makeText(this, "Please insert a valid email", Toast.LENGTH_LONG).show()
             } else {
                 val db = FirebaseFirestore.getInstance()
                 db.collection("users")
@@ -118,5 +120,43 @@ class RegistrationActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    fun isPasswordValid(password: String): Boolean {
+        val minLength = 5
+        val maxLength = 20
+
+        // Check length
+        if (password.length !in minLength..maxLength) {
+            return false
+        }
+
+        // Check for at least one uppercase letter
+        if (!password.any { it.isUpperCase() }) {
+            return false
+        }
+
+        // Check for at least one lowercase letter
+        if (!password.any { it.isLowerCase() }) {
+            return false
+        }
+
+        // Check for at least one digit
+        if (!password.any { it.isDigit() }) {
+            return false
+        }
+
+        // Check for at least one special character
+        if (!password.any { !it.isLetterOrDigit() }) {
+            return false
+        }
+
+        // All checks passed, password is valid
+        return true
+    }
+
+    fun isEmailValid(email: String): Boolean {
+        val emailRegex = Regex("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
+        return email.matches(emailRegex)
     }
 }
