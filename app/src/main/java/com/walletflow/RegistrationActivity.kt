@@ -8,8 +8,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
+import com.walletflow.utils.Hashing
 import java.security.MessageDigest
-import javax.xml.bind.DatatypeConverter
 
 
 class RegistrationActivity : AppCompatActivity() {
@@ -64,48 +64,7 @@ class RegistrationActivity : AppCompatActivity() {
                             if(!task.result.isEmpty()){
                                 Toast.makeText(this, "Already existing username!", Toast.LENGTH_LONG).show()
                             } else {
-                                db.collection("users")
-                                    .whereEqualTo("email", email)
-                                    .get()
-                                    .addOnCompleteListener { task ->
-                                        if (task.isSuccessful) {
-                                            if (!task.result.isEmpty()) {
-                                                Toast.makeText(
-                                                    this,
-                                                    "Already existing email!",
-                                                    Toast.LENGTH_LONG
-                                                ).show()
-                                            } else {
-                                                    // Create a new user with a first and last name
-                                                    val user: MutableMap<String, Any> = HashMap()
-                                                    user["username"] = username
-                                                    user["email"] = email
-                                                    user["password"] = hashPassword(password)
-
-                                                    // Add a new document with a generated ID
-                                                    db.collection("users")
-                                                        .add(user)
-                                                        .addOnSuccessListener { documentReference ->
-                                                            Log.d(
-                                                                this.localClassName,
-                                                                "DocumentSnapshot added with ID: " + documentReference.id
-                                                            )
-                                                        }
-                                                        .addOnFailureListener { e ->
-                                                            Log.w(
-                                                                this.localClassName,
-                                                                "Error adding document",
-                                                                e
-                                                            )
-                                                        }
-                                                    val intent =
-                                                        Intent(this, MainActivity::class.java)
-                                                    startActivity(intent)
-                                            }
-                                        } else {
-                                            Log.w(this.localClassName, "Error getting documents checking email.", task.exception)
-                                        }
-                                    }
+                                addIfEmailIsNew(db, username, email, password)
                             }
                         } else {
                             Log.w(this.localClassName, "Error getting documents checking username.", task.exception)
@@ -121,7 +80,56 @@ class RegistrationActivity : AppCompatActivity() {
         }
     }
 
-    fun isPasswordValid(password: String): Boolean {
+
+    private fun addUser(db : FirebaseFirestore, username : String, email : String, password : String){
+        val user: MutableMap<String, Any> = HashMap()
+        user["username"] = username
+        user["email"] = email
+        user["password"] = Hashing.hashPassword(password)
+
+        // Add a new document with a generated ID
+        db.collection("users")
+            .add(user)
+            .addOnSuccessListener { documentReference ->
+                Log.d(
+                    this.localClassName,
+                    "DocumentSnapshot added with ID: " + documentReference.id
+                )
+            }
+            .addOnFailureListener { e ->
+                Log.w(
+                    this.localClassName,
+                    "Error adding document",
+                    e
+                )
+            }
+        val intent =
+            Intent(this, MainActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun addIfEmailIsNew(db : FirebaseFirestore, username : String, email : String, password : String){
+        db.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    if (!task.result.isEmpty()) {
+                        Toast.makeText(
+                            this,
+                            "Already existing email!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        // Create a new user with a first and last name
+                        addUser(db, username, email, password)
+                    }
+                } else {
+                    Log.w(this.localClassName, "Error getting documents checking email.", task.exception)
+                }
+            }
+    }
+    private fun isPasswordValid(password: String): Boolean {
         val minLength = 5
         val maxLength = 20
 
@@ -154,28 +162,8 @@ class RegistrationActivity : AppCompatActivity() {
         return true
     }
 
-    fun isEmailValid(email: String): Boolean {
+    private fun isEmailValid(email: String): Boolean {
         val emailRegex = Regex("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
         return email.matches(emailRegex)
-    }
-
-    fun hashPassword(password: String): String {
-        val messageDigest = MessageDigest.getInstance("SHA-256")
-        val hashBytes = messageDigest.digest(password.toByteArray())
-        return bytesToHex(hashBytes)
-    }
-
-    fun bytesToHex(hashBytes: ByteArray): String {
-        val hexChars = "0123456789ABCDEF"
-        val hexBuilder = StringBuilder(hashBytes.size * 2)
-
-        for (byte in hashBytes) {
-            val highNibble = (byte.toInt() and 0xF0) ushr 4
-            val lowNibble = byte.toInt() and 0x0F
-            hexBuilder.append(hexChars[highNibble])
-            hexBuilder.append(hexChars[lowNibble])
-        }
-
-        return hexBuilder.toString()
     }
 }
