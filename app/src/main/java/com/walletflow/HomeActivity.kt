@@ -13,6 +13,10 @@ class HomeActivity : AppCompatActivity() {
     companion object {
         const val EARNING_CONST = 1
         const val EXPENSE_CONST = -1
+        const val EARNINGS = "earning"
+        const val EXPENSES = "expense"
+        const val SPEND = "spend"
+        const val EARN = "earn"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -25,12 +29,16 @@ class HomeActivity : AppCompatActivity() {
         earningBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
             intent.putExtra("type", HomeActivity.EARNING_CONST)
+            intent.putExtra("type_name", EARNINGS)
+            intent.putExtra("type_verb", EARN)
             startActivity(intent)
         }
 
         expenseBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
             intent.putExtra("type", HomeActivity.EXPENSE_CONST)
+            intent.putExtra("type_name", EXPENSES)
+            intent.putExtra("type_verb", SPEND)
             startActivity(intent)
         }
     }
