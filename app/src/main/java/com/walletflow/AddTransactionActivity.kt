@@ -1,5 +1,6 @@
 package com.walletflow
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -54,6 +55,8 @@ class AddTransactionActivity : AppCompatActivity() {
 
         chooseCategoryBtn.setOnClickListener {
 
+            val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            val userID = sharedPreferences.getString("userID", "")
             val amount = amountEditText.text.toString()
             val note = noteEditText.text.toString()
             val recurrent = recurrentCheck.isChecked
@@ -68,18 +71,20 @@ class AddTransactionActivity : AppCompatActivity() {
             }
             else {
                 val db = FirebaseFirestore.getInstance()
-                addTransaction(db, amount.toFloat(), note, recurrency)
+                addTransaction(db, amount.toFloat()*type, note, recurrency, userID, typeName)
             }
 
         }
 
     }
 
-    private fun addTransaction(db : FirebaseFirestore, amount : Float, note : String, recurrency : String){
-        val transaction: MutableMap<String, Any> = HashMap()
+    private fun addTransaction(db : FirebaseFirestore, amount : Float, note : String, recurrency : String, userID : String?, type_name : String?){
+        val transaction: MutableMap<String, Any?> = HashMap()
+        transaction["user"] = userID
+        transaction["type"] = type_name
         transaction["amount"] = amount
-        transaction["note"] = note
         transaction["recurrency"] = recurrency
+        transaction["note"] = note
 
         db.collection("transactions")
             .add(transaction)

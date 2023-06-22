@@ -1,5 +1,6 @@
 package com.walletflow
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -49,6 +50,10 @@ class MainActivity : AppCompatActivity() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         if(!task.result.isEmpty()){
+                            val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                            val editor = sharedPreferences.edit()
+                            editor.putString("userID", username)
+                            editor.apply()
                             val intent = Intent(this, HomeActivity::class.java)
                             startActivity(intent)
                         } else {
