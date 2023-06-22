@@ -62,7 +62,10 @@ class AddTransactionActivity : AppCompatActivity() {
             val recurrent = recurrentCheck.isChecked
             var recurrency = "None"
 
-            if(recurrent){
+            val intent = Intent(this, ChooseCategoryActivity::class.java)
+            startActivity(intent)
+
+            /*if(recurrent){
                 recurrency = selectorRecurrent.selectedItem.toString()
             }
 
@@ -72,7 +75,7 @@ class AddTransactionActivity : AppCompatActivity() {
             else {
                 val db = FirebaseFirestore.getInstance()
                 addTransaction(db, amount.toFloat()*type, note, recurrency, userID, typeName)
-            }
+            }*/
 
         }
 
