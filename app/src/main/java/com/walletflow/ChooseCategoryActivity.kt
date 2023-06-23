@@ -23,7 +23,9 @@ class ChooseCategoryActivity : AppCompatActivity() {
 
         submitBtn.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
-            addTransaction(db, intent.getFloatExtra("amount", 0F), intent.getStringExtra("note"), intent.getStringExtra("recurrency"), intent.getStringExtra("userID"), intent.getStringExtra("typeName"))
+            addTransaction(db, intent.getFloatExtra("amount", 0F),
+                intent.getStringExtra("note"), intent.getStringExtra("recurrency"),
+                intent.getStringExtra("userID"), intent.getStringExtra("typeName"), selected)
         }
     }
 
@@ -65,7 +67,7 @@ class ChooseCategoryActivity : AppCompatActivity() {
         }
 
         (v as ImageView).alpha = 0.5F
-        selected = (v as ImageView).tag.toString()
+        selected = v.tag.toString()
     }
     private fun selectAllImageViews(view: View, images : MutableList<ImageView>): MutableList<ImageView> {
 
