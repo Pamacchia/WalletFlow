@@ -46,7 +46,8 @@ class RegistrationActivity : AppCompatActivity() {
             }
             else if (!isPasswordValid(password)){
                 Toast.makeText(this, "Please create a password with at least one uppercase, lowercase, digit and special character", Toast.LENGTH_LONG).show()
-            } else if(password != passwordCheck){
+            }
+            else if(password != passwordCheck){
                 Toast.makeText(
                     this,
                     "The passwords don't match!",

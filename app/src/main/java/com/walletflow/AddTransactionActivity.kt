@@ -65,7 +65,7 @@ class AddTransactionActivity : AppCompatActivity() {
             val intent = Intent(this, ChooseCategoryActivity::class.java)
             startActivity(intent)
 
-            /*if(recurrent){
+            if(recurrent){
                 recurrency = selectorRecurrent.selectedItem.toString()
             }
 
@@ -73,39 +73,16 @@ class AddTransactionActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please specify the amount", Toast.LENGTH_LONG).show()
             }
             else {
-                val db = FirebaseFirestore.getInstance()
-                addTransaction(db, amount.toFloat()*type, note, recurrency, userID, typeName)
-            }*/
+                val intent = Intent(this, ChooseCategoryActivity::class.java)
+                intent.putExtra("amount", amount.toFloat()*type)
+                intent.putExtra("note", note)
+                intent.putExtra("recurrency", recurrency)
+                intent.putExtra("userID", userID)
+                intent.putExtra("typeName", typeName)
+                startActivity(intent)
+            }
 
         }
 
-    }
-
-    private fun addTransaction(db : FirebaseFirestore, amount : Float, note : String, recurrency : String, userID : String?, type_name : String?){
-        val transaction: MutableMap<String, Any?> = HashMap()
-        transaction["user"] = userID
-        transaction["type"] = type_name
-        transaction["amount"] = amount
-        transaction["recurrency"] = recurrency
-        transaction["note"] = note
-
-        db.collection("transactions")
-            .add(transaction)
-            .addOnSuccessListener { documentReference ->
-                Log.d(
-                    this.localClassName,
-                    "DocumentSnapshot added with ID: " + documentReference.id
-                )
-            }
-            .addOnFailureListener { e ->
-                Log.w(
-                    this.localClassName,
-                    "Error adding document",
-                    e
-                )
-            }
-
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
     }
 }

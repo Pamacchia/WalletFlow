@@ -35,23 +35,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                app:srcCompat="@drawable/icon_transport"/>
+                app:srcCompat="@drawable/icon_transport"
+                android:onClick="showSelected"
+                android:tag="Transport"/>
 
             <ImageView
                 android:id="@+id/iconFood"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                app:srcCompat="@drawable/icon_food"/>
+                app:srcCompat="@drawable/icon_food"
+                android:onClick="showSelected"
+                android:tag="Food"/>
 
             <ImageView
                 android:id="@+id/iconUtilities"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                app:srcCompat="@drawable/icon_technology"/>
-
-
+                app:srcCompat="@drawable/icon_technology"
+                android:onClick="showSelected"
+                android:tag="Technology"/>
 
         </LinearLayout>
 
@@ -66,7 +70,7 @@
             android:id="@+id/btnSubmitCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SUBMIT CATEGORY"
+            android:text="SUBMIT"
             android:layout_marginTop="25dp"/>
 
     </LinearLayout>
