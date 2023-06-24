@@ -21,6 +21,8 @@ class ChooseCategoryActivity : AppCompatActivity() {
 
         submitBtn = findViewById(R.id.btnSubmitCategory)
 
+        val resources = resources
+
         submitBtn.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
             addTransaction(db, intent.getFloatExtra("amount", 0F),
