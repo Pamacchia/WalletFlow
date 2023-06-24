@@ -25,41 +25,7 @@
             android:textSize="48dp" />
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/iconTransport"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                app:srcCompat="@drawable/icon_transport"
-                android:onClick="showSelected"
-                android:tag="Transport"/>
-
-            <ImageView
-                android:id="@+id/iconFood"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                app:srcCompat="@drawable/icon_food"
-                android:onClick="showSelected"
-                android:tag="Food"/>
-
-            <ImageView
-                android:id="@+id/iconUtilities"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                app:srcCompat="@drawable/icon_technology"
-                android:onClick="showSelected"
-                android:tag="Technology"/>
-
-        </LinearLayout>
-
-        <Button
+     <!--   <Button
             android:id="@+id/btnAddCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SUBMIT"
-            android:layout_marginTop="25dp"/>
+            android:layout_marginTop="25dp"/> -->
 
     </LinearLayout>
 
