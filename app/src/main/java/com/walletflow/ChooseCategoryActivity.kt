@@ -7,8 +7,8 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
-import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import java.io.IOException
@@ -25,7 +25,7 @@ class ChooseCategoryActivity : AppCompatActivity() {
         //submitBtn = findViewById(R.id.btnSubmitCategory)
 
         val assetManager = resources.assets
-        val fileList: Array<String>? = assetManager.list("icons")
+        val fileList: Array<String>? = assetManager.list("icons/test")
 
         loadIcons(fileList)
 
@@ -40,14 +40,24 @@ class ChooseCategoryActivity : AppCompatActivity() {
     //TODO: da finire non va
     private fun loadIcons(fileList : Array<String>?){
 
-        val rootView = findViewById<ViewGroup>(android.R.id.content)
+        val rootView = findViewById<LinearLayout>(R.id.mainLinearLayout)
 
+        var count = 0
+        lateinit var linearLayout : LinearLayout
         for (fileName in fileList!!) {
+            if(count%3==0){
+                linearLayout = LinearLayout(this)
+                linearLayout.id=View.generateViewId()
+                rootView.addView(linearLayout)
+                linearLayout.orientation = LinearLayout.HORIZONTAL
+                linearLayout.layoutParams.height = LayoutParams.WRAP_CONTENT
+            }
+
             val imageView = ImageView(this)
 
             try {
                 // Open the input stream for the image file in assets
-                val inputStream = assets.open("icons/my_image.png")
+                val inputStream = assets.open("icons/test/$fileName")
 
                 // Create a Drawable from the input stream
                 val drawable = Drawable.createFromStream(inputStream, null)
@@ -57,13 +67,16 @@ class ChooseCategoryActivity : AppCompatActivity() {
 
                 // Close the input stream
                 inputStream.close()
-                rootView.addView(imageView)
+
+                linearLayout.addView(imageView)
             } catch (e: IOException) {
                 e.printStackTrace()
             }
 
-            val layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-            imageView.layoutParams = layoutParams
+            imageView.layoutParams.height=LayoutParams.WRAP_CONTENT
+            imageView.layoutParams.width=LayoutParams.WRAP_CONTENT
+            imageView.tag= fileName.split(".")[0]
+            count++
         }
     }
 
