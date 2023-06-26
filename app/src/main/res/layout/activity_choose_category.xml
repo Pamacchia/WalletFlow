@@ -12,8 +12,14 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        tools:context=".MainActivity">
+        tools:context=".ChooseCategoryActivity">
 
+        <LinearLayout
+            android:id="@+id/iconsLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
         <TextView
             android:id="@+id/tvInput"
             android:layout_width="match_parent"
@@ -24,23 +30,32 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="48dp" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/buttonLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
 
-     <!--   <Button
-            android:id="@+id/btnAddCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ADD NEW CATEGORY"
-            android:layout_marginTop="25dp"/>
+            <Button
+                android:id="@+id/btnAddCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ADD NEW CATEGORY"
+                android:layout_marginTop="25dp"/>
 
-        <Button
-            android:id="@+id/btnSubmitCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SUBMIT"
-            android:layout_marginTop="25dp"/> -->
+            <Button
+                android:id="@+id/btnSubmitCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SUBMIT"
+                android:layout_marginTop="25dp"/>
+        </LinearLayout>
 
     </LinearLayout>
+
 
 </ScrollView>
 
