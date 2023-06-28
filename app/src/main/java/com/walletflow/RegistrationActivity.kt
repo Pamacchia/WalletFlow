@@ -40,7 +40,6 @@ class RegistrationActivity : AppCompatActivity() {
             val password = passwordField.text.toString()
             val passwordCheck = passwordConfirmField.text.toString()
 
-            // TODO: aggiungere controllo username
             if(username.isEmpty() || email.isEmpty() || password.isEmpty() || passwordCheck.isEmpty()){
                 Toast.makeText(this, "Please specify all the fields", Toast.LENGTH_LONG).show()
             }

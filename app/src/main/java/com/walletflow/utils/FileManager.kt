@@ -7,7 +7,7 @@ import java.io.OutputStream
 object FileManager {
 
     @Throws(IOException::class)
-    private fun copyFile(input : InputStream?, out: OutputStream) {
+    fun copyFile(input : InputStream?, out: OutputStream) {
         val buffer = ByteArray(1024)
         var read: Int? = null
         while (input?.read(buffer).also({ read = it!! }) != -1) {

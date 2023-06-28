@@ -2,7 +2,6 @@ package com.walletflow
 
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,14 +10,10 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.google.api.Distribution.BucketOptions.Linear
 import com.google.firebase.firestore.FirebaseFirestore
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 
@@ -32,7 +27,7 @@ class ChooseCategoryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_choose_category)
 
         val assetManager = resources.assets
-        val fileList: Array<String>? = assetManager.list("icons/test")
+        val fileList: Array<String>? = assetManager.list("icons/chooseCategory")
         loadIcons(fileList)
 
         submitBtn = findViewById(R.id.btnSubmitCategory)
@@ -46,6 +41,8 @@ class ChooseCategoryActivity : AppCompatActivity() {
         }
 
         addCategoryBtn.setOnClickListener {
+            val intent = Intent(this, AddCategoryActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -68,7 +65,7 @@ class ChooseCategoryActivity : AppCompatActivity() {
 
             try {
                 // Open the input stream for the image file in assets
-                val inputStream = assets.open("icons/test/$fileName")
+                val inputStream = assets.open("icons/chooseCategory/$fileName")
 
                 // Create a Drawable from the input stream
                 val drawable = Drawable.createFromStream(inputStream, null)
