@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -32,6 +34,7 @@ class AddTransactionActivity : AppCompatActivity() {
         val type = intent.getIntExtra("type", 0)
         val typeName = intent.getStringExtra("type_name")
         val typeVerb = intent.getStringExtra("type_verb")
+
         titleTv = findViewById(R.id.tvTitle)
         subtitleTv = findViewById(R.id.tvSubTitle)
         amountTitleTv = findViewById(R.id.tvAmountTitle)
@@ -43,7 +46,10 @@ class AddTransactionActivity : AppCompatActivity() {
 
         titleTv.text = typeName?.uppercase()
         subtitleTv.append(typeName)
+
         amountTitleTv.append(typeVerb + "?")
+        amountEditText.addTextChangedListener(textWatcher)
+        chooseCategoryBtn.isEnabled = amountEditText.text.isNotEmpty()
 
         recurrentCheck.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -85,4 +91,19 @@ class AddTransactionActivity : AppCompatActivity() {
         }
 
     }
+
+    val textWatcher = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+            // Implementation for afterTextChanged
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            // Implementation for beforeTextChanged
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            chooseCategoryBtn.isEnabled = amountEditText.text.isNotEmpty()
+        }
+    }
+
 }

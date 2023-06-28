@@ -2,6 +2,7 @@ package com.walletflow
 
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,15 +11,21 @@ import android.view.ViewGroup.LayoutParams
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.google.api.Distribution.BucketOptions.Linear
 import com.google.firebase.firestore.FirebaseFirestore
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
 
 
 class ChooseCategoryActivity : AppCompatActivity() {
 
     lateinit var submitBtn : Button
+    lateinit var addCategoryBtn : Button
     lateinit var selected : String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,12 +36,16 @@ class ChooseCategoryActivity : AppCompatActivity() {
         loadIcons(fileList)
 
         submitBtn = findViewById(R.id.btnSubmitCategory)
+        addCategoryBtn = findViewById(R.id.btnAddCategory)
 
         submitBtn.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
             addTransaction(db, intent.getFloatExtra("amount", 0F),
                 intent.getStringExtra("note"), intent.getStringExtra("recurrency"),
                 intent.getStringExtra("userID"), intent.getStringExtra("typeName"), selected)
+        }
+
+        addCategoryBtn.setOnClickListener {
         }
     }
 
@@ -92,6 +103,7 @@ class ChooseCategoryActivity : AppCompatActivity() {
         transaction["recurrency"] = recurrency
         transaction["note"] = note
         transaction["category"] = category
+        transaction["date"] = SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
 
         db.collection("transactions")
             .add(transaction)
