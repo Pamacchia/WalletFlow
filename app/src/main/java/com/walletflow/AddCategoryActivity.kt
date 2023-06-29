@@ -3,6 +3,7 @@ package com.walletflow
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -37,14 +38,6 @@ class AddCategoryActivity : AppCompatActivity() {
 
         addCategoryBtn.setOnClickListener {
 
-            var input: InputStream? = null
-            var out: OutputStream? = null
-            input = assetManager.open(selected)
-
-            // TODO: Understand how to access icons/chooseCategory
-            val outFile = File(this.getExternalFilesDir("icons/chooseCategory"), selected)
-            out = FileOutputStream(outFile)
-            FileManager.copyFile(input, out)
 
             finish()
         }

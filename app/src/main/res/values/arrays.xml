@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="selector_entries">
-        <item>Daily</item>
+        <itemr>Daily</itemr>
         <item>Weekly</item>
         <item>Monthly</item>
         <item>Yearly</item>
