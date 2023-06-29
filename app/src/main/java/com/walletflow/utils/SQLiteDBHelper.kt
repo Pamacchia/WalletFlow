@@ -44,7 +44,7 @@ class SQLiteDBHelper(context: Context, factory : SQLiteDatabase.CursorFactory?)
         }
 
         // This method is for adding data in our database
-        fun addName(name : String, age : String ){
+        fun addName(path : String, added : Boolean ){
 
             // below we are creating
             // a content values variable
@@ -52,8 +52,8 @@ class SQLiteDBHelper(context: Context, factory : SQLiteDatabase.CursorFactory?)
 
             // we are inserting our values
             // in the form of key-value pair
-//            values.put(NAME_COl, name)
-//            values.put(AGE_COL, age)
+            values.put("file_path", path)
+            values.put("added", added)
 
             // here we are creating a
             // writable variable of

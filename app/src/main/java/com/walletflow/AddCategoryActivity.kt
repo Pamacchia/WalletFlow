@@ -49,6 +49,7 @@ class AddCategoryActivity : AppCompatActivity() {
 
         val rootView = findViewById<LinearLayout>(R.id.iconsLinearLayout)
         val db = SQLiteDBHelper(this, null)
+        db.addName("path", true)
 
         var count = 0
         lateinit var linearLayout : LinearLayout
