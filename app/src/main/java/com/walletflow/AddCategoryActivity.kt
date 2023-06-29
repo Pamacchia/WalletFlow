@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.R
 import com.walletflow.utils.FileManager
+import com.walletflow.utils.SQLiteDBHelper
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -47,6 +48,7 @@ class AddCategoryActivity : AppCompatActivity() {
     private fun loadIcons(fileList : Array<String>?){
 
         val rootView = findViewById<LinearLayout>(R.id.iconsLinearLayout)
+        val db = SQLiteDBHelper(this, null)
 
         var count = 0
         lateinit var linearLayout : LinearLayout
