@@ -23,7 +23,6 @@ class AddCategoryActivity : AppCompatActivity() {
 
 //    TODO: Ereditarieta'
 
-
     lateinit var addCategoryBtn : Button
     lateinit var selected : String
 

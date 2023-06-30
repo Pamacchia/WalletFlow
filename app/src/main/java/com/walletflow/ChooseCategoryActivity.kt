@@ -27,7 +27,7 @@ class ChooseCategoryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_choose_category)
 
         val assetManager = resources.assets
-        val fileList: Array<String>? = assetManager.list("icons/chooseCategory")
+        val fileList: Array<String>? = assetManager.list("icons")
         loadIcons(fileList)
 
         submitBtn = findViewById(R.id.btnSubmitCategory)
@@ -65,7 +65,7 @@ class ChooseCategoryActivity : AppCompatActivity() {
 
             try {
                 // Open the input stream for the image file in assets
-                val inputStream = assets.open("icons/chooseCategory/$fileName")
+                val inputStream = assets.open("icons/$fileName")
 
                 // Create a Drawable from the input stream
                 val drawable = Drawable.createFromStream(inputStream, null)
