@@ -121,6 +121,7 @@ class ChooseCategoryActivity : AppCompatActivity() {
         val intent = Intent(this, HomeActivity::class.java)
         startActivity(intent)
     }
+
     fun showSelected(v : View){
 
         val images = mutableListOf<ImageView>()

@@ -37,11 +37,8 @@ class AddCategoryActivity : AppCompatActivity() {
         addCategoryBtn = findViewById(R.id.btnAddCategory)
 
         addCategoryBtn.setOnClickListener {
-
-
             finish()
         }
-
     }
 
     private fun loadIcons(fileList : Array<String>?){
@@ -52,6 +49,7 @@ class AddCategoryActivity : AppCompatActivity() {
 
         var count = 0
         lateinit var linearLayout : LinearLayout
+
         for (fileName in fileList!!) {
             if(count%3==0){
                 linearLayout = LinearLayout(this)
