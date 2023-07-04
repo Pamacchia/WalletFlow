@@ -11,7 +11,7 @@ class SQLiteDBHelper(context: Context, factory : SQLiteDatabase.CursorFactory?)
 
     companion object{
         // below is variable for database name
-        private val DATABASE_NAME = "USER_DATA"
+        private val DATABASE_NAME = "ICONS.sqlite"
 
         // below is the variable for database version
         private val DATABASE_VERSION = 1
@@ -27,14 +27,24 @@ class SQLiteDBHelper(context: Context, factory : SQLiteDatabase.CursorFactory?)
             val query = ("CREATE TABLE " + CATEGORY_TABLE + " ("
                     + "id" + " INTEGER PRIMARY KEY, " +
                     "file_path" + " TEXT," +
-                    "added" + "BOOLEAN " + ");" +
-                    "INSERT INTO" + CATEGORY_TABLE + "(id, file_path, added) VALUE (1, 'path/to/file1.txt', 1), " +
-                    "(2, 'path/to/file2.txt', 0), " +
-                    "(3, 'path/to/file3.txt', 1);")
+                    "added" + " INTEGER" + ");")
 
             // we are calling sqlite
             // method for executing our query
             db.execSQL(query)
+
+            val values = ContentValues()
+
+            val array1 = arrayOf("food.png", "popcorn.png", "technology.png", "tshirt.png", "transport.png")
+            val array2 = arrayOf(1, 1, 1, 0, 0)
+
+            // Check if the arrays have the same size
+            for (i in array1.indices) {
+                values.put("file_path", array1[i])
+                values.put("added", array2[i])
+
+                db.insert(CATEGORY_TABLE, null, values)
+            }
         }
 
         override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
@@ -44,7 +54,7 @@ class SQLiteDBHelper(context: Context, factory : SQLiteDatabase.CursorFactory?)
         }
 
         // This method is for adding data in our database
-        fun addName(path : String, added : Boolean ){
+        fun addName(path : String, added : String ){
 
             // below we are creating
             // a content values variable
@@ -87,5 +97,21 @@ class SQLiteDBHelper(context: Context, factory : SQLiteDatabase.CursorFactory?)
         fun emptyTable() {
             val db = this.writableDatabase
             db.delete(CATEGORY_TABLE, null, null)
+        }
+
+        fun getAlreadyAdded(): Cursor? {
+            val db = this.readableDatabase
+
+            // below code returns a cursor to
+            // read data from the database
+            return db.rawQuery("SELECT file_path FROM " + CATEGORY_TABLE + " WHERE added = 1", null)
+        }
+
+        fun getToAdd(): Cursor? {
+            val db = this.readableDatabase
+
+            // below code returns a cursor to
+            // read data from the database
+            return db.rawQuery("SELECT file_path FROM " + CATEGORY_TABLE + " WHERE added = 0", null)
         }
 }

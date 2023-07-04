@@ -30,8 +30,22 @@ class AddCategoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_category)
 
-        val assetManager = resources.assets
-        val fileList: Array<String>? = assetManager.list("icons/addCategory")
+
+        val db = SQLiteDBHelper(this, null)
+
+        val cursor = db.getToAdd()
+
+        val fileList: MutableList<String> = mutableListOf()
+
+        if (cursor!!.moveToFirst()) {
+            val columnIndex = cursor.getColumnIndexOrThrow("file_path")
+
+            do {
+                val filePath = cursor.getString(columnIndex)
+                fileList.add(filePath)
+            } while (cursor.moveToNext())
+        }
+
         loadIcons(fileList)
 
         addCategoryBtn = findViewById(R.id.btnAddCategory)
@@ -41,11 +55,9 @@ class AddCategoryActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadIcons(fileList : Array<String>?){
+    private fun loadIcons(fileList : MutableList<String>){
 
         val rootView = findViewById<LinearLayout>(R.id.iconsLinearLayout)
-        val db = SQLiteDBHelper(this, null)
-        db.addName("path", true)
 
         var count = 0
         lateinit var linearLayout : LinearLayout
@@ -63,7 +75,7 @@ class AddCategoryActivity : AppCompatActivity() {
 
             try {
                 // Open the input stream for the image file in assets
-                val inputStream = assets.open("icons/addCategory/$fileName")
+                val inputStream = assets.open("icons/$fileName")
 
                 // Create a Drawable from the input stream
                 val drawable = Drawable.createFromStream(inputStream, null)

@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
+import com.walletflow.utils.SQLiteDBHelper
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -26,8 +27,21 @@ class ChooseCategoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_category)
 
-        val assetManager = resources.assets
-        val fileList: Array<String>? = assetManager.list("icons")
+        val db = SQLiteDBHelper(this, null)
+
+        val cursor = db.getAlreadyAdded()
+
+        val fileList: MutableList<String> = mutableListOf()
+
+        if (cursor!!.moveToFirst()) {
+            val columnIndex = cursor.getColumnIndexOrThrow("file_path")
+
+            do {
+                val filePath = cursor.getString(columnIndex)
+                fileList.add(filePath)
+            } while (cursor.moveToNext())
+        }
+
         loadIcons(fileList)
 
         submitBtn = findViewById(R.id.btnSubmitCategory)
@@ -46,7 +60,7 @@ class ChooseCategoryActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadIcons(fileList : Array<String>?){
+    private fun loadIcons(fileList : MutableList<String>){
 
         val rootView = findViewById<LinearLayout>(R.id.iconsLinearLayout)
 
