@@ -1,9 +1,8 @@
 package com.walletflow.utils
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
-import android.database.Cursor
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
@@ -51,8 +50,14 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     fun addCategory(selected: String, name: String) {
         val db = this.writableDatabase
-        val updateQuery = "UPDATE $CATEGORY_TABLE SET icon_name = '$name' WHERE file_path = '$selected.png' LIMIT 1"
-        db.execSQL(updateQuery)
+        val values = ContentValues()
+
+
+        values.put("file_path", "$selected.png")
+        values.put("icon_name", name)
+        values.put("added", 1)
+
+        db.update(CATEGORY_TABLE, values,"file_path=?", arrayOf<String>("$selected.png"))
         db.close()
     }
 
