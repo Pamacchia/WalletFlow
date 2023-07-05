@@ -12,6 +12,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     companion object {
         private val DATABASE_NAME = "ICONS.sqlite"
         private val DATABASE_VERSION = 1
+        const val ISADDED = "isAdded"
         val CATEGORY_TABLE = "category_table"
     }
 
@@ -20,7 +21,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 + "id" + " INTEGER PRIMARY KEY, " +
                 "file_path" + " TEXT," +
                 "icon_name" + " TEXT," +
-                "added" + " INTEGER" + ");")
+                ISADDED + " INTEGER" + ");")
 
         db.execSQL(query)
 
@@ -36,7 +37,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         for (i in array1.indices) {
             values.put("file_path", array1[i])
-            values.put("added", array2[i])
+            values.put(ISADDED, array2[i])
             values.put("icon_name", array3[i])
 
             db.insert(CATEGORY_TABLE, null, values)
@@ -55,7 +56,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         values.put("file_path", "$selected.png")
         values.put("icon_name", name)
-        values.put("added", 1)
+        values.put(ISADDED, 1)
 
         db.update(CATEGORY_TABLE, values,"file_path=?", arrayOf<String>("$selected.png"))
         db.close()
@@ -63,11 +64,11 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     fun getAlreadyAdded(): Cursor? {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT file_path FROM " + CATEGORY_TABLE + " WHERE added = 1", null)
+        return db.rawQuery("SELECT * FROM " + CATEGORY_TABLE + " WHERE $ISADDED = 1", null)
     }
 
     fun getToAdd(): Cursor? {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT file_path FROM " + CATEGORY_TABLE + " WHERE added = 0", null)
+        return db.rawQuery("SELECT * FROM " + CATEGORY_TABLE + " WHERE $ISADDED = 0", null)
     }
 }
