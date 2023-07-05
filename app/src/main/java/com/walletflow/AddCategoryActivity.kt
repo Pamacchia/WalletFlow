@@ -7,6 +7,7 @@ import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.google.firebase.firestore.FirebaseFirestore
@@ -25,6 +26,7 @@ class AddCategoryActivity : AppCompatActivity() {
 
     lateinit var addCategoryBtn : Button
     lateinit var selected : String
+    lateinit var iconNameEt : EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +51,11 @@ class AddCategoryActivity : AppCompatActivity() {
         loadIcons(fileList)
 
         addCategoryBtn = findViewById(R.id.btnAddCategory)
+        iconNameEt = findViewById(R.id.etCategoryName)
 
         addCategoryBtn.setOnClickListener {
 
-
+            db.addCategory(selected, iconNameEt.text.toString())
             finish()
         }
     }

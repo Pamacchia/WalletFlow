@@ -27,20 +27,7 @@ class ChooseCategoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_category)
 
-        val db = SQLiteDBHelper(this, null)
-
-        val cursor = db.getAlreadyAdded()
-
-        val fileList: MutableList<String> = mutableListOf()
-
-        if (cursor!!.moveToFirst()) {
-            val columnIndex = cursor.getColumnIndexOrThrow("file_path")
-
-            do {
-                val filePath = cursor.getString(columnIndex)
-                fileList.add(filePath)
-            } while (cursor.moveToNext())
-        }
+        val fileList: MutableList<String> = getIconsFileList()
 
         loadIcons(fileList)
 
@@ -60,16 +47,42 @@ class ChooseCategoryActivity : AppCompatActivity() {
         }
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        val fileList: MutableList<String> = getIconsFileList()
+
+        loadIcons(fileList)
+    }
+
+    private fun getIconsFileList(): MutableList<String> {
+        val db = SQLiteDBHelper(this, null)
+
+        val cursor = db.getAlreadyAdded()
+
+        val fileList: MutableList<String> = mutableListOf()
+
+        if (cursor!!.moveToFirst()) {
+            val columnIndex = cursor.getColumnIndexOrThrow("file_path")
+
+            do {
+                val filePath = cursor.getString(columnIndex)
+                fileList.add(filePath)
+            } while (cursor.moveToNext())
+        }
+        return fileList
+    }
+
     private fun loadIcons(fileList : MutableList<String>){
 
         val rootView = findViewById<LinearLayout>(R.id.iconsLinearLayout)
+        rootView.removeAllViews()
 
         var count = 0
         lateinit var linearLayout : LinearLayout
         for (fileName in fileList!!) {
             if(count%3==0){
                 linearLayout = LinearLayout(this)
-                linearLayout.id=View.generateViewId()
+                linearLayout.id = View.generateViewId()
                 rootView.addView(linearLayout)
                 linearLayout.orientation = LinearLayout.HORIZONTAL
                 linearLayout.layoutParams.height = LayoutParams.WRAP_CONTENT
