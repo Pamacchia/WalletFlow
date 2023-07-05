@@ -1,5 +1,6 @@
 package com.walletflow.utils
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.database.Cursor
 import android.content.Context
@@ -19,6 +20,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val query = ("CREATE TABLE " + CATEGORY_TABLE + " ("
                 + "id" + " INTEGER PRIMARY KEY, " +
                 "file_path" + " TEXT," +
+                "icon_name" + " TEXT," +
                 "added" + " INTEGER" + ");")
 
         db.execSQL(query)
@@ -29,9 +31,14 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             arrayOf("food.png", "popcorn.png", "technology.png", "tshirt.png", "transport.png")
         val array2 = arrayOf(1, 1, 1, 0, 0)
 
+        val array3 = array1.map { fileName ->
+            fileName.removeSuffix(".png")
+        }.toTypedArray()
+
         for (i in array1.indices) {
             values.put("file_path", array1[i])
             values.put("added", array2[i])
+            values.put("icon_name", array3[i])
 
             db.insert(CATEGORY_TABLE, null, values)
         }
@@ -40,6 +47,13 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
         db.execSQL("DROP TABLE IF EXISTS " + CATEGORY_TABLE)
         onCreate(db)
+    }
+
+    fun addCategory(selected: String, name: String) {
+        val db = this.writableDatabase
+        val updateQuery = "UPDATE $CATEGORY_TABLE SET icon_name = '$name' WHERE file_path = '$selected.png' LIMIT 1"
+        db.execSQL(updateQuery)
+        db.close()
     }
 
     fun getAlreadyAdded(): Cursor? {

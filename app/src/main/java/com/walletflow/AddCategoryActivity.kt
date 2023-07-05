@@ -51,6 +51,8 @@ class AddCategoryActivity : AppCompatActivity() {
         addCategoryBtn = findViewById(R.id.btnAddCategory)
 
         addCategoryBtn.setOnClickListener {
+
+
             finish()
         }
     }
