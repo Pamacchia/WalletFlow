@@ -1,5 +1,6 @@
 package com.walletflow
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,13 +10,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.utils.Hashing
-import java.security.MessageDigest
 
 
 class RegistrationActivity : AppCompatActivity() {
 
     lateinit var submitBtn : Button
-    lateinit var registrationBtn : Button
+    lateinit var backToLoginBtn : Button
     lateinit var usernameField : EditText
     lateinit var emailField : EditText
     lateinit var passwordField : EditText
@@ -31,7 +31,7 @@ class RegistrationActivity : AppCompatActivity() {
         passwordConfirmField = findViewById(R.id.registration_confirm_password)
 
         submitBtn = findViewById(R.id.btn_submit)
-        registrationBtn = findViewById(R.id.btn_back)
+        backToLoginBtn = findViewById(R.id.btn_back)
 
         submitBtn.setOnClickListener {
 
@@ -65,6 +65,15 @@ class RegistrationActivity : AppCompatActivity() {
                                 Toast.makeText(this, "Already existing username!", Toast.LENGTH_LONG).show()
                             } else {
                                 addIfEmailIsNew(db, username, email, password)
+
+                                val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                                val editor = sharedPreferences.edit()
+                                editor.putString("userID", username)
+                                editor.apply()
+
+                                val intent = Intent(this, HomeActivity::class.java)
+                                startActivity(intent)
+
                             }
                         } else {
                             Log.w(this.localClassName, "Error getting documents checking username.", task.exception)
@@ -74,8 +83,8 @@ class RegistrationActivity : AppCompatActivity() {
 
         }
 
-        registrationBtn.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+        backToLoginBtn.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
     }
@@ -86,6 +95,7 @@ class RegistrationActivity : AppCompatActivity() {
         user["username"] = username
         user["email"] = email
         user["password"] = Hashing.hashPassword(password)
+        user["balance"] = 0f
 
         // Add a new document with a generated ID
         db.collection("users")
@@ -103,9 +113,6 @@ class RegistrationActivity : AppCompatActivity() {
                     e
                 )
             }
-        val intent =
-            Intent(this, MainActivity::class.java)
-        startActivity(intent)
     }
 
     private fun addIfEmailIsNew(db : FirebaseFirestore, username : String, email : String, password : String){
