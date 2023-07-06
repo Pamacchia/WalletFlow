@@ -62,13 +62,8 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.close()
     }
 
-    fun getAlreadyAdded(): Cursor? {
+    fun getCategories(type : Int): Cursor? {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM " + CATEGORY_TABLE + " WHERE $ISADDED = 1", null)
-    }
-
-    fun getToAdd(): Cursor? {
-        val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM " + CATEGORY_TABLE + " WHERE $ISADDED = 0", null)
+        return db.rawQuery("SELECT * FROM " + CATEGORY_TABLE + " WHERE $ISADDED = $type", null)
     }
 }
