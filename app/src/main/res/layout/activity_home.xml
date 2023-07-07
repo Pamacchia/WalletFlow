@@ -55,21 +55,22 @@
         app:layout_constraintTop_toBottomOf="@id/tvBudgetMsg" />
 
     <TextView
-        android:id="@+id/tvMonthlyRecap"
+        android:id="@+id/tvBalance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:layout_marginLeft="45dp"
-        android:text="Monthly Recap"
-        android:textSize="20sp"
+        android:text="0€"
+        android:textSize="40sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvLeftBudget" />
 
     <LinearLayout
+        android:id="@+id/btnLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvMonthlyRecap">
+        app:layout_constraintTop_toBottomOf="@id/tvBalance">
 
         <Button
             android:id="@+id/btnAddEarning"
@@ -95,5 +96,18 @@
             tools:layout_editor_absoluteY="520dp" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvPlaceholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MANAGE RECURRENT EXPENSES"
+        app:layout_constraintStart_toStartOf="@id/btnLayout"
+        app:layout_constraintTop_toBottomOf="@id/btnLayout"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="45dp"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/black"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
