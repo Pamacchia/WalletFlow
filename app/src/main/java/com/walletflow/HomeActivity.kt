@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,9 +30,9 @@ class HomeActivity : AppCompatActivity() {
 
         earningBtn = findViewById(R.id.btnAddEarning)
         expenseBtn = findViewById(R.id.btnAddExpenses)
-        balanceTv = findViewById(R.id.tvBalance)
 
-        balanceTv.text = loadBalance().toString()
+        balanceTv = findViewById(R.id.tvBalance)
+        loadBalance(balanceTv)
 
         earningBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
@@ -50,22 +51,23 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadBalance() : Float{
+    private fun loadBalance(balanceTv : TextView){
 
-        var balance : Float = 0f
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
 
         val db = FirebaseFirestore.getInstance()
 
-        db.collection("users").whereEqualTo("username", userID).limit(1).get()
-            .addOnSuccessListener { document ->
-                balance = document.first().getString("balance")!!.toFloat()
+        db.collection("users")
+            .whereEqualTo("username", userID)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val balance = task.result.first().get("balance").toString()
+                    balanceTv.text = balance
+                } else {
+                    Log.w(this.localClassName, "Error getting documents.", task.exception)
+                }
             }
-            .addOnFailureListener { e ->
-                println("Error getting documents: $e")
-            }
-
-        return balance
     }
 }
