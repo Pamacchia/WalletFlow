@@ -66,4 +66,5 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val db = this.readableDatabase
         return db.rawQuery("SELECT * FROM " + CATEGORY_TABLE + " WHERE $ISADDED = $type", null)
     }
+
 }

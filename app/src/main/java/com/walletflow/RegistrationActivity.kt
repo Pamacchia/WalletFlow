@@ -71,7 +71,7 @@ class RegistrationActivity : AppCompatActivity() {
                                 editor.putString("userID", username)
                                 editor.apply()
 
-                                val intent = Intent(this, HomeActivity::class.java)
+                                val intent = Intent(this, OnboardingActivity::class.java)
                                 startActivity(intent)
 
                             }
