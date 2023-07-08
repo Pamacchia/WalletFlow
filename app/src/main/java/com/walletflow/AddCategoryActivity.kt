@@ -27,8 +27,6 @@ import java.io.OutputStream
 private const val ADD_CATEGORY_TYPE = 0
 class AddCategoryActivity : CategoryActivity() {
 
-//    TODO: Ereditarieta'
-
     lateinit var addCategoryBtn : Button
     lateinit var iconNameEt : EditText
 
@@ -52,6 +50,10 @@ class AddCategoryActivity : CategoryActivity() {
             db.addCategory(selected, iconNameEt.text.toString())
             finish()
         }
+    }
+
+    override fun getLayoutResourceId(): Int {
+        return R.layout.activity_add_category
     }
 
     val textWatcher = object : TextWatcher {

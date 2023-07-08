@@ -10,7 +10,7 @@ import com.walletflow.data.Icon
 import com.walletflow.utils.SQLiteDBHelper
 import java.io.IOException
 
-abstract class CategoryActivity : AppCompatActivity() {
+abstract class CategoryActivity : BaseActivity() {
 
     lateinit var selected : String
 

@@ -16,7 +16,7 @@
 
 
         <TextView
-            android:id="@+id/tvInput"
+            android:id="@+id/tvAddCategoryTitle"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:gravity="center"
@@ -68,6 +68,8 @@
                 android:layout_marginTop="25dp"
                 android:clickable="false"/>
         </LinearLayout>
+
+        <include layout="@layout/bottom_navigation_bar" />
 
     </LinearLayout>
 

@@ -10,7 +10,7 @@ import android.widget.TextView
 import com.google.firebase.firestore.FirebaseFirestore
 
 //TODO : show in home balance and objective's balance (perché non lo calcoliamo più in maniera dinamica e l'utente può recuoerare soldi)
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BaseActivity() {
 
     lateinit var earningBtn : Button
     lateinit var expenseBtn : Button
@@ -49,6 +49,10 @@ class HomeActivity : AppCompatActivity() {
             intent.putExtra("type_verb", SPEND)
             startActivity(intent)
         }
+    }
+
+    override fun getLayoutResourceId(): Int {
+        return R.layout.activity_home
     }
 
     private fun loadBalance(balanceTv : TextView){

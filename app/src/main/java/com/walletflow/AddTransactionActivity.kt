@@ -16,7 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 
-class AddTransactionActivity : AppCompatActivity() {
+class AddTransactionActivity : BaseActivity() {
 
     lateinit var titleTv : TextView
     lateinit var subtitleTv : TextView
@@ -90,6 +90,10 @@ class AddTransactionActivity : AppCompatActivity() {
 
         }
 
+    }
+
+    override fun getLayoutResourceId(): Int {
+        return R.layout.activity_add_transaction
     }
 
     val textWatcher = object : TextWatcher {

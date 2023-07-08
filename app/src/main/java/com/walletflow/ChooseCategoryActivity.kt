@@ -48,6 +48,10 @@ class ChooseCategoryActivity : CategoryActivity() {
         }
     }
 
+    override fun getLayoutResourceId(): Int {
+        return R.layout.activity_choose_category
+    }
+
     override fun onRestart() {
         super.onRestart()
         val iconList: MutableList<Icon> = getIconList(CHOOSE_CATEGORY_TYPE)
