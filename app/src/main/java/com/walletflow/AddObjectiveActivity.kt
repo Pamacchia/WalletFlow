@@ -66,7 +66,7 @@ class AddObjectiveActivity : BaseActivity() {
         db: FirebaseFirestore
     ) {
         val transaction: MutableMap<String, Any?> = HashMap()
-        transaction["user"] = userID
+        transaction["admin"] = userID
         transaction["name"] = name
         transaction["amount"] = amount
         transaction["alreadySaved"] = alreadySaved
