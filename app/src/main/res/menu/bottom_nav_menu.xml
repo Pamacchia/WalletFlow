@@ -15,7 +15,8 @@
     <item
         android:id="@+id/nav_objectives"
         android:icon="@drawable/icon_food"
-        android:title="" />
+        android:title=""
+        android:onClick="openObjectivesActivity"/>
 
     <item
         android:id="@+id/nav_settings"
