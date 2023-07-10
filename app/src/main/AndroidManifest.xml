@@ -12,6 +12,12 @@
         android:theme="@style/Theme.WalletFlow"
         tools:targetApi="31">
         <activity
+            android:name=".AddParticipantActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ObjectiveDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddObjectiveActivity"
             android:exported="false" />
         <activity

@@ -1,20 +1,11 @@
 package com.walletflow
 
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
 import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.data.Icon
-import com.walletflow.utils.SQLiteDBHelper
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 

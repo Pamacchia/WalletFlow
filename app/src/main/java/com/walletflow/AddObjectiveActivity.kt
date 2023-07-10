@@ -29,7 +29,6 @@ class AddObjectiveActivity : BaseActivity() {
 
         btnSumbitObjective = findViewById(R.id.btnSubmitNewObjective)
         etAmount = findViewById(R.id.etObjectiveAmount)
-        etAlreadySaved = findViewById(R.id.etAlreadySaved)
         etName = findViewById(R.id.etObjectiveName)
         dpDate = findViewById(R.id.dpObjectiveExpiringDate)
         cbGroupObjective = findViewById(R.id.cbGroupObjective)
@@ -42,13 +41,12 @@ class AddObjectiveActivity : BaseActivity() {
 
             val amount = etAmount.text.toString().toFloat()
             val name = etName.text.toString()
-            val alreadySaved = etAlreadySaved.text.toString().toFloat()
             val calendar = Calendar.getInstance()
             calendar.set(dpDate.year, dpDate.month, dpDate.dayOfMonth)
             val date = calendar.time
             val group = cbGroupObjective.isChecked
 
-            saveObjective(userID, name, amount, alreadySaved, group, date, db)
+            saveObjective(userID, name, amount, group, date, db)
 
             val intent = Intent(this, ObjectivesActivity::class.java)
             startActivity(intent)
@@ -60,7 +58,6 @@ class AddObjectiveActivity : BaseActivity() {
         userID: String?,
         name: String,
         amount: Float,
-        alreadySaved: Float,
         group: Boolean,
         date: Date,
         db: FirebaseFirestore
@@ -69,7 +66,7 @@ class AddObjectiveActivity : BaseActivity() {
         transaction["admin"] = userID
         transaction["name"] = name
         transaction["amount"] = amount
-        transaction["alreadySaved"] = alreadySaved
+        transaction["saved"] = 0
         transaction["group"] = group
         transaction["date"] = SimpleDateFormat("yyyy-MM-dd").format(date)
 

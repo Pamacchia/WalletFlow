@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.data.Icon
 import java.io.IOException
@@ -46,10 +47,8 @@ class ObjectivesActivity : BaseActivity() {
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
 
-        // TODO: change user to username
-
         db.collection("objectives")
-            .whereEqualTo("user", userID)
+            .whereEqualTo("admin", userID)
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -57,6 +56,18 @@ class ObjectivesActivity : BaseActivity() {
                         val button = Button(this)
                         button.text = objective.getString("name") + " | ${objective.id}"
                         button.tag = objective.id
+
+
+                        // TODO: Pass only document id and then find everything else directly in the detail page (query to db)
+                        button.setOnClickListener{
+                            val intent = Intent(this, ObjectiveDetailActivity::class.java)
+                            intent.putExtra("name", objective.getString("name"))
+                            intent.putExtra("amount", objective.get("amount").toString().toFloat())
+                            intent.putExtra("saved", objective.get("saved").toString().toFloat())
+                            intent.putExtra("objectiveId", objective.id)
+                            startActivity(intent)
+                        }
+
                         rootView.addView(button)
                     }
                 } else {
