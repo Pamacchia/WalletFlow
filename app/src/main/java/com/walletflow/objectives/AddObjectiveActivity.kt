@@ -1,16 +1,16 @@
-package com.walletflow
+package com.walletflow.objectives
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
-import androidx.core.view.get
 import com.google.firebase.firestore.FirebaseFirestore
+import com.walletflow.BaseActivity
+import com.walletflow.R
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -25,7 +25,7 @@ class AddObjectiveActivity : BaseActivity() {
     private lateinit var cbGroupObjective : CheckBox
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_objective)
+        setContentView(R.layout.activity_objective_add)
 
         btnSumbitObjective = findViewById(R.id.btnSubmitNewObjective)
         etAmount = findViewById(R.id.etObjectiveAmount)
@@ -88,6 +88,6 @@ class AddObjectiveActivity : BaseActivity() {
     }
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.activity_add_objective
+        return R.layout.activity_objective_add
     }
 }

@@ -1,11 +1,12 @@
-package com.walletflow
+package com.walletflow.transactions
 
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
+import com.walletflow.BaseActivity
+import com.walletflow.R
 import com.walletflow.data.Icon
 import com.walletflow.utils.SQLiteDBHelper
 import java.io.IOException

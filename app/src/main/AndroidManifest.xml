@@ -15,34 +15,34 @@
             android:name=".AddParticipantActivity"
             android:exported="false" />
         <activity
-            android:name=".ObjectiveDetailActivity"
+            android:name=".objectives.ObjectiveDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".AddObjectiveActivity"
+            android:name=".objectives.AddObjectiveActivity"
             android:exported="false" />
         <activity
-            android:name=".ObjectivesActivity"
+            android:name=".objectives.ObjectivesActivity"
             android:exported="false" />
         <activity
-            android:name=".OnboardingActivity"
+            android:name=".welcome.OnboardingActivity"
             android:exported="false" />
         <activity
-            android:name=".AddCategoryActivity"
+            android:name=".transactions.AddCategoryActivity"
             android:exported="false" />
         <activity
-            android:name=".ChooseCategoryActivity"
+            android:name=".transactions.ChooseCategoryActivity"
             android:exported="false" />
         <activity
-            android:name=".AddTransactionActivity"
+            android:name=".transactions.AddTransactionActivity"
             android:exported="false" />
         <activity
             android:name=".HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".RegistrationActivity"
+            android:name=".welcome.RegistrationActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".welcome.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

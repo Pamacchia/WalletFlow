@@ -1,12 +1,10 @@
-package com.walletflow
+package com.walletflow.transactions
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
@@ -14,7 +12,8 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import com.google.firebase.firestore.FirebaseFirestore
+import com.walletflow.BaseActivity
+import com.walletflow.R
 
 class AddTransactionActivity : BaseActivity() {
 
@@ -29,7 +28,7 @@ class AddTransactionActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_transaction)
+        setContentView(R.layout.activity_transaction_add)
 
         val type = intent.getIntExtra("type", 0)
         val typeName = intent.getStringExtra("type_name")
@@ -93,7 +92,7 @@ class AddTransactionActivity : BaseActivity() {
     }
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.activity_add_transaction
+        return R.layout.activity_transaction_add
     }
 
     val textWatcher = object : TextWatcher {

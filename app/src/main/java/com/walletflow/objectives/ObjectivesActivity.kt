@@ -1,27 +1,21 @@
-package com.walletflow
+package com.walletflow.objectives
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
-import com.walletflow.data.Icon
-import java.io.IOException
+import com.walletflow.BaseActivity
+import com.walletflow.R
 
 class ObjectivesActivity : BaseActivity() {
 
     lateinit var createNewObjective : Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_objectives)
+        setContentView(R.layout.activity_objective)
 
         createNewObjective = findViewById(R.id.btnAddNewObjectives)
 
@@ -35,7 +29,7 @@ class ObjectivesActivity : BaseActivity() {
     }
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.activity_objectives
+        return R.layout.activity_objective
     }
 
     fun loadObjectives() {

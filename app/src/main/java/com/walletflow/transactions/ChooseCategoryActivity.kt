@@ -1,10 +1,12 @@
-package com.walletflow
+package com.walletflow.transactions
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import com.google.firebase.firestore.FirebaseFirestore
+import com.walletflow.HomeActivity
+import com.walletflow.R
 import com.walletflow.data.Icon
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -17,7 +19,7 @@ class ChooseCategoryActivity : CategoryActivity() {
     lateinit var addCategoryBtn : Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_choose_category)
+        setContentView(R.layout.activity_transaction_category_choose)
 
         val iconList: MutableList<Icon> = getIconList(CHOOSE_CATEGORY_TYPE)
 
@@ -40,7 +42,7 @@ class ChooseCategoryActivity : CategoryActivity() {
     }
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.activity_choose_category
+        return R.layout.activity_transaction_category_choose
     }
 
     override fun onRestart() {

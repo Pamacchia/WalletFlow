@@ -1,4 +1,4 @@
-package com.walletflow
+package com.walletflow.welcome
 
 import android.content.Context
 import android.content.Intent
@@ -9,6 +9,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
+import com.walletflow.HomeActivity
+import com.walletflow.R
 import com.walletflow.utils.Hashing
 
 
@@ -21,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_welcome_login)
 
         registrationBtn = findViewById(R.id.btn_register)
         loginBtn = findViewById(R.id.btn_login)

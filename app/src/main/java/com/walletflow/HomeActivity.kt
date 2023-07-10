@@ -2,12 +2,12 @@ package com.walletflow
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import com.google.firebase.firestore.FirebaseFirestore
+import com.walletflow.transactions.AddTransactionActivity
 
 //TODO : show in home balance and objective's balance (perché non lo calcoliamo più in maniera dinamica e l'utente può recuoerare soldi)
 class HomeActivity : BaseActivity() {

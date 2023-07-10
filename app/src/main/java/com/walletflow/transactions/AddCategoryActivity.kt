@@ -1,10 +1,11 @@
-package com.walletflow
+package com.walletflow.transactions
 
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
+import com.walletflow.R
 import com.walletflow.data.Icon
 import com.walletflow.utils.SQLiteDBHelper
 
@@ -16,7 +17,7 @@ class AddCategoryActivity : CategoryActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_category)
+        setContentView(R.layout.activity_transaction_category_add)
 
 
         val db = SQLiteDBHelper(this, null)
@@ -37,7 +38,7 @@ class AddCategoryActivity : CategoryActivity() {
     }
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.activity_add_category
+        return R.layout.activity_transaction_category_add
     }
 
     val textWatcher = object : TextWatcher {

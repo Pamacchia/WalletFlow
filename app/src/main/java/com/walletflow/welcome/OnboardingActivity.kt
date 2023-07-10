@@ -1,14 +1,14 @@
-package com.walletflow
+package com.walletflow.welcome
 
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
+import com.walletflow.HomeActivity
+import com.walletflow.R
 
 class OnboardingActivity : AppCompatActivity() {
 
@@ -17,7 +17,7 @@ class OnboardingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_onboarding)
+        setContentView(R.layout.activity_welcome_onboarding)
 
         btnStart = findViewById(R.id.btnStartOnboarding)
         etBalance = findViewById(R.id.etBalance)

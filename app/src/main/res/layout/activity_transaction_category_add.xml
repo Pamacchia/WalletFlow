@@ -12,18 +12,37 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        tools:context=".ChooseCategoryActivity">
+        tools:context=".transactions.AddCategoryActivity">
+
 
         <TextView
             android:id="@+id/tvAddCategoryTitle"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="100dp"
             android:gravity="center"
             android:padding="10dp"
-            android:text="CHOOSE CATEGORY"
+            android:text="ADD CATEGORY"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="48dp" />
+
+        <TextView
+            android:id="@+id/tvCategoryName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="Add the name of the category"
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/etCategoryName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Name"
+            android:gravity="center"
+            android:layout_marginHorizontal="50dp"
+            android:textSize="18dp" />
 
         <LinearLayout
             android:id="@+id/iconsLinearLayout"
@@ -45,15 +64,9 @@
                 android:id="@+id/btnAddCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ADD NEW CATEGORY"
-                android:layout_marginTop="25dp"/>
-
-            <Button
-                android:id="@+id/btnSubmitCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SUBMIT"
-                android:layout_marginTop="25dp"/>
+                android:text="ADD"
+                android:layout_marginTop="25dp"
+                android:clickable="false"/>
         </LinearLayout>
 
         <include layout="@layout/bottom_navigation_bar" />
