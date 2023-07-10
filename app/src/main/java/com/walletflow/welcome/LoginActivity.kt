@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,7 +17,7 @@ import com.walletflow.utils.Hashing
 
 class LoginActivity : AppCompatActivity() {
 
-    lateinit var registrationBtn : Button
+    lateinit var registrationBtn : TextView
     lateinit var loginBtn : Button
     lateinit var usernameField : EditText
     lateinit var passwordField : EditText

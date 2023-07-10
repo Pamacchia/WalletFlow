@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">WalletFlow</string>
+    <string name="registration"><u>Register</u></string>
 </resources>
