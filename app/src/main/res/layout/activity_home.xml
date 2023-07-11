@@ -66,4 +66,5 @@
     </ScrollView>
 
     <include layout="@layout/bottom_navigation_bar" />
+
 </LinearLayout>
