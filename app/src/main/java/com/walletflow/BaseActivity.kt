@@ -30,8 +30,4 @@ abstract class BaseActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
-    fun test(){
-
-    }
 }
