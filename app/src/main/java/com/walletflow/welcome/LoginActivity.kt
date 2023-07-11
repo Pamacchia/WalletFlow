@@ -17,7 +17,7 @@ import com.walletflow.utils.Hashing
 
 class LoginActivity : AppCompatActivity() {
 
-    lateinit var registrationBtn : TextView
+    lateinit var registrationBtn : Button
     lateinit var loginBtn : Button
     lateinit var usernameField : EditText
     lateinit var passwordField : EditText
