@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,6 +9,7 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
+<!--    TODO: Stuff in the bottom part is hidden. Try to change layout so that the end of the layout is at the top of the bottom bar-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,14 +20,15 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                >
+                android:fillViewport="true">
 
                 <TextView
                     android:id="@+id/tvGreetingUser"
@@ -45,17 +48,6 @@
                     android:textAlignment="center"
                     android:lineSpacingExtra="3dp"
                     android:text="This is what you spent compared with the adviced expense this month"/>
-
-<!--                <TextView-->
-<!--                    android:id="@+id/tvBalance"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="20dp"-->
-<!--                    android:text="0€"-->
-<!--                    android:textSize="40sp"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@id/tvLeftBudget" />-->
-
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -250,6 +242,46 @@
                         android:layout_marginTop="10dp"
                         android:textAlignment="center"
                         android:text="transaction5"/>
+
+                    <TextView
+                        android:layout_width="320dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:text="transaction6"/>
+
+                    <TextView
+                        android:layout_width="320dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:text="transaction6"/>
+
+                    <TextView
+                        android:layout_width="320dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:text="transaction6"/>
+
+                    <TextView
+                        android:layout_width="320dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:text="transaction6"/>
+
+                    <TextView
+                        android:layout_width="320dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:text="transaction6"/>
 
                     <TextView
                         android:layout_width="320dp"
