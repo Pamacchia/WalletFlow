@@ -68,7 +68,9 @@ class HomeActivity : BaseActivity() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val balance = task.result.first().get("balance").toString()
-                    balanceTv.text = balance
+
+                    //TODO: convert balance to shrinked format (K,M,B..)
+                    balanceTv.text = balance + "" + "€"
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
                 }

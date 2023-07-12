@@ -44,9 +44,9 @@ class AddTransactionActivity : BaseActivity() {
         selectorRecurrent = findViewById(R.id.spRecurrent)
 
         titleTv.text = typeName?.uppercase()
-        subtitleTv.append(typeName)
+        subtitleTv.text = "Insert a new $typeName"
 
-        amountTitleTv.append(typeVerb + "?")
+        amountTitleTv.text = "How much did you $typeVerb?"
         amountEditText.addTextChangedListener(textWatcher)
         chooseCategoryBtn.isEnabled = amountEditText.text.isNotEmpty()
 

@@ -1,70 +1,273 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
     tools:context=".HomeActivity">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            >
-
-            <TextView
-                android:id="@+id/tvUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hello, user"
-                android:textSize="40sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/tvBudgetMsg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Budget left for today:"
-                android:textSize="20sp"
-                android:layout_marginTop="10dp"/>
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical"
+                >
 
                 <TextView
-                    android:id="@+id/tvLeftBudget"
+                    android:id="@+id/tvGreetingUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="38,00€"
+                    android:text="Hello, user"
+                    android:textSize="40sp"
                     android:textColor="@color/black"
-                    android:textSize="40sp"/>
+                    android:textStyle="bold"/>
 
                 <TextView
-                    android:id="@+id/tvTotalBudget"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvDescriptionHome"
+                    android:layout_width="320dp"
                     android:layout_height="wrap_content"
-                    android:text="out of 50,00€"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    android:layout_marginTop="10dp"
+                    android:textAlignment="center"
+                    android:lineSpacingExtra="3dp"
+                    android:text="This is what you spent compared with the adviced expense this month"/>
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvBalance"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="20dp"-->
+<!--                    android:text="0€"-->
+<!--                    android:textSize="40sp"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/tvLeftBudget" />-->
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="20dp">
+
+                    <TextView
+                        android:id="@+id/tvLeftBudget"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="38,00€"
+                        android:textColor="@color/black"
+                        android:textSize="40sp"/>
+
+                    <TextView
+                        android:id="@+id/tvTotalBudget"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="   out of 50,00€"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="320dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="20dp">
+
+                    <androidx.cardview.widget.CardView
+                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/card_view1"
+                        android:layout_width="100dp"
+                        android:layout_height="120dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#FFFFC107"
+                        android:layout_margin="10dp"
+                        card_view:cardCornerRadius="10dp">
+
+                        <TextView
+                            android:id="@+id/info_text1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Balance"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:layout_marginTop="10dp"/>
+
+                        <TextView
+                            android:id="@+id/tvBalance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="0€"
+                            android:textAlignment="center"
+                            android:layout_marginTop="50dp"
+                            android:textSize="20sp"/>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/card_view2"
+                        android:layout_width="100dp"
+                        android:layout_height="120dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#FFFFC107"
+                        android:layout_margin="10dp"
+                        card_view:cardCornerRadius="10dp">
+
+                        <TextView
+                            android:id="@+id/info_text2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Expenses"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:layout_marginTop="10dp"/>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/card_view3"
+                        android:layout_width="100dp"
+                        android:layout_height="120dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#FFFFC107"
+                        android:layout_margin="10dp"
+                        card_view:cardCornerRadius="10dp">
+
+                        <TextView
+                            android:id="@+id/info_text3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Saved"
+                            android:textAlignment="center"
+                            android:textStyle="bold"
+                            android:layout_marginTop="10dp"/>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btnLayout"
+                    android:layout_width="320dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+
+                    <Button
+                        android:id="@+id/btnAddEarning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+"
+                        android:textSize="40dp"
+                        android:textStyle="bold"
+                        android:backgroundTint="#8BC34A"
+                        android:layout_weight="1"
+                        android:layout_margin="10dp" />
+
+                    <Button
+                        android:id="@+id/btnAddExpenses"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textSize="40dp"
+                        android:backgroundTint="#FF5722"
+                        android:textStyle="bold"
+                        android:layout_weight="1"
+                        android:layout_margin="10dp"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvManageRecurrency"
+                        android:layout_width="320dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:text="Manage recurrent transactions"/>
+
+                    <TextView
+                        android:layout_width="320dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:text="transaction1"/>
+
+                    <TextView
+                        android:layout_width="320dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:text="transaction2"/>
+
+                    <TextView
+                        android:layout_width="320dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:text="transaction3"/>
+
+                    <TextView
+                        android:layout_width="320dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:text="transaction4"/>
+
+                    <TextView
+                        android:layout_width="320dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:text="transaction5"/>
+
+                    <TextView
+                        android:layout_width="320dp"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="10dp"
+                        android:textAlignment="center"
+                        android:text="transaction6"/>
+
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
-    </ScrollView>
+    </LinearLayout>
 
     <include layout="@layout/bottom_navigation_bar" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
