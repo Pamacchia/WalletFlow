@@ -10,24 +10,3 @@
     app:itemIconTint="@color/black"
     app:itemTextColor="@color/black"
     app:menu="@menu/bottom_nav_menu" />
-
-<!--<androidx.constraintlayout.widget.ConstraintLayout-->
-<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent">-->
-
-<!--    &lt;!&ndash; Content Views &ndash;&gt;-->
-<!--    &lt;!&ndash; Place your other content views here &ndash;&gt;-->
-
-<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:id="@+id/bottom_navigation"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="?android:attr/windowBackground"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:itemIconTint="@color/black"-->
-<!--        app:itemTextColor="@color/black"-->
-<!--        app:menu="@menu/bottom_nav_menu" />-->
-
-<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
