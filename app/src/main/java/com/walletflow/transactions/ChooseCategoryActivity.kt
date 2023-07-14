@@ -16,7 +16,7 @@ private const val CHOOSE_CATEGORY_TYPE = 1
 class ChooseCategoryActivity : CategoryActivity() {
 
     lateinit var submitBtn : Button
-    lateinit var addCategoryBtn : Button
+//    lateinit var addCategoryBtn : Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_transaction_category_choose)
@@ -26,7 +26,7 @@ class ChooseCategoryActivity : CategoryActivity() {
         loadIcons(iconList)
 
         submitBtn = findViewById(R.id.btnSubmitCategory)
-        addCategoryBtn = findViewById(R.id.btnAddCategory)
+//        addCategoryBtn = findViewById(R.id.btnAddCategory)
 
         submitBtn.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
@@ -35,10 +35,10 @@ class ChooseCategoryActivity : CategoryActivity() {
                 intent.getStringExtra("userID"), intent.getStringExtra("typeName"), selected)
         }
 
-        addCategoryBtn.setOnClickListener {
-            val intent = Intent(this, AddCategoryActivity::class.java)
-            startActivity(intent)
-        }
+//        addCategoryBtn.setOnClickListener {
+//            val intent = Intent(this, AddCategoryActivity::class.java)
+//            startActivity(intent)
+//        }
     }
 
     override fun getLayoutResourceId(): Int {

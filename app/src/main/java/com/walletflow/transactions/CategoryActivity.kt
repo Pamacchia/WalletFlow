@@ -1,8 +1,11 @@
 package com.walletflow.transactions
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.walletflow.BaseActivity
@@ -10,6 +13,7 @@ import com.walletflow.R
 import com.walletflow.data.Icon
 import com.walletflow.utils.SQLiteDBHelper
 import java.io.IOException
+
 
 abstract class CategoryActivity : BaseActivity() {
 
@@ -47,16 +51,18 @@ abstract class CategoryActivity : BaseActivity() {
         rootView.removeAllViews()
 
         var count = 0
+
         lateinit var linearLayout : LinearLayout
 
+        linearLayout = LinearLayout(this)
+        linearLayout.id = View.generateViewId()
+        rootView.addView(linearLayout)
+        linearLayout.orientation = LinearLayout.HORIZONTAL
+        linearLayout.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+
+        val factor: Float = this.resources.displayMetrics.density
+
         for (icon in iconList!!) {
-            if(count%3==0){
-                linearLayout = LinearLayout(this)
-                linearLayout.id = View.generateViewId()
-                rootView.addView(linearLayout)
-                linearLayout.orientation = LinearLayout.HORIZONTAL
-                linearLayout.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            }
 
             val imageView = ImageView(this)
 
@@ -78,14 +84,37 @@ abstract class CategoryActivity : BaseActivity() {
                 e.printStackTrace()
             }
 
-            val factor: Float = this.resources.displayMetrics.density
-
             imageView.layoutParams = LinearLayout.LayoutParams((factor*100).toInt(), (factor*100).toInt(), 1F)
             imageView.tag= icon.iconName
             imageView.setOnClickListener {
                 showSelected(imageView)
             }
             count++
+
+            if(count%3==0){
+                linearLayout = LinearLayout(this)
+                linearLayout.id = View.generateViewId()
+                rootView.addView(linearLayout)
+                linearLayout.orientation = LinearLayout.HORIZONTAL
+                linearLayout.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+        }
+
+        if(ChooseCategoryActivity::class.java.name.contains(this.localClassName)){
+            val btnAdd = Button(this)
+            btnAdd.text = "+"
+            btnAdd.setOnClickListener {
+                val intent = Intent(this, AddCategoryActivity::class.java)
+                startActivity(intent)
+            }
+
+            btnAdd.setBackgroundResource(R.drawable.add_button)
+            btnAdd.setTextColor(0xFFFFFFFF.toInt())
+            btnAdd.textSize = 30f
+
+            linearLayout.layoutParams.height = (100*factor).toInt()
+            linearLayout.gravity = Gravity.CENTER
+            linearLayout.addView(btnAdd)
         }
     }
 

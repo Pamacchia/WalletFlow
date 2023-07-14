@@ -8,11 +8,11 @@
     android:layout_height="match_parent"
     tools:context=".transactions.ChooseCategoryActivity">
 
+
     <LinearLayout
         android:id="@+id/mainLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,18 +20,44 @@
         <TextView
             android:id="@+id/tvAddCategoryTitle"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
             android:gravity="center"
-            android:padding="10dp"
             android:text="CHOOSE CATEGORY"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="48dp" />
 
+        <LinearLayout
+            android:id="@+id/buttonLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+<!--            <Button-->
+<!--                android:id="@+id/btnAddCategory"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="ADD NEW CATEGORY"-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:layout_weight="1"/>-->
+
+            <Button
+                android:id="@+id/btnSubmitCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="SUBMIT"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="vertical">
+            android:scrollbars="vertical"
+            android:layout_marginTop="20dp">
 
             <LinearLayout
                 android:id="@+id/iconsLinearLayout"
@@ -43,28 +69,6 @@
             </LinearLayout>
 
         </ScrollView>
-
-        <LinearLayout
-            android:id="@+id/buttonLinearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/btnAddCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ADD NEW CATEGORY"
-                android:layout_marginTop="25dp"/>
-
-            <Button
-                android:id="@+id/btnSubmitCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SUBMIT"
-                android:layout_marginTop="25dp"/>
-        </LinearLayout>
 
     </LinearLayout>
 

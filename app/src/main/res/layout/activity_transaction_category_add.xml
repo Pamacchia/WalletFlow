@@ -28,22 +28,21 @@
             android:textStyle="bold"
             android:textSize="40dp" />
 
-        <TextView
-            android:id="@+id/tvCategoryName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="Add the name of the category"
-            android:textSize="20dp" />
-
         <EditText
             android:id="@+id/etCategoryName"
             android:layout_width="320dp"
             android:layout_height="48dp"
-            android:hint="Name"
+            android:hint="Add category name"
             android:gravity="center"
             android:textSize="18dp" />
+
+        <Button
+            android:id="@+id/btnAddCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ADD"
+            android:layout_marginTop="25dp"
+            android:clickable="false"/>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -60,23 +59,6 @@
             </LinearLayout>
 
         </ScrollView>
-
-        <LinearLayout
-            android:id="@+id/buttonLinearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/btnAddCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ADD"
-                android:layout_marginTop="25dp"
-                android:clickable="false"/>
-
-        </LinearLayout>
 
     </LinearLayout>
 
