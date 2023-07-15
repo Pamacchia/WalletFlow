@@ -12,10 +12,7 @@
         android:theme="@style/Theme.WalletFlow"
         tools:targetApi="31">
         <activity
-            android:name=".activity_home"
-            android:exported="false" />
-        <activity
-            android:name=".AddParticipantActivity"
+            android:name=".HomeActivity"
             android:exported="false" />
         <activity
             android:name=".objectives.ObjectiveDetailActivity"
@@ -37,9 +34,6 @@
             android:exported="false" />
         <activity
             android:name=".transactions.AddTransactionActivity"
-            android:exported="false" />
-        <activity
-            android:name=".HomeActivity"
             android:exported="false" />
         <activity
             android:name=".welcome.RegistrationActivity"

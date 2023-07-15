@@ -4,7 +4,8 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/icon_technology"
-        android:title=""/>
+        android:title=""
+        android:onClick="openHomeActivity" />
 
     <item
         android:id="@+id/nav_dashboard"
@@ -14,7 +15,8 @@
     <item
         android:id="@+id/nav_objectives"
         android:icon="@drawable/icon_food"
-        android:title=""/>
+        android:title=""
+        android:onClick="openObjectivesActivity"/>
 
     <item
         android:id="@+id/nav_settings"

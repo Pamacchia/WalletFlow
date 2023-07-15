@@ -9,4 +9,4 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:itemIconTint="@color/black"
     app:itemTextColor="@color/black"
-    app:menu="@menu/bottom_nav_menu" />
+    app:menu="@menu/bottom_nav_menu"/>
