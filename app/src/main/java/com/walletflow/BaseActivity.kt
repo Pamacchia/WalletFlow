@@ -41,7 +41,6 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     private fun openObjectivesActivity() {
-        // Launch the HomeActivity
         if(!ObjectivesActivity::class.java.name.contains(this.localClassName)){
             val intent = Intent(this, ObjectivesActivity::class.java)
             startActivity(intent)
