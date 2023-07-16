@@ -17,7 +17,6 @@ class AddCategoryActivity : CategoryActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_transaction_category_add)
 
 
         val db = SQLiteDBHelper(this, null)

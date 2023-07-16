@@ -25,7 +25,6 @@ class AddObjectiveActivity : BaseActivity() {
     private lateinit var cbGroupObjective : CheckBox
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_objective_add)
 
         btnSumbitObjective = findViewById(R.id.btnSubmitNewObjective)
         etAmount = findViewById(R.id.etObjectiveAmount)

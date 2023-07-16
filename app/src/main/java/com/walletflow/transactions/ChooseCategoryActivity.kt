@@ -19,7 +19,6 @@ class ChooseCategoryActivity : CategoryActivity() {
 //    lateinit var addCategoryBtn : Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_transaction_category_choose)
 
         val iconList: MutableList<Icon> = getIconList(CHOOSE_CATEGORY_TYPE)
 

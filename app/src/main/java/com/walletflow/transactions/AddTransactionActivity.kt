@@ -28,7 +28,6 @@ class AddTransactionActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_transaction_add)
 
         val type = intent.getIntExtra("type", 0)
         val typeName = intent.getStringExtra("type_name")

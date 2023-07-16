@@ -14,7 +14,6 @@ class ObjectiveDetailActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_objective_detail)
 
         titleTv = findViewById(R.id.tvObjectiveTitle)
         recapTv = findViewById(R.id.tvObjectiveRecap)

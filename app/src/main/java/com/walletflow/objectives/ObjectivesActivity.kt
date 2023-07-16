@@ -18,7 +18,6 @@ class ObjectivesActivity : BaseActivity() {
     lateinit var createNewObjective : Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_objective)
 
         createNewObjective = findViewById(R.id.btnAddNewObjectives)
 

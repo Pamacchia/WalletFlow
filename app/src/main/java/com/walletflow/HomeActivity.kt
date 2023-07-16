@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import com.google.firebase.firestore.FirebaseFirestore
+import com.walletflow.objectives.ObjectivesActivity
 import com.walletflow.transactions.AddTransactionActivity
 
 //TODO : show in home balance and objective's balance (perché non lo calcoliamo più in maniera dinamica e l'utente può recuoerare soldi)
@@ -24,9 +25,7 @@ class HomeActivity : BaseActivity() {
         const val EARN = "earn"
     }
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
 
         earningBtn = findViewById(R.id.btnAddEarning)
         expenseBtn = findViewById(R.id.btnAddExpenses)
