@@ -84,6 +84,7 @@
                         android:layout_margin="10dp"
                         android:layout_weight="1"
                         android:backgroundTint="#FFFFC107"
+                        card_view:cardElevation="5dp"
                         card_view:cardCornerRadius="10dp">
 
                         <TextView
@@ -113,6 +114,7 @@
                         android:layout_margin="10dp"
                         android:layout_weight="1"
                         android:backgroundTint="#FFFFC107"
+                        card_view:cardElevation="5dp"
                         card_view:cardCornerRadius="10dp">
 
                         <TextView
@@ -132,6 +134,7 @@
                         android:layout_margin="10dp"
                         android:layout_weight="1"
                         android:backgroundTint="#FFFFC107"
+                        card_view:cardElevation="5dp"
                         card_view:cardCornerRadius="10dp">
 
                         <TextView
@@ -150,7 +153,7 @@
                     android:id="@+id/btnLayout"
                     android:layout_width="320dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="0dp"
                     android:orientation="horizontal">
 
                     <Button

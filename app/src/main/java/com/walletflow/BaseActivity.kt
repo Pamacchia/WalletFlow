@@ -2,14 +2,12 @@ package com.walletflow
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationBarView
-import com.google.android.material.navigation.NavigationView
 import com.walletflow.objectives.ObjectivesActivity
+
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -18,7 +16,9 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getLayoutResourceId())
+
 //        bottomNavBar = findViewById(R.id.bottom_navigation)
+
 //
 //        bottomNavBar.setOnItemSelectedListener {
 //            when (it.itemId) {
