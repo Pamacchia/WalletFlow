@@ -81,6 +81,15 @@ class ObjectivesActivity : BaseActivity() {
                         // Add the card view to the container layout
                         rootView.addView(cardView)
 
+                        cardView.setOnClickListener{
+                            val intent = Intent(this, ObjectiveDetailActivity::class.java)
+                            intent.putExtra("name", objective.getString("name"))
+                            intent.putExtra("amount", objective.get("amount").toString().toFloat())
+                            intent.putExtra("saved", objective.get("saved").toString().toFloat())
+                            intent.putExtra("objectiveId", objective.id)
+                            startActivity(intent)
+                        }
+
 
                     }
                 } else {

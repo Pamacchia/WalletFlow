@@ -18,11 +18,11 @@
         <TextView
             android:id="@+id/tvObjectivesTitle"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Objectives"
             android:textColor="@color/black"
-            android:textSize="48dp"
+            android:textSize="40dp"
             android:textStyle="bold" />
 
         <Button
