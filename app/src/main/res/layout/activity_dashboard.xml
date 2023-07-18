@@ -10,25 +10,13 @@
     android:layout_height="match_parent"
     tools:context=".dashboard.DashboardActivity">
 
-    <ScrollView
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-        app:layout_constraintTop_toTopOf="parent"
-        android:scrollbars="vertical">
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <FrameLayout
-            android:id="@+id/flFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true"
-            android:gravity="center"
-            android:orientation="vertical"
-            />
-
-    </ScrollView>
 
     <!--    </LinearLayout>-->
 

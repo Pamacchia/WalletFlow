@@ -1,25 +1,21 @@
 package com.walletflow.dashboard
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import com.walletflow.PieChartFragment
+import android.util.Log
+import androidx.viewpager.widget.ViewPager
+import com.walletflow.BaseActivity
 import com.walletflow.R
-import com.walletflow.TransactionsFragment
 
-class DashboardActivity : AppCompatActivity() {
+class DashboardActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val PieChartFragment=PieChartFragment()
-        val TransactionsFragment=TransactionsFragment()
-
-        setCurrentFragment(PieChartFragment)
+        val viewPager: ViewPager = findViewById(R.id.viewPager)
+        val adapter = DashboardAdapter(supportFragmentManager)
+        viewPager.adapter = adapter
     }
 
-    private fun setCurrentFragment(fragment: Fragment)=
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.flFragment,fragment)
-            commit()
-        }
+    override fun getLayoutResourceId(): Int {
+        return R.layout.activity_dashboard
+    }
 }

@@ -6,6 +6,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView.OnItemSelectedListener
+import com.walletflow.dashboard.DashboardActivity
 import com.walletflow.objectives.ObjectivesActivity
 
 
@@ -25,8 +26,8 @@ abstract class BaseActivity : AppCompatActivity(){
                     true
                 }
                 R.id.nav_dashboard -> {
-                    // TODO
-                    false
+                    openDashboardActivity()
+                    true
                 }
                 R.id.nav_objectives ->{
                     openObjectivesActivity()
@@ -46,6 +47,14 @@ abstract class BaseActivity : AppCompatActivity(){
     private fun openHomeActivity() {
         if(!HomeActivity::class.java.name.contains(this.localClassName)){
             val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    private fun openDashboardActivity() {
+        if(!DashboardActivity::class.java.name.contains(this.localClassName)){
+            val intent = Intent(this, DashboardActivity::class.java)
             startActivity(intent)
             finish()
         }
