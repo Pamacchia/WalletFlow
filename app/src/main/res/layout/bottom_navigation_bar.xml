@@ -8,7 +8,5 @@
     app:layout_constraintBottom_toBottomOf="parent"
     app:menu="@menu/bottom_nav_menu"
     app:itemIconTint="@color/black"
+    app:itemRippleColor="#3CF3C94C"
     app:labelVisibilityMode="unlabeled"/>
-
-
-<!--    app:itemRippleColor="@android:color/transparent"-->

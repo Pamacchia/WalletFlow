@@ -49,22 +49,6 @@ class ObjectivesActivity : BaseActivity() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     for(objective in task.result){
-//                        val button = Button(this)
-//                        button.text = objective.getString("name") + " | ${objective.id}"
-//                        button.tag = objective.id
-//
-//
-//                        // TODO: Pass only document id and then find everything else directly in the detail page (query to db)
-//                        button.setOnClickListener{
-//                            val intent = Intent(this, ObjectiveDetailActivity::class.java)
-//                            intent.putExtra("name", objective.getString("name"))
-//                            intent.putExtra("amount", objective.get("amount").toString().toFloat())
-//                            intent.putExtra("saved", objective.get("saved").toString().toFloat())
-//                            intent.putExtra("objectiveId", objective.id)
-//                            startActivity(intent)
-//                        }
-//
-//                        rootView.addView(button)
 
                         val inflater = LayoutInflater.from(this)
                         val cardView = inflater.inflate(R.layout.objective_cardview, rootView, false) as CardView
@@ -73,7 +57,7 @@ class ObjectivesActivity : BaseActivity() {
                         val tvSavings = cardView.findViewById<TextView>(R.id.tvObjectiveCardProgress)
 
                         // Modify the text views with your data
-                        tvTitle.text = objective.getString("name")
+                        tvTitle.text = objective.getString("name") + "   |   " + objective.getString("date")
                         tvParticipants.text = "Temp"
                         // TODO: dollar to euro
                         tvSavings.text = "You saved ${objective.get("saved").toString().toFloat()}$ out of ${objective.get("amount").toString().toFloat()}$"

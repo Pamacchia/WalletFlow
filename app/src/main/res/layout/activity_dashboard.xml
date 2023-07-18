@@ -46,8 +46,6 @@
                 android:textStyle="bold"
                 android:background="@drawable/edittext_rectangle"/>
 
-
-
         </LinearLayout>
 
     </ScrollView>

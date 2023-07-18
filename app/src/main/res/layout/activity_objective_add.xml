@@ -47,13 +47,27 @@
             ></EditText>
 
 
-        <DatePicker
-            android:id="@+id/dpObjectiveExpiringDate"
+<!--        <DatePicker-->
+<!--            android:id="@+id/dpObjectiveExpiringDate"-->
+<!--            android:layout_width="320dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:datePickerMode="spinner"-->
+<!--            android:startYear="2023"-->
+<!--            android:calendarViewShown="false"/>-->
+
+        <Button
+            android:id="@+id/btnSelectDate"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:datePickerMode="spinner"
-            android:startYear="2023"
-            android:calendarViewShown="false"/>
+            android:layout_marginTop="10dp"
+            android:text="Select Date" />
+
+        <TextView
+            android:id="@+id/tvSelectedDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="18sp" />
 
         <CheckBox
             android:id="@+id/cbGroupObjective"
