@@ -13,6 +13,8 @@ class DashboardActivity : BaseActivity() {
         val viewPager: ViewPager = findViewById(R.id.viewPager)
         val adapter = DashboardAdapter(supportFragmentManager)
         viewPager.adapter = adapter
+
+
     }
 
     override fun getLayoutResourceId(): Int {

@@ -20,12 +20,17 @@ class PieChartFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
 
-
-        pieChart = getView()?.findViewById(R.id.pieChartCategories) as PieChart
-        showPieChart()
-
         return inflater.inflate(R.layout.fragment_pie_chart, container, false)
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        pieChart = view.findViewById(R.id.pieChartCategories) as PieChart
+        showPieChart()
+    }
+
+
 
     private fun showPieChart() {
         val pieEntries = ArrayList<PieEntry>()
