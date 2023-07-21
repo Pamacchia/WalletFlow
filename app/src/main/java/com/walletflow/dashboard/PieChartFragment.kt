@@ -1,10 +1,12 @@
 package com.walletflow.dashboard
 
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
@@ -27,6 +29,7 @@ class PieChartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         pieChart = view.findViewById(R.id.pieChartCategories) as PieChart
+        initPieChart()
         showPieChart()
     }
 
@@ -54,9 +57,13 @@ class PieChartFragment : Fragment() {
         colors.add(Color.parseColor("#ff5f67"))
         colors.add(Color.parseColor("#3ca567"))
 
+        val inputStream = requireContext().assets.open("icons/food.png")
+        val drawable = Drawable.createFromStream(inputStream, null)
+        inputStream.close()
+
         //input data and fit data into pie chart entry
         for (type in typeAmountMap.keys) {
-            pieEntries.add(PieEntry(typeAmountMap[type]!!.toFloat(), type))
+            pieEntries.add(PieEntry(typeAmountMap[type]!!.toFloat(), drawable))
         }
 
         //collecting the entries with label name
@@ -76,17 +83,15 @@ class PieChartFragment : Fragment() {
     private fun initPieChart() {
         //using percentage as values instead of amount
         pieChart.setUsePercentValues(true)
-
         //remove the description label on the lower left corner, default true if not set
         pieChart.description.isEnabled = false
-
+        pieChart.legend.isEnabled = false
         //enabling the user to rotate the chart, default true
         pieChart.isRotationEnabled = true
         //adding friction when rotating the pie chart
         pieChart.dragDecelerationFrictionCoef = 0.9f
         //setting the first entry start from right hand side, default starting from top
         pieChart.rotationAngle = 0f
-
         //highlight the entry when it is tapped, default true if not set
         pieChart.isHighlightPerTapEnabled = true
         //adding animation so the entries pop up from 0 degree
