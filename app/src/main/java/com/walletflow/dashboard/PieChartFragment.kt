@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -71,6 +71,26 @@ class PieChartFragment : Fragment() {
         pieData.setDrawValues(true)
         pieChart.setData(pieData)
         pieChart.invalidate()
+    }
+
+    private fun initPieChart() {
+        //using percentage as values instead of amount
+        pieChart.setUsePercentValues(true)
+
+        //remove the description label on the lower left corner, default true if not set
+        pieChart.description.isEnabled = false
+
+        //enabling the user to rotate the chart, default true
+        pieChart.isRotationEnabled = true
+        //adding friction when rotating the pie chart
+        pieChart.dragDecelerationFrictionCoef = 0.9f
+        //setting the first entry start from right hand side, default starting from top
+        pieChart.rotationAngle = 0f
+
+        //highlight the entry when it is tapped, default true if not set
+        pieChart.isHighlightPerTapEnabled = true
+        //adding animation so the entries pop up from 0 degree
+        pieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad)
     }
 
 }
