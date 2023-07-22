@@ -16,6 +16,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.R
 import java.util.Arrays
+import kotlin.math.abs
 
 
 class PieChartFragment : Fragment() {
@@ -67,11 +68,11 @@ class PieChartFragment : Fragment() {
 
         if(groupedData.size != 0) {
             for ((type, sumAmount) in groupedData) {
-                pieEntries.add(PieEntry(sumAmount.toFloat(), type))
+                pieEntries.add(PieEntry(abs(sumAmount.toFloat()), type))
             }
         } else {
             pieEntries.add(PieEntry(1f, "None"))
-            colorArray[0] = R.color.black
+            colorArray[0] = R.color.teal_200
         }
 
         val pieDataSet = PieDataSet(pieEntries, "")
