@@ -1,19 +1,21 @@
 package com.walletflow.dashboard
 
-import android.graphics.Color
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.R
+import java.util.Arrays
 
 
 class PieChartFragment : Fragment() {
@@ -30,53 +32,55 @@ class PieChartFragment : Fragment() {
 
         pieChart = view.findViewById(R.id.pieChartCategories) as PieChart
         initPieChart()
-        showPieChart()
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userID = sharedPreferences.getString("userID", "")
+        val db = FirebaseFirestore.getInstance()
+        val queryRecords = db.collection("transactions")
+            .whereEqualTo("user", userID)
+            .whereEqualTo("type", "expense")
+            .get()
+
+        queryRecords.addOnCompleteListener {task ->
+
+            val processedRecords : MutableList<Map<String, Any>?> = mutableListOf()
+
+            for (document in task.result.documents){
+                processedRecords.add(document.data)
+                Log.w(context.toString(), document.data.toString())
+            }
+
+            showPieChart(processedRecords)
+        }
     }
 
-
-
-    private fun showPieChart() {
+    private fun showPieChart(processedRecords : MutableList<Map<String, Any>?>) {
         val pieEntries = ArrayList<PieEntry>()
-        val label = "type"
 
-        //initializing data
-        val typeAmountMap: MutableMap<String, Int> = HashMap()
-        typeAmountMap["Toys"] = 200
-        typeAmountMap["Snacks"] = 230
-        typeAmountMap["Clothes"] = 100
-        typeAmountMap["Stationary"] = 500
-        typeAmountMap["Phone"] = 50
+        val colorArray = Arrays.copyOfRange(
+            resources.getIntArray(R.array.dashboard_colors),
+            0,
+            maxOf(processedRecords.size, 1)
+        )
 
-        //initializing colors for the entries
-        val colors = ArrayList<Int>()
-        colors.add(Color.parseColor("#304567"))
-        colors.add(Color.parseColor("#309967"))
-        colors.add(Color.parseColor("#476567"))
-        colors.add(Color.parseColor("#890567"))
-        colors.add(Color.parseColor("#a35567"))
-        colors.add(Color.parseColor("#ff5f67"))
-        colors.add(Color.parseColor("#3ca567"))
+        val groupedData = groupAndSumRecords(processedRecords)
+        // You can now use the groupedData as needed
 
-        val inputStream = requireContext().assets.open("icons/food.png")
-        val drawable = Drawable.createFromStream(inputStream, null)
-        inputStream.close()
-
-        //input data and fit data into pie chart entry
-        for (type in typeAmountMap.keys) {
-            pieEntries.add(PieEntry(typeAmountMap[type]!!.toFloat(), drawable))
+        if(groupedData.size != 0) {
+            for ((type, sumAmount) in groupedData) {
+                pieEntries.add(PieEntry(sumAmount.toFloat(), type))
+            }
+        } else {
+            pieEntries.add(PieEntry(1f, "None"))
+            colorArray[0] = R.color.black
         }
 
-        //collecting the entries with label name
-        val pieDataSet = PieDataSet(pieEntries, label)
-        //setting text size of the value
-        pieDataSet.valueTextSize = 12f
-        //providing color list for coloring different entries
-        pieDataSet.colors = colors
-        //grouping the data set from entry to chart
+        val pieDataSet = PieDataSet(pieEntries, "")
+        pieDataSet.valueTextSize = 15f
+        pieDataSet.colors = colorArray.asList()
         val pieData = PieData(pieDataSet)
-        //showing the value of the entries, default true if not set
-        pieData.setDrawValues(true)
+        pieData.setDrawValues(false)
         pieChart.setData(pieData)
+        pieChart.setDrawEntryLabels(false)
         pieChart.invalidate()
     }
 
@@ -85,7 +89,7 @@ class PieChartFragment : Fragment() {
         pieChart.setUsePercentValues(true)
         //remove the description label on the lower left corner, default true if not set
         pieChart.description.isEnabled = false
-        pieChart.legend.isEnabled = false
+        pieChart.legend.isEnabled = true
         //enabling the user to rotate the chart, default true
         pieChart.isRotationEnabled = true
         //adding friction when rotating the pie chart
@@ -96,6 +100,24 @@ class PieChartFragment : Fragment() {
         pieChart.isHighlightPerTapEnabled = true
         //adding animation so the entries pop up from 0 degree
         pieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad)
+    }
+    fun groupAndSumRecords(queryRecords: MutableList<Map<String, Any>?>): Map<String, Double> {
+        val groupedData = mutableMapOf<String, Double>()
+
+        if (queryRecords != null) {
+            for (record in queryRecords) {
+                val type = record?.get("category").toString()
+                val amount = (record?.get("amount") as Number).toDouble()
+
+                if (groupedData.containsKey(type)) {
+                    groupedData[type] = groupedData[type]!! + amount
+                } else {
+                    groupedData[type] = amount
+                }
+            }
+        }
+
+        return groupedData
     }
 
 }
