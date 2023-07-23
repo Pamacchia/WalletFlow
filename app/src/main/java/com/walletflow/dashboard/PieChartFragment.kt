@@ -2,55 +2,79 @@ package com.walletflow.dashboard
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.R
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.Arrays
+import java.util.Calendar
 import kotlin.math.abs
 
 
 class PieChartFragment : Fragment() {
 
-    lateinit var pieChart : PieChart;
+    lateinit var pieChart : PieChart
+    lateinit var filterMonth : TextView
+    lateinit var filterYear : TextView
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
 
         return inflater.inflate(R.layout.fragment_pie_chart, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         pieChart = view.findViewById(R.id.pieChartCategories) as PieChart
+        filterMonth = view.findViewById(R.id.tvFilterDashboardMonth)
+        filterYear = view.findViewById(R.id.tvFilterDashboardYear)
         initPieChart()
+
+
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.MONTH, -1)
+        val oneMonthAgo = calendar.time
+        val oneMonthAgoString = SimpleDateFormat("yyyy-MM-dd HH:mm").format(oneMonthAgo)
+
         val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
         val db = FirebaseFirestore.getInstance()
         val queryRecords = db.collection("transactions")
             .whereEqualTo("user", userID)
             .whereEqualTo("type", "expense")
+            .whereGreaterThan("amount", 50)
             .get()
+
+        var processedRecords : MutableList<Map<String, Any>?> = mutableListOf()
 
         queryRecords.addOnCompleteListener {task ->
 
-            val processedRecords : MutableList<Map<String, Any>?> = mutableListOf()
+            if(task.isSuccessful){
+                for (document in task.result.documents){
+                    processedRecords.add(document.data)
+                    Log.w(context.toString(), document.data.toString())
+                }
 
-            for (document in task.result.documents){
-                processedRecords.add(document.data)
-                Log.w(context.toString(), document.data.toString())
+                showPieChart(processedRecords)
+            } else {
+                Log.w(requireContext().toString(), "Error getting transactions")
             }
-
-            showPieChart(processedRecords)
         }
     }
 
