@@ -1,7 +1,6 @@
 package com.walletflow.dashboard
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -16,12 +15,10 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.walletflow.R
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import java.util.Arrays
 import java.util.Calendar
 import kotlin.math.abs
@@ -30,8 +27,8 @@ import kotlin.math.abs
 class PieChartFragment : Fragment() {
 
     lateinit var pieChart : PieChart
-    lateinit var filterMonth : TextView
-    lateinit var filterYear : TextView
+    lateinit var filterMonthTv : TextView
+    lateinit var filterYearTv : TextView
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
 
@@ -42,40 +39,72 @@ class PieChartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pieChart = view.findViewById(R.id.pieChartCategories) as PieChart
-        filterMonth = view.findViewById(R.id.tvFilterDashboardMonth)
-        filterYear = view.findViewById(R.id.tvFilterDashboardYear)
+        filterMonthTv = view.findViewById(R.id.tvFilterDashboardMonth)
+        filterYearTv = view.findViewById(R.id.tvFilterDashboardYear)
         initPieChart()
-
 
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MONTH, -1)
-        val oneMonthAgo = calendar.time
-        val oneMonthAgoString = SimpleDateFormat("yyyy-MM-dd HH:mm").format(oneMonthAgo)
+        val oneMonthAgoString = SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.time)
 
         val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
         val db = FirebaseFirestore.getInstance()
-        val queryRecords = db.collection("transactions")
+        val queryRef = db.collection("transactions")
             .whereEqualTo("user", userID)
             .whereEqualTo("type", "expense")
-            .whereGreaterThan("amount", 50)
-            .get()
 
-        var processedRecords : MutableList<Map<String, Any>?> = mutableListOf()
+        filterRecordsByDate(queryRef, oneMonthAgoString)
 
-        queryRecords.addOnCompleteListener {task ->
+        filterMonthTv.setOnClickListener {
 
-            if(task.isSuccessful){
-                for (document in task.result.documents){
-                    processedRecords.add(document.data)
-                    Log.w(context.toString(), document.data.toString())
-                }
+            filterYearTv.background = null
+            filterMonthTv.background = resources.getDrawable(R.drawable.edittext_rectangle)
 
-                showPieChart(processedRecords)
-            } else {
-                Log.w(requireContext().toString(), "Error getting transactions")
-            }
+            initPieChart()
+
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.MONTH, -1)
+            val dateString = SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.time)
+            filterRecordsByDate(queryRef, dateString)
         }
+
+        filterYearTv.setOnClickListener {
+
+            filterMonthTv.background = null
+            filterYearTv.background = resources.getDrawable(R.drawable.edittext_rectangle)
+
+            initPieChart()
+
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.YEAR, -1)
+            val dateString = SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.time)
+            filterRecordsByDate(queryRef, dateString)
+        }
+
+    }
+
+    private fun filterRecordsByDate(
+        queryRef: Query,
+        date: String
+    ) {
+        var processedRecords: MutableList<Map<String, Any>?> = mutableListOf()
+
+        queryRef
+            .whereGreaterThan("date", date)
+            .get().addOnCompleteListener { task ->
+
+                if (task.isSuccessful) {
+                    for (document in task.result.documents) {
+                        processedRecords.add(document.data)
+                        Log.w(context.toString(), document.data.toString())
+                    }
+
+                    showPieChart(processedRecords)
+                } else {
+                    Log.w(requireContext().toString(), "Error getting transactions")
+                }
+            }
     }
 
     private fun showPieChart(processedRecords : MutableList<Map<String, Any>?>) {
