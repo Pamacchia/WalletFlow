@@ -97,6 +97,7 @@ class HomeActivity : BaseActivity() {
 
         var budget : Double = 0.0
 
+        // TODO: Problem seems to be userID
         db.collection("transactions")
 //            .whereEqualTo("username", userID)
             .whereEqualTo("type", "earning")
