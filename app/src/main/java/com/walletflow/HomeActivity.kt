@@ -7,15 +7,22 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import com.google.firebase.firestore.FirebaseFirestore
-import com.walletflow.objectives.ObjectivesActivity
 import com.walletflow.transactions.AddTransactionActivity
+import java.lang.Double.min
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
-//TODO : show in home balance and objective's balance (perché non lo calcoliamo più in maniera dinamica e l'utente può recuoerare soldi)
+//TODO : Home balance and Objective Balance)
+
+//TODO: You can spend min(balance, previousMonthEarning)
 class HomeActivity : BaseActivity() {
 
     lateinit var earningBtn : Button
     lateinit var expenseBtn : Button
     lateinit var balanceTv : TextView
+    lateinit var totalBudget : TextView
+
+    var balance : Double = 0.0
     companion object {
         const val EARNING_CONST = 1
         const val EXPENSE_CONST = -1
@@ -26,10 +33,11 @@ class HomeActivity : BaseActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        updateTotalBudget()
 
         earningBtn = findViewById(R.id.btnAddEarning)
         expenseBtn = findViewById(R.id.btnAddExpenses)
-
+        totalBudget = findViewById(R.id.tvTotalBudget)
         balanceTv = findViewById(R.id.tvBalance)
         loadBalance(balanceTv)
 
@@ -66,13 +74,53 @@ class HomeActivity : BaseActivity() {
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val balance = task.result.first().get("balance").toString()
+                    balance = task.result.first().getDouble("balance")!!
 
                     //TODO: convert balance to shrinked format (K,M,B..)
-                    balanceTv.text = balance + "" + "€"
+                    balanceTv.text = balance.toString() + "" + "€"
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
                 }
             }
+    }
+
+    private fun updateTotalBudget(){
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userID = sharedPreferences.getString("userID", "")
+
+        val db = FirebaseFirestore.getInstance()
+
+        val calendar = Calendar.getInstance()
+        val dateUpper = SimpleDateFormat("yyyy-MM").format(calendar.time)
+        calendar.add(Calendar.MONTH, -1)
+        val dateLower = SimpleDateFormat("yyyy-MM").format(calendar.time)
+
+        var budget : Double = 0.0
+
+        db.collection("transactions")
+            .whereEqualTo("username", userID)
+            .whereEqualTo("type", "earning")
+            .whereGreaterThanOrEqualTo("date", dateLower)
+            .whereLessThan("date", dateUpper)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    for (document in task.result.documents) {
+                        budget += document.getDouble("amount")!!
+                    }
+
+                    budget = if (budget == 0.0) {
+                        balance
+                    } else {
+                        min(balance, budget)
+                    }
+
+                    totalBudget.text = "out of $budget$" //TODO: Euro
+
+                } else {
+                    Log.w(this.localClassName, "Error getting documents.", task.exception)
+                }
+            }
+
     }
 }
