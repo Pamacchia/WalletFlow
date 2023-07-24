@@ -33,13 +33,13 @@ class HomeActivity : BaseActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        updateTotalBudget()
 
         earningBtn = findViewById(R.id.btnAddEarning)
         expenseBtn = findViewById(R.id.btnAddExpenses)
         totalBudget = findViewById(R.id.tvTotalBudget)
         balanceTv = findViewById(R.id.tvBalance)
         loadBalance(balanceTv)
+        updateTotalBudget()
 
         earningBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
@@ -98,14 +98,14 @@ class HomeActivity : BaseActivity() {
         var budget : Double = 0.0
 
         db.collection("transactions")
-            .whereEqualTo("username", userID)
+//            .whereEqualTo("username", userID)
             .whereEqualTo("type", "earning")
-            .whereGreaterThanOrEqualTo("date", dateLower)
-            .whereLessThan("date", dateUpper)
+//            .whereGreaterThanOrEqualTo("date", dateLower)
+//            .whereLessThan("date", dateUpper)
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    for (document in task.result.documents) {
+                    for (document in task.result) {
                         budget += document.getDouble("amount")!!
                     }
 
@@ -115,7 +115,7 @@ class HomeActivity : BaseActivity() {
                         min(balance, budget)
                     }
 
-                    totalBudget.text = "out of $budget$" //TODO: Euro
+                    totalBudget.text = " out of $budget$" //TODO: Euro
 
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
