@@ -13,6 +13,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.HomeActivity
 import com.walletflow.R
 import com.walletflow.utils.Hashing
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 
 class LoginActivity : AppCompatActivity() {
@@ -64,5 +66,4 @@ class LoginActivity : AppCompatActivity() {
                 }
         }
     }
-
 }

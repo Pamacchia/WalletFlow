@@ -38,8 +38,7 @@ class HomeActivity : BaseActivity() {
         expenseBtn = findViewById(R.id.btnAddExpenses)
         totalBudget = findViewById(R.id.tvTotalBudget)
         balanceTv = findViewById(R.id.tvBalance)
-        loadBalance(balanceTv)
-        updateTotalBudget()
+        loadHomeData(balanceTv)
 
         earningBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
@@ -62,7 +61,7 @@ class HomeActivity : BaseActivity() {
         return R.layout.activity_home
     }
 
-    private fun loadBalance(balanceTv : TextView){
+    private fun loadHomeData(balanceTv : TextView){
 
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
@@ -78,6 +77,8 @@ class HomeActivity : BaseActivity() {
 
                     //TODO: convert balance to shrinked format (K,M,B..)
                     balanceTv.text = balance.toString() + "" + "€"
+
+                    updateTotalBudget()
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
                 }
@@ -97,12 +98,11 @@ class HomeActivity : BaseActivity() {
 
         var budget : Double = 0.0
 
-        // TODO: Problem seems to be userID
         db.collection("transactions")
-//            .whereEqualTo("username", userID)
+            .whereEqualTo("user", userID)
             .whereEqualTo("type", "earning")
-//            .whereGreaterThanOrEqualTo("date", dateLower)
-//            .whereLessThan("date", dateUpper)
+            .whereGreaterThanOrEqualTo("date", dateLower)
+            .whereLessThan("date", dateUpper)
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {

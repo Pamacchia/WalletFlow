@@ -22,9 +22,7 @@ class AddTransactionActivity : BaseActivity() {
     lateinit var amountTitleTv : TextView
     lateinit var amountEditText : EditText
     lateinit var noteEditText : EditText
-    lateinit var recurrentCheck : CheckBox
     lateinit var chooseCategoryBtn : Button
-    lateinit var selectorRecurrent : Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +36,7 @@ class AddTransactionActivity : BaseActivity() {
         amountTitleTv = findViewById(R.id.tvAmountTitle)
         amountEditText = findViewById(R.id.etAmount)
         noteEditText = findViewById(R.id.etNote)
-        recurrentCheck = findViewById(R.id.cbRecurrent)
         chooseCategoryBtn = findViewById(R.id.btnChooseCategory)
-        selectorRecurrent = findViewById(R.id.spRecurrent)
 
         titleTv.text = typeName?.uppercase()
         subtitleTv.text = "Insert a new $typeName"
@@ -49,29 +45,15 @@ class AddTransactionActivity : BaseActivity() {
         amountEditText.addTextChangedListener(textWatcher)
         chooseCategoryBtn.isEnabled = amountEditText.text.isNotEmpty()
 
-        recurrentCheck.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                selectorRecurrent.visibility = View.VISIBLE
-            } else {
-                selectorRecurrent.visibility = View.GONE
-            }
-        }
-
         chooseCategoryBtn.setOnClickListener {
 
             val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
             val userID = sharedPreferences.getString("userID", "")
             val amount = amountEditText.text.toString()
             val note = noteEditText.text.toString()
-            val recurrent = recurrentCheck.isChecked
-            var recurrency = "None"
 
             val intent = Intent(this, ChooseCategoryActivity::class.java)
             startActivity(intent)
-
-            if(recurrent){
-                recurrency = selectorRecurrent.selectedItem.toString()
-            }
 
             if(amount.isEmpty()){
                 Toast.makeText(this, "Please specify the amount", Toast.LENGTH_LONG).show()
@@ -80,7 +62,6 @@ class AddTransactionActivity : BaseActivity() {
                 val intent = Intent(this, ChooseCategoryActivity::class.java)
                 intent.putExtra("amount", amount.toFloat()*type)
                 intent.putExtra("note", note)
-                intent.putExtra("recurrency", recurrency)
                 intent.putExtra("userID", userID)
                 intent.putExtra("typeName", typeName)
                 startActivity(intent)

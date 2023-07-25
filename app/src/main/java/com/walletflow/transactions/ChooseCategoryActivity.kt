@@ -30,7 +30,7 @@ class ChooseCategoryActivity : CategoryActivity() {
         submitBtn.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
             addTransaction(db, intent.getFloatExtra("amount", 0F),
-                intent.getStringExtra("note"), intent.getStringExtra("recurrency"),
+                intent.getStringExtra("note"),
                 intent.getStringExtra("userID"), intent.getStringExtra("typeName"), selected)
         }
 
@@ -51,12 +51,11 @@ class ChooseCategoryActivity : CategoryActivity() {
         loadIcons(iconList)
     }
 
-    private fun addTransaction(db : FirebaseFirestore, amount : Float, note : String?, recurrency : String?, userID : String?, type_name : String?, category : String?){
+    private fun addTransaction(db : FirebaseFirestore, amount : Float, note : String?, userID : String?, type_name : String?, category : String?){
         val transaction: MutableMap<String, Any?> = HashMap()
         transaction["user"] = userID
         transaction["type"] = type_name
         transaction["amount"] = amount
-        transaction["recurrency"] = recurrency
         transaction["note"] = note
         transaction["category"] = category
         transaction["date"] = SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
