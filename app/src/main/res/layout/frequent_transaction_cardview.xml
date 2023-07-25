@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="320dp"
+    android:layout_height="60dp"
+    android:layout_marginVertical="10dp"
+    android:backgroundTint="#ffffffff"
+    card_view:cardElevation="20dp"
+    card_view:cardCornerRadius="20dp">
+
+    <FrameLayout
+        android:layout_width="8dp"
+        android:layout_height="match_parent"
+        android:background="#FFC107">
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvTransactionCardDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="24/05/2023"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvTransactionCardAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="50.45$"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvTransactionCardCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Food"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginRight="10dp"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btTransactionAdd"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/baseline_add_24"
+            android:layout_gravity="center">
+
+        </Button>
+
+        <Button
+            android:id="@+id/btTransactionDelete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/baseline_delete_24"
+            android:layout_gravity="center">
+
+        </Button>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

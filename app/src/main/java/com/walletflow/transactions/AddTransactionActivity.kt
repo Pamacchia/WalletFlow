@@ -5,11 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import com.walletflow.BaseActivity
@@ -22,6 +20,7 @@ class AddTransactionActivity : BaseActivity() {
     lateinit var amountTitleTv : TextView
     lateinit var amountEditText : EditText
     lateinit var noteEditText : EditText
+    lateinit var frequentCheck : CheckBox
     lateinit var chooseCategoryBtn : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +35,7 @@ class AddTransactionActivity : BaseActivity() {
         amountTitleTv = findViewById(R.id.tvAmountTitle)
         amountEditText = findViewById(R.id.etAmount)
         noteEditText = findViewById(R.id.etNote)
+        frequentCheck = findViewById(R.id.cbFrequent)
         chooseCategoryBtn = findViewById(R.id.btnChooseCategory)
 
         titleTv.text = typeName?.uppercase()
@@ -51,6 +51,7 @@ class AddTransactionActivity : BaseActivity() {
             val userID = sharedPreferences.getString("userID", "")
             val amount = amountEditText.text.toString()
             val note = noteEditText.text.toString()
+            val frequent = frequentCheck.isChecked
 
             val intent = Intent(this, ChooseCategoryActivity::class.java)
             startActivity(intent)
@@ -62,6 +63,7 @@ class AddTransactionActivity : BaseActivity() {
                 val intent = Intent(this, ChooseCategoryActivity::class.java)
                 intent.putExtra("amount", amount.toFloat()*type)
                 intent.putExtra("note", note)
+                intent.putExtra("frequent", frequent)
                 intent.putExtra("userID", userID)
                 intent.putExtra("typeName", typeName)
                 startActivity(intent)

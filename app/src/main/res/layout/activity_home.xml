@@ -182,109 +182,24 @@
 
 
                 <LinearLayout
+                    android:id="@+id/layoutFrequentTransactions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tvManageRecurrency"
-                        android:layout_width="320dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="Manage recurrent transactions"
-                        android:textAlignment="center"
+                        android:text="Frequent transactions"
+                        android:layout_marginTop="20dp"
+                        android:textSize="20sp"
                         android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold">
 
-                    <TextView
-                        android:layout_width="320dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="transaction1"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
+                    </TextView>
 
-                    <TextView
-                        android:layout_width="320dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="transaction2"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
 
-                    <TextView
-                        android:layout_width="320dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="transaction3"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="320dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="transaction4"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="320dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="transaction5"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="320dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="transaction6"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="320dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="transaction6"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="320dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="transaction6"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="320dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="transaction6"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="320dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="transaction6"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="320dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="transaction6"
-                        android:textAlignment="center"
-                        android:textSize="18sp" />
 
 
                 </LinearLayout>

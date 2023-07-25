@@ -4,8 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.transactions.AddTransactionActivity
 import java.lang.Double.min
@@ -39,6 +42,7 @@ class HomeActivity : BaseActivity() {
         totalBudget = findViewById(R.id.tvTotalBudget)
         balanceTv = findViewById(R.id.tvBalance)
         loadHomeData(balanceTv)
+        loadFrequentTransactions()
 
         earningBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
@@ -117,6 +121,88 @@ class HomeActivity : BaseActivity() {
                     }
 
                     totalBudget.text = " out of $budget$" //TODO: Euro
+
+                } else {
+                    Log.w(this.localClassName, "Error getting documents.", task.exception)
+                }
+            }
+
+    }
+
+    private fun loadFrequentTransactions(){
+
+        val rootView = findViewById<LinearLayout>(R.id.layoutFrequentTransactions)
+
+
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userID = sharedPreferences.getString("userID", "")
+
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("frequentTransactions")
+            .whereEqualTo("user", userID)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+
+                    for (document in task.result) {
+
+                        val inflater = LayoutInflater.from(this)
+                        val cardView = inflater.inflate(R.layout.frequent_transaction_cardview, rootView, false) as CardView
+                        val tvDate = cardView.findViewById<TextView>(R.id.tvTransactionCardDate)
+                        val tvCategory = cardView.findViewById<TextView>(R.id.tvTransactionCardCategory)
+                        val tvAmount = cardView.findViewById<TextView>(R.id.tvTransactionCardAmount)
+
+                        tvDate.text = "Test"
+                        tvCategory.text = document.getString("category")
+                        tvAmount.text = document.getDouble("amount").toString() + "$" // TODO: Euro
+                        // Add the card view to the container layout
+
+
+
+                        val addButton = cardView.findViewById<Button>(R.id.btTransactionAdd)
+                        addButton.setOnClickListener {
+
+                            val transaction = document.data
+
+                            transaction["date"] = SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
+
+                            db.collection("transactions")
+                                .add(transaction)
+                                .addOnSuccessListener { documentReference ->
+                                    Log.d(
+                                        this.localClassName,
+                                        "DocumentSnapshot added with ID: " + documentReference.id
+                                    )
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(
+                                        this.localClassName,
+                                        "Error adding document",
+                                        e
+                                    )
+                                }
+                        }
+
+                        val deleteButton = cardView.findViewById<Button>(R.id.btTransactionDelete)
+                        deleteButton.setOnClickListener {
+                            document.reference.delete()
+                                .addOnSuccessListener {
+                                    // Document successfully deleted
+                                    // Handle success or UI updates here
+                                    println("Document deleted successfully.")
+                                }
+                                .addOnFailureListener { e ->
+                                    // An error occurred while deleting the document
+                                    // Handle the error here
+                                    println("Error deleting document: $e")
+                                }
+                        }
+
+                        rootView.addView(cardView)
+
+                        Log.w(this.toString(), document.data.toString())
+                    }
 
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
