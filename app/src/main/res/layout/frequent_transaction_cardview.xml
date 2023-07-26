@@ -22,15 +22,15 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="250dp"
+            android:layout_width="210dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvTransactionCardDate"
+                android:id="@+id/tvFrequentTransactionCardNote"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="24/05/2023"
+                android:text="Note"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="1"/>
@@ -41,7 +41,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvTransactionCardAmount"
+                    android:id="@+id/tvFrequentTransactionCardAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="50.45$"
@@ -52,7 +52,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvTransactionCardCategory"
+                    android:id="@+id/tvFrequentTransactionCardType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Food"
@@ -66,7 +66,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btTransactionAdd"
+            android:id="@+id/btFrequentTransactionAdd"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
@@ -76,7 +76,7 @@
         </Button>
 
         <Button
-            android:id="@+id/btTransactionDelete"
+            android:id="@+id/btFrequentTransactionDelete"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"

@@ -149,18 +149,18 @@ class HomeActivity : BaseActivity() {
 
                         val inflater = LayoutInflater.from(this)
                         val cardView = inflater.inflate(R.layout.frequent_transaction_cardview, rootView, false) as CardView
-                        val tvDate = cardView.findViewById<TextView>(R.id.tvTransactionCardDate)
-                        val tvCategory = cardView.findViewById<TextView>(R.id.tvTransactionCardCategory)
-                        val tvAmount = cardView.findViewById<TextView>(R.id.tvTransactionCardAmount)
+                        val tvNote = cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardNote)
+                        val tvType = cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardType)
+                        val tvAmount = cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardAmount)
 
-                        tvDate.text = "Test"
-                        tvCategory.text = document.getString("category")
+                        tvNote.text = document.getString("note")
+                        tvType.text = document.getString("type")
                         tvAmount.text = document.getDouble("amount").toString() + "$" // TODO: Euro
                         // Add the card view to the container layout
 
 
 
-                        val addButton = cardView.findViewById<Button>(R.id.btTransactionAdd)
+                        val addButton = cardView.findViewById<Button>(R.id.btFrequentTransactionAdd)
                         addButton.setOnClickListener {
 
                             val transaction = document.data
@@ -184,7 +184,7 @@ class HomeActivity : BaseActivity() {
                                 }
                         }
 
-                        val deleteButton = cardView.findViewById<Button>(R.id.btTransactionDelete)
+                        val deleteButton = cardView.findViewById<Button>(R.id.btFrequentTransactionDelete)
                         deleteButton.setOnClickListener {
                             document.reference.delete()
                                 .addOnSuccessListener {
