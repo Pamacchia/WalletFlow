@@ -53,9 +53,6 @@ class AddTransactionActivity : BaseActivity() {
             val note = noteEditText.text.toString()
             val frequent = frequentCheck.isChecked
 
-            val intent = Intent(this, ChooseCategoryActivity::class.java)
-            startActivity(intent)
-
             if(amount.isEmpty()){
                 Toast.makeText(this, "Please specify the amount", Toast.LENGTH_LONG).show()
             }
@@ -67,6 +64,7 @@ class AddTransactionActivity : BaseActivity() {
                 intent.putExtra("userID", userID)
                 intent.putExtra("typeName", typeName)
                 startActivity(intent)
+                finish()
             }
 
         }

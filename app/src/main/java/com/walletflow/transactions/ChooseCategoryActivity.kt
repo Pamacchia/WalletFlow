@@ -1,7 +1,10 @@
 package com.walletflow.transactions
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import com.google.firebase.firestore.FirebaseFirestore
@@ -16,7 +19,6 @@ private const val CHOOSE_CATEGORY_TYPE = 1
 class ChooseCategoryActivity : CategoryActivity() {
 
     lateinit var submitBtn : Button
-//    lateinit var addCategoryBtn : Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -25,19 +27,19 @@ class ChooseCategoryActivity : CategoryActivity() {
         loadIcons(iconList)
 
         submitBtn = findViewById(R.id.btnSubmitCategory)
-//        addCategoryBtn = findViewById(R.id.btnAddCategory)
 
         submitBtn.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
+
             addTransaction(db, intent.getFloatExtra("amount", 0F),
                 intent.getStringExtra("note"), intent.getBooleanExtra("frequent", false),
                 intent.getStringExtra("userID"), intent.getStringExtra("typeName"), selected)
+
+            updateBalance(db, intent.getFloatExtra("amount", 0F), intent.getStringExtra("userID"))
+
+            finish()
         }
 
-//        addCategoryBtn.setOnClickListener {
-//            val intent = Intent(this, AddCategoryActivity::class.java)
-//            startActivity(intent)
-//        }
     }
 
     override fun getLayoutResourceId(): Int {
@@ -102,8 +104,33 @@ class ChooseCategoryActivity : CategoryActivity() {
                     )
                 }
         }
+    }
 
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
+    private fun updateBalance(db : FirebaseFirestore, amount : Float, userID : String?){
+
+        val query = db.collection("users").whereEqualTo("username", userID)
+
+        query
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+
+                    val updatedBalance = document.getDouble("balance")?.plus(amount.toDouble())
+
+                    document.reference
+                        .update(mapOf(
+                            "balance" to updatedBalance
+                        ))
+                        .addOnSuccessListener {
+                            println("Document updated successfully.")
+                        }
+                        .addOnFailureListener { e ->
+                            println("Error updating document: $e")
+                        }
+                }
+            }
+            .addOnFailureListener { e ->
+                println("Error getting documents: $e")
+            }
     }
 }
