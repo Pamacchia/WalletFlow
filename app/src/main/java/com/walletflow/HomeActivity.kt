@@ -17,9 +17,9 @@ import java.lang.Math.abs
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-//TODO : Home balance and Objective Balance)
+//TODO : Home balance and Objective Balance
+//TODO: Update balance when deleting transactions
 
-//TODO: You can spend min(balance, previousMonthEarning)
 class HomeActivity : BaseActivity() {
 
     lateinit var earningBtn : Button
