@@ -61,6 +61,11 @@ class HomeActivity : BaseActivity() {
         }
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        loadHomeData(balanceTv)
+    }
+
     override fun getLayoutResourceId(): Int {
         return R.layout.activity_home
     }

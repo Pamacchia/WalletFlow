@@ -36,10 +36,9 @@ class ChooseCategoryActivity : CategoryActivity() {
                 intent.getStringExtra("userID"), intent.getStringExtra("typeName"), selected)
 
             updateBalance(db, intent.getFloatExtra("amount", 0F), intent.getStringExtra("userID"))
-
+            Thread.sleep(150L)
             finish()
         }
-
     }
 
     override fun getLayoutResourceId(): Int {
