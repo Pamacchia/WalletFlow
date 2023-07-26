@@ -11,7 +11,9 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.transactions.AddTransactionActivity
+import com.walletflow.utils.StringHelper
 import java.lang.Double.min
+import java.lang.Math.abs
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -23,6 +25,8 @@ class HomeActivity : BaseActivity() {
     lateinit var earningBtn : Button
     lateinit var expenseBtn : Button
     lateinit var balanceTv : TextView
+    lateinit var expensesTv : TextView
+    lateinit var savingsTv : TextView
     lateinit var totalBudget : TextView
 
     var balance : Double = 0.0
@@ -41,6 +45,8 @@ class HomeActivity : BaseActivity() {
         expenseBtn = findViewById(R.id.btnAddExpenses)
         totalBudget = findViewById(R.id.tvTotalBudget)
         balanceTv = findViewById(R.id.tvBalance)
+        expensesTv = findViewById(R.id.tvExpenses)
+        savingsTv = findViewById(R.id.tvExpenses)
         loadHomeData(balanceTv)
         loadFrequentTransactions()
 
@@ -85,9 +91,10 @@ class HomeActivity : BaseActivity() {
                     balance = task.result.first().getDouble("balance")!!
 
                     //TODO: convert balance to shrinked format (K,M,B..)
-                    balanceTv.text = balance.toString() + "" + "€"
+                    balanceTv.text = StringHelper.getShrunkForm(balance) + "" + "€"
 
                     updateTotalBudget()
+                    updateExpenses()
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
                 }
@@ -125,7 +132,38 @@ class HomeActivity : BaseActivity() {
                         min(balance, budget)
                     }
 
-                    totalBudget.text = " out of $budget$" //TODO: Euro
+                    totalBudget.text = " out of ${StringHelper.getShrunkForm(budget)}$" //TODO: Euro
+
+                } else {
+                    Log.w(this.localClassName, "Error getting documents.", task.exception)
+                }
+            }
+
+    }
+
+    private fun updateExpenses(){
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userID = sharedPreferences.getString("userID", "")
+
+        val db = FirebaseFirestore.getInstance()
+
+        val calendar = Calendar.getInstance()
+        val date = SimpleDateFormat("yyyy").format(calendar.time)
+
+        var expenses : Double = 0.0
+
+        db.collection("transactions")
+            .whereEqualTo("user", userID)
+            .whereEqualTo("type", "expense")
+            .whereGreaterThanOrEqualTo("date", date)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    for (document in task.result) {
+                        expenses += document.getDouble("amount")!!
+                    }
+
+                    expensesTv.text = "${StringHelper.getShrunkForm(abs(expenses))}$" //TODO: Euro
 
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
@@ -215,4 +253,5 @@ class HomeActivity : BaseActivity() {
             }
 
     }
+
 }
