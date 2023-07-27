@@ -12,13 +12,14 @@ import androidx.cardview.widget.CardView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.transactions.AddTransactionActivity
 import com.walletflow.utils.StringHelper
+import com.walletflow.utils.TransactionManager
 import java.lang.Double.min
 import java.lang.Math.abs
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
 //TODO : Home balance and Objective Balance
-//TODO: Update balance when deleting transactions
+//TODO : Update balance when deleting transactions
 
 class HomeActivity : BaseActivity() {
 
@@ -70,6 +71,7 @@ class HomeActivity : BaseActivity() {
     override fun onRestart() {
         super.onRestart()
         loadHomeData(balanceTv)
+        loadFrequentTransactions()
     }
 
     override fun getLayoutResourceId(): Int {
@@ -175,7 +177,7 @@ class HomeActivity : BaseActivity() {
     private fun loadFrequentTransactions(){
 
         val rootView = findViewById<LinearLayout>(R.id.layoutFrequentTransactions)
-
+        rootView.removeAllViews()
 
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
@@ -213,6 +215,8 @@ class HomeActivity : BaseActivity() {
                             db.collection("transactions")
                                 .add(transaction)
                                 .addOnSuccessListener { documentReference ->
+                                    TransactionManager.updateBalance(db, document.getDouble("amount")!!.toFloat(), userID)
+
                                     Log.d(
                                         this.localClassName,
                                         "DocumentSnapshot added with ID: " + documentReference.id

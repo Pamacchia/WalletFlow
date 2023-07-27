@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.HomeActivity
 import com.walletflow.R
 import com.walletflow.data.Icon
+import com.walletflow.utils.TransactionManager
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -35,7 +36,7 @@ class ChooseCategoryActivity : CategoryActivity() {
                 intent.getStringExtra("note"), intent.getBooleanExtra("frequent", false),
                 intent.getStringExtra("userID"), intent.getStringExtra("typeName"), selected)
 
-            updateBalance(db, intent.getFloatExtra("amount", 0F), intent.getStringExtra("userID"))
+            TransactionManager.updateBalance(db, intent.getFloatExtra("amount", 0F), intent.getStringExtra("userID"))
             Thread.sleep(150L)
             finish()
         }
@@ -52,14 +53,15 @@ class ChooseCategoryActivity : CategoryActivity() {
         loadIcons(iconList)
     }
 
-    private fun addTransaction(db : FirebaseFirestore, amount : Float, note : String?, frequent : Boolean, userID : String?, type_name : String?, category : String?){
+    private fun addTransaction(db : FirebaseFirestore, amount : Float, note : String?, frequent : Boolean, userID : String?, type_name : String?, category : String?) {
         val transaction: MutableMap<String, Any?> = HashMap()
         transaction["user"] = userID
         transaction["type"] = type_name
         transaction["amount"] = amount
         transaction["note"] = note
         transaction["category"] = category
-        transaction["date"] = SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
+        transaction["date"] =
+            SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
 
         db.collection("transactions")
             .add(transaction)
@@ -78,7 +80,7 @@ class ChooseCategoryActivity : CategoryActivity() {
             }
 
 
-        if(frequent){
+        if (frequent) {
 
             val frequentTransaction: MutableMap<String, Any?> = HashMap()
             frequentTransaction["user"] = userID
@@ -103,33 +105,5 @@ class ChooseCategoryActivity : CategoryActivity() {
                     )
                 }
         }
-    }
-
-    private fun updateBalance(db : FirebaseFirestore, amount : Float, userID : String?){
-
-        val query = db.collection("users").whereEqualTo("username", userID)
-
-        query
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-
-                    val updatedBalance = document.getDouble("balance")?.plus(amount.toDouble())
-
-                    document.reference
-                        .update(mapOf(
-                            "balance" to updatedBalance
-                        ))
-                        .addOnSuccessListener {
-                            println("Document updated successfully.")
-                        }
-                        .addOnFailureListener { e ->
-                            println("Error updating document: $e")
-                        }
-                }
-            }
-            .addOnFailureListener { e ->
-                println("Error getting documents: $e")
-            }
     }
 }

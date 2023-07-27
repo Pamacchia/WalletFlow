@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.R
 import com.walletflow.objectives.ObjectiveDetailActivity
+import com.walletflow.utils.TransactionManager
 
 class TransactionsFragment : Fragment() {
 
@@ -95,6 +96,7 @@ class TransactionsFragment : Fragment() {
                                 .addOnSuccessListener {
                                     // Document successfully deleted
                                     // Handle success or UI updates here
+                                    TransactionManager.updateBalance(FirebaseFirestore.getInstance(), -document.getDouble("amount")!!.toFloat(), document.getString("user"))
                                     println("Document deleted successfully.")
                                 }
                                 .addOnFailureListener { e ->
