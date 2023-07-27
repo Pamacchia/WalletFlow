@@ -1,6 +1,8 @@
 package com.walletflow
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +19,7 @@ import java.lang.Double.min
 import java.lang.Math.abs
 import java.text.SimpleDateFormat
 import java.util.Calendar
+
 
 //TODO : Home balance and Objective Balance
 //TODO : Update balance when deleting transactions
@@ -210,25 +213,39 @@ class HomeActivity : BaseActivity() {
 
                             val transaction = document.data
 
-                            transaction["date"] = SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
+                            val alert: AlertDialog.Builder = AlertDialog.Builder(this)
+                            alert.setTitle("Add")
+                            alert.setMessage("Are you sure you want to add?")
+                            alert.setPositiveButton(
+                                "Yes",
+                                object : DialogInterface.OnClickListener {
+                                    override fun onClick(dialog: DialogInterface, which: Int) {
+                                        transaction["date"] = SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
 
-                            db.collection("transactions")
-                                .add(transaction)
-                                .addOnSuccessListener { documentReference ->
-                                    TransactionManager.updateBalance(db, document.getDouble("amount")!!.toFloat(), userID)
+                                        db.collection("transactions")
+                                            .add(transaction)
+                                            .addOnSuccessListener { documentReference ->
+                                                TransactionManager.updateBalance(db, document.getDouble("amount")!!.toFloat(), userID)
 
-                                    Log.d(
-                                        this.localClassName,
-                                        "DocumentSnapshot added with ID: " + documentReference.id
-                                    )
-                                }
-                                .addOnFailureListener { e ->
-                                    Log.w(
-                                        this.localClassName,
-                                        "Error adding document",
-                                        e
-                                    )
-                                }
+                                                Log.d(
+                                                    "HomeFrequentTransactionSuccess",
+                                                    "DocumentSnapshot added with ID: " + documentReference.id
+                                                )
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Log.w(
+                                                    "HomeFrequentTransactionError",
+                                                    "Error adding document",
+                                                    e
+                                                )
+                                            }
+                                    }
+                                })
+                            alert.setNegativeButton("No",
+                                DialogInterface.OnClickListener { dialog, which -> // close dialog
+                                    dialog.cancel()
+                                })
+                            alert.show()
                         }
 
                         val deleteButton = cardView.findViewById<Button>(R.id.btFrequentTransactionDelete)
