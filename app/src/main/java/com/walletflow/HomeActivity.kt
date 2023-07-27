@@ -2,7 +2,6 @@ package com.walletflow
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +11,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.walletflow.data.Transaction
 import com.walletflow.transactions.AddTransactionActivity
 import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
@@ -155,7 +156,7 @@ class HomeActivity : BaseActivity() {
         val calendar = Calendar.getInstance()
         val date = SimpleDateFormat("yyyy").format(calendar.time)
 
-        var expenses : Double = 0.0
+        var expenses = 0.0
 
         db.collection("transactions")
             .whereEqualTo("user", userID)
@@ -206,61 +207,15 @@ class HomeActivity : BaseActivity() {
                         tvAmount.text = document.getDouble("amount").toString() + "$" // TODO: Euro
                         // Add the card view to the container layout
 
-
-
                         val addButton = cardView.findViewById<Button>(R.id.btFrequentTransactionAdd)
+
                         addButton.setOnClickListener {
-
-                            val transaction = document.data
-
-                            val alert: AlertDialog.Builder = AlertDialog.Builder(this)
-                            alert.setTitle("Add")
-                            alert.setMessage("Are you sure you want to add?")
-                            alert.setPositiveButton(
-                                "Yes",
-                                object : DialogInterface.OnClickListener {
-                                    override fun onClick(dialog: DialogInterface, which: Int) {
-                                        transaction["date"] = SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
-
-                                        db.collection("transactions")
-                                            .add(transaction)
-                                            .addOnSuccessListener { documentReference ->
-                                                TransactionManager.updateBalance(db, document.getDouble("amount")!!.toFloat(), userID)
-
-                                                Log.d(
-                                                    "HomeFrequentTransactionSuccess",
-                                                    "DocumentSnapshot added with ID: " + documentReference.id
-                                                )
-                                            }
-                                            .addOnFailureListener { e ->
-                                                Log.w(
-                                                    "HomeFrequentTransactionError",
-                                                    "Error adding document",
-                                                    e
-                                                )
-                                            }
-                                    }
-                                })
-                            alert.setNegativeButton("No",
-                                DialogInterface.OnClickListener { dialog, which -> // close dialog
-                                    dialog.cancel()
-                                })
-                            alert.show()
+                            createAlertForFrequentTransaction(document, db, userID, true)
                         }
 
                         val deleteButton = cardView.findViewById<Button>(R.id.btFrequentTransactionDelete)
                         deleteButton.setOnClickListener {
-                            document.reference.delete()
-                                .addOnSuccessListener {
-                                    // Document successfully deleted
-                                    // Handle success or UI updates here
-                                    println("Document deleted successfully.")
-                                }
-                                .addOnFailureListener { e ->
-                                    // An error occurred while deleting the document
-                                    // Handle the error here
-                                    println("Error deleting document: $e")
-                                }
+                            createAlertForFrequentTransaction(document, db, userID, false)
                         }
 
                         rootView.addView(cardView)
@@ -274,5 +229,43 @@ class HomeActivity : BaseActivity() {
             }
 
     }
+
+    private fun createAlertForFrequentTransaction(
+        document: QueryDocumentSnapshot,
+        db: FirebaseFirestore,
+        userID: String?,
+        add : Boolean
+    ) {
+        val alert: AlertDialog.Builder = AlertDialog.Builder(this)
+        alert.setTitle("Add")
+        alert.setMessage("Are you sure you want to add?")
+        alert.setPositiveButton(
+            "Yes"
+        ) { _, _ ->
+
+            if(add) {
+                val transaction = Transaction(
+                    document.getDouble("amount"),
+                    document.getString("category"),
+                    document.getString("note"),
+                    document.getString("type"),
+                    document.getString("user"),
+                    SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
+                )
+                TransactionManager.addTransactionRecordToDB(db, transaction, document, userID)
+                loadHomeData(balanceTv)
+            }
+            else {
+                TransactionManager.deleteFrequentTransactionRecordFromDB(document)
+            }
+        }
+        alert.setNegativeButton("No"
+        ) { dialog, _ ->
+            dialog.cancel()
+        }
+        alert.show()
+    }
+
+
 
 }

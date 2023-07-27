@@ -1,8 +1,64 @@
 package com.walletflow.utils
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.walletflow.data.Transaction
 
 object TransactionManager {
+
+    fun addTransactionRecordToDB(
+        db: FirebaseFirestore,
+        transaction: Transaction,
+        document: QueryDocumentSnapshot,
+        userID: String?
+    ) {
+
+        val transactionMap = mapOf(
+            "amount" to transaction.amount,
+            "category" to transaction.category,
+            "type" to transaction.type,
+            "user" to transaction.user,
+            "note" to transaction.note,
+            "date" to transaction.date,
+        )
+
+        db.collection("transactions")
+            .add(transactionMap)
+            .addOnSuccessListener { documentReference ->
+                updateBalance(
+                    db,
+                    document.getDouble("amount")!!.toFloat(),
+                    userID
+                )
+
+                Log.d(
+                    "HomeFrequentTransactionSuccess",
+                    "DocumentSnapshot added with ID: " + documentReference.id
+                )
+            }
+            .addOnFailureListener { e ->
+                Log.w(
+                    "HomeFrequentTransactionError",
+                    "Error adding document",
+                    e
+                )
+            }
+    }
+
+    fun deleteFrequentTransactionRecordFromDB(document: QueryDocumentSnapshot) {
+        document.reference.delete()
+            .addOnSuccessListener {
+                // Document successfully deleted
+                // Handle success or UI updates here
+                println("Document deleted successfully.")
+            }
+            .addOnFailureListener { e ->
+                // An error occurred while deleting the document
+                // Handle the error here
+                println("Error deleting document: $e")
+            }
+    }
 
     fun updateBalance(db : FirebaseFirestore, amount : Float, userID : String?){
 
@@ -31,4 +87,6 @@ object TransactionManager {
                 println("Error getting documents: $e")
             }
     }
+
+
 }
