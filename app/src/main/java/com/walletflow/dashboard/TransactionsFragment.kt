@@ -66,10 +66,10 @@ class TransactionsFragment : Fragment() {
     private fun filterRecordsByType(
         queryRef: Query,
         type: String,
-        view: View
+        view: View?
     ) {
 
-        val rootView = view.findViewById<LinearLayout>(R.id.layoutTransactionList)
+        val rootView = requireView().findViewById<LinearLayout>(R.id.layoutTransactionList)
         rootView.removeAllViews()
 
         queryRef
@@ -97,6 +97,7 @@ class TransactionsFragment : Fragment() {
                                     // Document successfully deleted
                                     // Handle success or UI updates here
                                     TransactionManager.updateBalance(FirebaseFirestore.getInstance(), -document.getDouble("amount")!!.toFloat(), document.getString("user"))
+                                    refreshTransactionList(type)
                                     println("Document deleted successfully.")
                                 }
                                 .addOnFailureListener { e ->
@@ -117,5 +118,15 @@ class TransactionsFragment : Fragment() {
             }
     }
 
+    private fun refreshTransactionList(type : String) {
+        val db = FirebaseFirestore.getInstance()
+        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userID = sharedPreferences.getString("userID", "")
+        val queryRef = db.collection("transactions")
+            .whereEqualTo("user", userID)
+
+        // Call the filterRecordsByType method again with the updated query
+        filterRecordsByType(queryRef, type, this.view)
+    }
 
 }

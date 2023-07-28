@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QueryDocumentSnapshot
+import com.google.firebase.firestore.Source
 import com.walletflow.data.Transaction
 import com.walletflow.transactions.AddTransactionActivity
 import com.walletflow.utils.StringHelper
@@ -45,31 +46,16 @@ class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
         earningBtn = findViewById(R.id.btnAddEarning)
         expenseBtn = findViewById(R.id.btnAddExpenses)
         totalBudget = findViewById(R.id.tvTotalBudget)
         balanceTv = findViewById(R.id.tvBalance)
         expensesTv = findViewById(R.id.tvExpenses)
         savingsTv = findViewById(R.id.tvExpenses)
-        Log.w(this.toString(), balanceTv.text.toString())
         loadHomeData(balanceTv)
         loadFrequentTransactions()
-
-        val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("users").document("kx6yMGru70TucETNmTPY ")
-        docRef.addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(this.localClassName, "Listen failed.", e)
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && snapshot.exists()) {
-                balanceTv.text = snapshot.getDouble("balance").toString()
-                Log.d(this.localClassName, "Current data: ${snapshot.data}")
-            } else {
-                Log.d(this.localClassName, "Current data: null")
-            }
-        }
 
         earningBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
@@ -103,18 +89,20 @@ class HomeActivity : BaseActivity() {
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
 
+        Log.w(this.toString(), "FUCKING WAIT")
+        Thread.sleep(150L)
         val db = FirebaseFirestore.getInstance()
 
         db.collection("users")
             .whereEqualTo("username", userID)
-            .get()
+            .get(Source.SERVER)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     balance = task.result.first().getDouble("balance")!!
 
                     balanceTv.text = StringHelper.getShrunkForm(balance) + "" + "€"
 
-                    Log.w(this.toString(), balance.toString())
+                    Log.w(this.toString(), task.result.first().getDouble("balance").toString())
 
                     updateTotalBudget()
                     updateExpenses()
@@ -253,6 +241,7 @@ class HomeActivity : BaseActivity() {
         userID: String?,
         add : Boolean
     ) {
+
         val alert: AlertDialog.Builder = AlertDialog.Builder(this)
         alert.setTitle("Add")
         alert.setMessage("Are you sure you want to add?")
@@ -275,11 +264,10 @@ class HomeActivity : BaseActivity() {
                 TransactionManager.deleteFrequentTransactionRecordFromDB(document)
             }
 
-            Thread.sleep(300L)
             finish()
-            overridePendingTransition(0, 0)
+            val intent = Intent(this, SuccessActivity::class.java)
             startActivity(intent)
-            overridePendingTransition(0, 0)
+
         }
         alert.setNegativeButton("No"
         ) { dialog, _ ->
