@@ -23,7 +23,6 @@ import java.util.Calendar
 
 
 //TODO : Home balance and Objective Balance
-//TODO : Update balance when deleting transactions
 
 class HomeActivity : BaseActivity() {
 
@@ -52,6 +51,7 @@ class HomeActivity : BaseActivity() {
         balanceTv = findViewById(R.id.tvBalance)
         expensesTv = findViewById(R.id.tvExpenses)
         savingsTv = findViewById(R.id.tvExpenses)
+        Log.w(this.toString(), balanceTv.text.toString())
         loadHomeData(balanceTv)
         loadFrequentTransactions()
 
@@ -96,8 +96,9 @@ class HomeActivity : BaseActivity() {
                 if (task.isSuccessful) {
                     balance = task.result.first().getDouble("balance")!!
 
-                    //TODO: convert balance to shrinked format (K,M,B..)
                     balanceTv.text = StringHelper.getShrunkForm(balance) + "" + "€"
+
+                    Log.w(this.toString(), balance.toString())
 
                     updateTotalBudget()
                     updateExpenses()
@@ -253,11 +254,16 @@ class HomeActivity : BaseActivity() {
                     SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
                 )
                 TransactionManager.addTransactionRecordToDB(db, transaction, document, userID)
-                loadHomeData(balanceTv)
             }
             else {
                 TransactionManager.deleteFrequentTransactionRecordFromDB(document)
             }
+
+            Thread.sleep(300L)
+            finish()
+            overridePendingTransition(0, 0)
+            startActivity(intent)
+            overridePendingTransition(0, 0)
         }
         alert.setNegativeButton("No"
         ) { dialog, _ ->
