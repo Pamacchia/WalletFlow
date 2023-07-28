@@ -55,6 +55,22 @@ class HomeActivity : BaseActivity() {
         loadHomeData(balanceTv)
         loadFrequentTransactions()
 
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("users").document("kx6yMGru70TucETNmTPY ")
+        docRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(this.localClassName, "Listen failed.", e)
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                balanceTv.text = snapshot.getDouble("balance").toString()
+                Log.d(this.localClassName, "Current data: ${snapshot.data}")
+            } else {
+                Log.d(this.localClassName, "Current data: null")
+            }
+        }
+
         earningBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
             intent.putExtra("type", HomeActivity.EARNING_CONST)
