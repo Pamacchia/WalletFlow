@@ -8,6 +8,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView.OnItemSelectedListener
 import com.walletflow.dashboard.DashboardActivity
 import com.walletflow.objectives.ObjectivesActivity
+import com.walletflow.profile.ProfileActivity
 
 
 abstract class BaseActivity : AppCompatActivity(){
@@ -34,8 +35,8 @@ abstract class BaseActivity : AppCompatActivity(){
                     true
                 }
                 R.id.nav_settings -> {
-                    //TODO
-                    false
+                    openProfileActivity()
+                    true
                 }
             }
             false
@@ -63,6 +64,14 @@ abstract class BaseActivity : AppCompatActivity(){
     private fun openObjectivesActivity() {
         if(!ObjectivesActivity::class.java.name.contains(this.localClassName)){
             val intent = Intent(this, ObjectivesActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    private fun openProfileActivity() {
+        if(!ProfileActivity::class.java.name.contains(this.localClassName)){
+            val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
             finish()
         }
