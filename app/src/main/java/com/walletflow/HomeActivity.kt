@@ -89,8 +89,6 @@ class HomeActivity : BaseActivity() {
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
 
-        Log.w(this.toString(), "FUCKING WAIT")
-        Thread.sleep(150L)
         val db = FirebaseFirestore.getInstance()
 
         db.collection("users")
@@ -249,7 +247,7 @@ class HomeActivity : BaseActivity() {
             "Yes"
         ) { _, _ ->
 
-            if(add) {
+            if (add) {
                 val transaction = Transaction(
                     document.getDouble("amount"),
                     document.getString("category"),
@@ -259,8 +257,7 @@ class HomeActivity : BaseActivity() {
                     SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
                 )
                 TransactionManager.addTransactionRecordToDB(db, transaction, document, userID)
-            }
-            else {
+            } else {
                 TransactionManager.deleteFrequentTransactionRecordFromDB(document)
             }
 
@@ -269,13 +266,12 @@ class HomeActivity : BaseActivity() {
             startActivity(intent)
 
         }
-        alert.setNegativeButton("No"
+        alert.setNegativeButton(
+            "No"
         ) { dialog, _ ->
             dialog.cancel()
         }
         alert.show()
     }
-
-
 
 }

@@ -9,7 +9,7 @@
     <item
         android:id="@+id/nav_dashboard"
         android:icon="@drawable/ic_launcher_foreground"
-        android:title="Dashbord"/>
+        android:title="Dashboard"/>
 
     <item
         android:id="@+id/nav_objectives"
