@@ -22,6 +22,8 @@ class ProfileActivity : BaseActivity() {
         }
 
         btnMyFriends.setOnClickListener {
+            val intent = Intent(this, FriendsActivity::class.java)
+            startActivity(intent)
         }
 
         btnLogout.setOnClickListener {

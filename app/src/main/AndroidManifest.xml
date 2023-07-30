@@ -12,6 +12,9 @@
         android:theme="@style/Theme.WalletFlow"
         tools:targetApi="31">
         <activity
+            android:name=".profile.FriendsActivity"
+            android:exported="false" />
+        <activity
             android:name=".profile.ProfileActivity"
             android:exported="false" />
         <activity
