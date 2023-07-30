@@ -17,6 +17,7 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/contentLayoutFriendRequestCard"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
@@ -58,26 +59,26 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnFriendRequestAccept"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/baseline_thumb_up_24"
-            android:layout_gravity="center">
+<!--        <Button-->
+<!--            android:id="@+id/btnFriendRequestAccept"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:background="@drawable/baseline_thumb_up_24"-->
+<!--            android:layout_gravity="center">-->
 
-        </Button>
+<!--        </Button>-->
 
-        <Button
-            android:id="@+id/btnFriendRequestReject"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/baseline_thumb_down_24"
-            android:layout_gravity="center">
+<!--        <Button-->
+<!--            android:id="@+id/btnFriendRequestReject"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:background="@drawable/baseline_thumb_down_24"-->
+<!--            android:layout_gravity="center">-->
 
-        </Button>
+<!--        </Button>-->
 
     </LinearLayout>
 

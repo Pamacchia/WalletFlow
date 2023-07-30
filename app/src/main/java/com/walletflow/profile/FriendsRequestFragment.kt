@@ -3,6 +3,7 @@ package com.walletflow.profile
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,9 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.R
+
+//TODO: Reload when deleting/accepting/canceling/rejecting
+//TODO: Filter requests send/receive
 
 class FriendsRequestFragment : Fragment() {
 
@@ -38,7 +42,7 @@ class FriendsRequestFragment : Fragment() {
     private fun filterRequestedFriends(
         queryRef: Query,
         type: Boolean,
-        userID: String?,
+        userID: String?
     ) {
 
         val rootView = requireView().findViewById<LinearLayout>(R.id.layoutFriendRequests)
@@ -60,41 +64,79 @@ class FriendsRequestFragment : Fragment() {
                         val sender = document.getString("sender")
                         val receiver = document.getString("receiver")
 
-                        if(userID == sender){
-                            tvUsername.text = receiver
-                        } else {
-                            tvUsername.text = sender
-                        }
+                        val contentLayoutView = cardView.findViewById<LinearLayout>(R.id.contentLayoutFriendRequestCard)
 
                         tvEmail.text = "fake@email.com"
                         tvDate.text = "01/01/1990"
 
-                        val rejectButton = cardView.findViewById<Button>(R.id.btnFriendRequestReject)
-                        rejectButton.setOnClickListener {
-                            document.reference.delete()
-                                .addOnSuccessListener {
-                                    println("Document deleted successfully.")
-                                }
-                                .addOnFailureListener { e ->
-                                    println("Error deleting document: $e")
-                                }
-                        }
+                        val factor: Float = this.resources.displayMetrics.density
 
-                        val acceptButton = cardView.findViewById<Button>(R.id.btnFriendRequestAccept)
-                        acceptButton.setOnClickListener {
+                        val layoutParams = LinearLayout.LayoutParams(
+                            60*factor.toInt(), // width in pixels
+                            60*factor.toInt()  // height in pixels
+                        )
+                        layoutParams.gravity = Gravity.CENTER
+                        layoutParams.leftMargin = 10*factor.toInt()
 
-                            val updatedFields = mapOf(
-                                "accepted" to true
-                            )
 
-                            document.reference
-                                .update(updatedFields)
-                                .addOnSuccessListener {
-                                    println("Document updated successfully.")
-                                }
-                                .addOnFailureListener { e ->
-                                    println("Error updating document: $e")
-                                }
+                        if(userID == sender){
+                            tvUsername.text = receiver
+
+                            val cancelButton = Button(cardView.context)
+                            cancelButton.background = resources.getDrawable(R.drawable.baseline_delete_24)
+                            contentLayoutView.addView(cancelButton)
+
+                            layoutParams.leftMargin = 80*factor.toInt()
+                            cancelButton.layoutParams = layoutParams
+
+                            cancelButton.setOnClickListener {
+                                document.reference.delete()
+                                    .addOnSuccessListener {
+                                        println("Document deleted successfully.")
+                                    }
+                                    .addOnFailureListener { e ->
+                                        println("Error deleting document: $e")
+                                    }
+                            }
+                        } else {
+                            tvUsername.text = sender
+
+                            val acceptButton = Button(cardView.context)
+                            acceptButton.background = resources.getDrawable(R.drawable.baseline_thumb_up_24)
+                            layoutParams.rightMargin = 10*factor.toInt()
+                            acceptButton.layoutParams = layoutParams
+                            contentLayoutView.addView(acceptButton)
+
+                            val rejectButton = Button(cardView.context)
+                            rejectButton.background = resources.getDrawable(R.drawable.baseline_thumb_down_24)
+                            rejectButton.layoutParams = layoutParams
+                            contentLayoutView.addView(rejectButton)
+
+                            rejectButton.setOnClickListener {
+                                document.reference.delete()
+                                    .addOnSuccessListener {
+                                        println("Document deleted successfully.")
+                                    }
+                                    .addOnFailureListener { e ->
+                                        println("Error deleting document: $e")
+                                    }
+                            }
+
+                            acceptButton.setOnClickListener {
+
+                                val updatedFields = mapOf(
+                                    "accepted" to true
+                                )
+
+                                document.reference
+                                    .update(updatedFields)
+                                    .addOnSuccessListener {
+                                        println("Document updated successfully.")
+                                    }
+                                    .addOnFailureListener { e ->
+                                        println("Error updating document: $e")
+                                    }
+                            }
                         }
 
                         rootView.addView(cardView)
