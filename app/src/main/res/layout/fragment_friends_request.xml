@@ -15,6 +15,28 @@
         android:textSize="40sp"
         android:textAlignment="center"/>
 
+    <LinearLayout
+        android:layout_width="320dp"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/etAddFriend"
+            android:layout_width="220dp"
+            android:layout_height="48dp"
+            android:hint="Your new friend's username"
+            android:gravity="center"
+            android:textSize="18dp" />
+
+        <Button
+            android:id="@+id/btnAddFriend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ADD"
+            android:layout_marginLeft="20dp"
+            android:clickable="false"/>
+
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

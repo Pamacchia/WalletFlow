@@ -23,9 +23,6 @@ import com.walletflow.R
 
 class FriendsListFragment : Fragment() {
 
-    lateinit var btnAddFriend : Button
-    lateinit var etAddFriend : EditText
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_friends_list, container, false)
@@ -35,8 +32,10 @@ class FriendsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        btnAddFriend = view.findViewById(R.id.btnAddFriend)
-        etAddFriend = view.findViewById(R.id.etAddFriend)
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
@@ -44,102 +43,6 @@ class FriendsListFragment : Fragment() {
         val friendCollection = db.collection("friends")
 
         filterAcceptedFriends(friendCollection, true, userID)
-
-        btnAddFriend.setOnClickListener {
-
-            val friendRequest: MutableMap<String, Any?> = HashMap()
-            friendRequest["sender"] = userID
-            friendRequest["receiver"] = etAddFriend.text.toString()
-            friendRequest["accepted"] = false
-
-            if (userID == etAddFriend.text.toString().lowercase()) {
-                Toast.makeText(
-                    context,
-                    "We are happy for you, but please don't.",
-                    Toast.LENGTH_LONG
-                ).show()
-            } else {
-
-                checkFriends(db, friendRequest, friendCollection)
-
-            }
-        }
-
-    }
-
-    private fun checkFriends(
-        db: FirebaseFirestore,
-        friendRequest: MutableMap<String, Any?>,
-        friendRequestsCollection: CollectionReference
-    ) {
-        db.collection("users")
-            .whereEqualTo("username", friendRequest["receiver"])
-            .get().addOnSuccessListener { task ->
-                if (!task.isEmpty) {
-
-                    val query1 = friendRequestsCollection
-                        .whereEqualTo("sender", friendRequest["sender"])
-                        .whereEqualTo("receiver", friendRequest["receiver"])
-
-                    val query2 = friendRequestsCollection
-                        .whereEqualTo("sender", friendRequest["receiver"])
-                        .whereEqualTo("receiver", friendRequest["sender"])
-
-                    val combinedQuery =
-                        Tasks.whenAllSuccess<QuerySnapshot>(query1.get(), query2.get())
-
-                    combinedQuery.addOnSuccessListener { querySnapshots ->
-                        var recordExists = false
-
-                        for (querySnapshot in querySnapshots) {
-                            if (!querySnapshot.isEmpty) {
-                                // There is at least one document that matches the conditions
-                                Toast.makeText(
-                                    context,
-                                    "You are already friend with this user or you already sent a request.",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                recordExists = true
-                                break
-                            }
-                        }
-
-                        if (!recordExists) {
-                            addFriend(db, friendRequest)
-                        } else {
-                            Log.d("FriendRequest", "The record is already in the list.")
-                        }
-                    }
-
-                } else {
-                    Toast.makeText(
-                        context,
-                        "This user doesn't exist.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-    }
-
-    private fun addFriend(
-        db: FirebaseFirestore,
-        friendRequest: MutableMap<String, Any?>
-    ) {
-        db.collection("friends")
-            .add(friendRequest)
-            .addOnSuccessListener { documentReference ->
-                Log.d(
-                    "FriendRequest",
-                    "DocumentSnapshot added with ID: " + documentReference.id
-                )
-            }
-            .addOnFailureListener { e ->
-                Log.w(
-                    "FriendRequest",
-                    "Error adding document",
-                    e
-                )
-            }
     }
 
     private fun filterAcceptedFriends(
@@ -179,6 +82,7 @@ class FriendsListFragment : Fragment() {
                         deleteButton.setOnClickListener {
                             document.reference.delete()
                                 .addOnSuccessListener {
+                                    filterAcceptedFriends(queryRef, true, userID)
                                     println("Document deleted successfully.")
                                 }
                                 .addOnFailureListener { e ->
