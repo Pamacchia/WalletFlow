@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,6 +67,7 @@ class FriendsListFragment : Fragment() {
                         val cardView = inflater.inflate(R.layout.friend_cardview, rootView, false) as CardView
                         val tvUsername = cardView.findViewById<TextView>(R.id.tvFriendUsername)
                         val tvEmail = cardView.findViewById<TextView>(R.id.tvFriendEmail)
+                        val contentLayoutView = cardView.findViewById<LinearLayout>(R.id.contentLayoutFriendCard)
 
                         val sender = document.getString("sender")
                         val receiver = document.getString("receiver")
@@ -78,7 +80,21 @@ class FriendsListFragment : Fragment() {
 
                         tvEmail.text = "fake@email.com"
 
-                        val deleteButton = cardView.findViewById<Button>(R.id.btFriendElimination)
+                        val factor: Float = this.resources.displayMetrics.density
+
+                        val layoutParams = LinearLayout.LayoutParams(
+                            60*factor.toInt(), // width in pixels
+                            60*factor.toInt()  // height in pixels
+                        )
+                        layoutParams.gravity = Gravity.CENTER
+                        layoutParams.leftMargin = 10*factor.toInt()
+
+                        val deleteButton = Button(cardView.context)
+                        deleteButton.background = resources.getDrawable(R.drawable.baseline_delete_24)
+                        contentLayoutView.addView(deleteButton)
+
+                        deleteButton.layoutParams = layoutParams
+
                         deleteButton.setOnClickListener {
                             document.reference.delete()
                                 .addOnSuccessListener {

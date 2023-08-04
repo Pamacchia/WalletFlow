@@ -16,16 +16,22 @@ import com.walletflow.R
 class ObjectivesActivity : BaseActivity() {
 
     lateinit var createNewObjective : Button
+    lateinit var createNewGroupObjective : Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         createNewObjective = findViewById(R.id.btnAddNewObjectives)
+        createNewGroupObjective = findViewById(R.id.btnAddNewGroupObjectives)
 
         loadObjectives()
 
         createNewObjective.setOnClickListener {
 
             val intent = Intent(this, AddObjectiveActivity::class.java)
+            startActivity(intent)
+        }
+        createNewGroupObjective.setOnClickListener {
+            val intent = Intent(this, AddFriendsToObjectiveActivity::class.java)
             startActivity(intent)
         }
     }
@@ -60,7 +66,7 @@ class ObjectivesActivity : BaseActivity() {
                         tvTitle.text = objective.getString("name") + "   |   " + objective.getString("date")
                         tvParticipants.text = "Temp"
                         // TODO: dollar to euro
-                        tvSavings.text = "You saved ${objective.get("saved").toString().toFloat()}$ out of ${objective.get("amount").toString().toFloat()}$"
+//                        tvSavings.text = "You saved ${objective.get("saved").toString().toFloat()}$ out of ${objective.get("amount").toString().toFloat()}$"
 
                         // Add the card view to the container layout
                         rootView.addView(cardView)

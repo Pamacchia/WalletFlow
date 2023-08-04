@@ -31,7 +31,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
-            android:text="Create new objective" />
+            android:text="New objective" />
+        <Button
+            android:id="@+id/btnAddNewGroupObjectives"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:text="New group objective" />
 
         <ScrollView
             android:layout_width="match_parent"
