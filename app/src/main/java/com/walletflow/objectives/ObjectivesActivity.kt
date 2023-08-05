@@ -12,6 +12,8 @@ import androidx.cardview.widget.CardView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.BaseActivity
 import com.walletflow.R
+import com.walletflow.models.Objective
+import com.walletflow.models.Participant
 
 class ObjectivesActivity : BaseActivity() {
 
@@ -22,8 +24,10 @@ class ObjectivesActivity : BaseActivity() {
 
         createNewObjective = findViewById(R.id.btnAddNewObjectives)
         createNewGroupObjective = findViewById(R.id.btnAddNewGroupObjectives)
-
-        loadObjectives()
+        val db = FirebaseFirestore.getInstance()
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userID = sharedPreferences.getString("userID", "")
+        loadObjectives(db, userID!!)
 
         createNewObjective.setOnClickListener {
 
@@ -40,47 +44,57 @@ class ObjectivesActivity : BaseActivity() {
         return R.layout.activity_objective
     }
 
-    fun loadObjectives() {
+    private fun loadObjectives(db : FirebaseFirestore, userID : String) {
 
         val rootView = findViewById<LinearLayout>(R.id.objectivesLayout)
         rootView.removeAllViews()
 
-        val db = FirebaseFirestore.getInstance()
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-
-        db.collection("objectives")
-            .whereEqualTo("admin", userID)
+        db.collection("participants")
+            .whereEqualTo("participant", userID)
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    for(objective in task.result){
+                    for(participant in task.result){
+                        val currentUser = participant.toObject(Participant::class.java)
+                        val objectiveQuery = db.collection("objectives").document(currentUser.objectiveId!!).get()
+                        val otherParticipantsQuery = db.collection("participants").whereEqualTo("objectiveId", currentUser.objectiveId!!).get()
 
-                        val inflater = LayoutInflater.from(this)
-                        val cardView = inflater.inflate(R.layout.objective_cardview, rootView, false) as CardView
+                        val cardView = LayoutInflater.from(this).inflate(R.layout.objective_cardview, rootView, false) as CardView
                         val tvTitle = cardView.findViewById<TextView>(R.id.tvObjectiveCardTitle)
                         val tvParticipants = cardView.findViewById<TextView>(R.id.tvObjectiveCardParticipants)
                         val tvSavings = cardView.findViewById<TextView>(R.id.tvObjectiveCardProgress)
 
-                        // Modify the text views with your data
-                        tvTitle.text = objective.getString("name") + "   |   " + objective.getString("date")
-                        tvParticipants.text = "Temp"
-                        // TODO: dollar to euro
-//                        tvSavings.text = "You saved ${objective.get("saved").toString().toFloat()}$ out of ${objective.get("amount").toString().toFloat()}$"
+                        objectiveQuery.addOnCompleteListener { objectiveQuery ->
+                            otherParticipantsQuery.addOnSuccessListener { resultQueryList ->
+                                val objective = objectiveQuery.result.toObject(Objective::class.java)
+                                val otherParticipants = resultQueryList.toObjects(Participant::class.java)
 
-                        // Add the card view to the container layout
-                        rootView.addView(cardView)
+                                tvTitle.text = objective!!.name + "   |   " + objective.date
+                                tvParticipants.text = "|"
+                                otherParticipants.forEach{ participant ->
+                                    if (participant.participant!=currentUser.participant){
+                                        tvParticipants.append(
+                                            " ${participant.participant} |"
+                                        )
+                                    }
+                                }
+                                tvSavings.text = "You saved ${currentUser.saved}$ out of ${objective.amount}$"
+                                rootView.addView(cardView)
 
-                        cardView.setOnClickListener{
-                            val intent = Intent(this, ObjectiveDetailActivity::class.java)
-                            intent.putExtra("name", objective.getString("name"))
-                            intent.putExtra("amount", objective.get("amount").toString().toFloat())
-                            intent.putExtra("saved", objective.get("saved").toString().toFloat())
-                            intent.putExtra("objectiveId", objective.id)
-                            startActivity(intent)
+                                cardView.setOnClickListener{
+                                otherParticipants.remove(currentUser)
+                                val intent = Intent(this, ObjectiveDetailActivity::class.java)
+                                intent.putExtra("objective", objective)
+                                intent.putExtra("participants", otherParticipants as ArrayList<Participant>)
+                                intent.putExtra("currentUser", currentUser)
+                                startActivity(intent)
+                                }
+                            }
+                                .addOnFailureListener {
+                                    Log.w(this.localClassName, "Or request query error")
+                                }
+
                         }
-
-
                     }
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
