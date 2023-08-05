@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
+        android:gravity="center_horizontal"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -27,13 +28,23 @@
             android:textAlignment="center"
             ></TextView>
 
-        <Button
-            android:id="@+id/btnAddParticipant"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:text="Add Participant"></Button>
+            android:orientation="horizontal"
+            android:gravity="center">
+            <EditText
+                android:id="@+id/etSaving"
+                android:layout_width="180dp"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:hint="Savings"></EditText>
+            <Button
+                android:id="@+id/btnAddSavings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"></Button>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvObjectiveRecap"
@@ -45,21 +56,47 @@
             android:layout_marginTop="25dp"
             ></TextView>
 
-        <ScrollView
+        <TextView
+            android:id="@+id/tvMyRecap"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:text="You saved 30$/40$"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:layout_marginTop="25dp"
+            android:visibility="gone"
+            ></TextView>
 
-            <LinearLayout
-                android:id="@+id/participantsListLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvObjectiveDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+        </androidx.recyclerview.widget.RecyclerView>
 
-
-
-            </LinearLayout>
-
-        </ScrollView>
+        <LinearLayout
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <Button
+                android:id="@+id/btnCompletedObjective"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="5dp"
+                android:enabled="false"
+                android:text="completed"></Button>
+            <Button
+                android:id="@+id/btnDeleteObjective"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="5dp"
+                android:text="delete"></Button>
+        </LinearLayout>
 
     </LinearLayout>
 

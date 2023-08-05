@@ -37,7 +37,6 @@ class FriendsGroupAdapter(private val onClickDeselect : (User)->Unit) : Recycler
 
     /* Binds number of flowers to the header. */
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
-        holder.itemView
         val currentUser = friendsGroup[position]
         holder.addButton(currentUser, position, { friend -> removeFriendFromGroup(friend)}, onClickDeselect)
     }
