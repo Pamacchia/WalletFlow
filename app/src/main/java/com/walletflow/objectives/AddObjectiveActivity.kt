@@ -9,8 +9,10 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.Task
@@ -52,7 +54,6 @@ class AddObjectiveActivity : BaseActivity() {
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             btnSumbitObjective.isEnabled = etName.text.isNotEmpty() &&
-                    etAmount.text.isNotEmpty() &&
                     etSelectDate.text.isNotEmpty()
         }
     }
@@ -91,7 +92,7 @@ class AddObjectiveActivity : BaseActivity() {
         }
 
         etAmount.setOnFocusChangeListener { view, hasFocus ->
-            if (!hasFocus) {
+            if (!hasFocus && etAmount.text.isNotEmpty()) {
                 val amount = etAmount.text.toString().toDouble()
                 participantsAdapter.setQuotes(amount)
                 etMyQuote.setText((amount/(participantsAdapter.itemCount+1)).toString())
@@ -105,6 +106,8 @@ class AddObjectiveActivity : BaseActivity() {
         btnSumbitObjective.setOnClickListener{
             etAmount.clearFocus()
             etMyQuote.clearFocus()
+            val etQuote = (rvParticipants.focusedChild as LinearLayout)[1]
+            etQuote.clearFocus()
 
             btnSumbitObjective.requestFocus()
             if ((rvParticipants.adapter as ParticipantsAdapter).getTotalOfTheQuotes() +

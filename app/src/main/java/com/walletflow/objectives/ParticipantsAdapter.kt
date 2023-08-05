@@ -31,10 +31,14 @@ class ParticipantsAdapter() : RecyclerView.Adapter<ParticipantsAdapter.Participa
             tvUser.text = participant.participant
             etQuote.setText(participant.quote.toString())
             etQuote.setOnFocusChangeListener { view, hasFocus ->
-                if (!hasFocus){
+                if (!hasFocus && (view as EditText).text.isNotEmpty()){
                     currentParticipant!!.quote = (view as EditText).text.toString().toDouble()
                 }
             }
+        }
+
+        fun clearFocusEtQuote(){
+            etQuote.clearFocus()
         }
     }
 
