@@ -4,14 +4,14 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Transaction(
-    val amount : Double = 0.0,
+    val amount : Double? = 0.0,
     val category : String? = null,
     var note : String? = null,
     val type : String? = null,
     val user : String? = null,
     val date : String? = null) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readDouble(),
+        parcel.readValue(Double::class.java.classLoader) as? Double,
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -21,7 +21,7 @@ data class Transaction(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeDouble(amount)
+        parcel.writeValue(amount)
         parcel.writeString(category)
         parcel.writeString(note)
         parcel.writeString(type)

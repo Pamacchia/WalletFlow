@@ -6,11 +6,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.R
 import com.walletflow.data.Transaction
+import com.walletflow.utils.TransactionManager
 
-class TransactionsAdapter(private var transactions : ArrayList<Transaction>, private val onClickListener : (Transaction) -> Unit)
+class TransactionsAdapter(private var transactions : MutableMap<String, Transaction>, val collection : CollectionReference)
     : RecyclerView.Adapter<TransactionsAdapter.TransactionViewHolder>() {
 
     /* ViewHolder for displaying header. */
@@ -20,13 +22,15 @@ class TransactionsAdapter(private var transactions : ArrayList<Transaction>, pri
         val tvAmount = view.findViewById<TextView>(R.id.tvTransactionCardAmount)
         val deleteButton = view.findViewById<Button>(R.id.btTransactionDelete)
 
-        fun bind(transaction : Transaction, onClickListener : (Transaction) -> Unit) {
-            tvDate.text = transaction.date
-            tvCategory.text = transaction.category
-            tvAmount.text = transaction.amount.toString()
+        fun bind(transaction : Pair<String, Transaction>, onClick : (Pair<String, Transaction>)->Unit) {
+            tvDate.text = transaction.second.date
+            tvCategory.text = transaction.second.category
+            tvAmount.text = transaction.second.amount.toString() + "$"
 
             deleteButton.setOnClickListener {
-                onClickListener
+                transaction?.let{
+                    onClick(it)
+                }
             }
         }
     }
@@ -40,8 +44,8 @@ class TransactionsAdapter(private var transactions : ArrayList<Transaction>, pri
 
     /* Binds number of flowers to the header. */
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
-        val currentTransaction = transactions[position]
-        holder.bind(currentTransaction, onClickListener)
+        val currentTransaction = transactions.toList()[position]
+        holder.bind(currentTransaction) { pair -> deleteTransactions(pair) }
     }
 
     /* Returns number of items, since there is only one item in the header return one  */
@@ -49,23 +53,29 @@ class TransactionsAdapter(private var transactions : ArrayList<Transaction>, pri
         return transactions.size
     }
 
-//    /* Updates header to display number of flowers when a flower is added or subtracted. */
-//    fun addFriendToGroup(newGroupMember : User) : Boolean{
-//        var result = false
-//        if (!transactions.contains(newGroupMember)){
-//            result = transactions.add(newGroupMember)
-//            notifyDataSetChanged()
-//        }
-//        return result
-//    }
-//
-//    fun removeFriendFromGroup(friend : User) : Boolean{
-//        var result = transactions.remove(friend)
-//        notifyDataSetChanged()
-//        return result
-//    }
+    private fun deleteTransactions(transaction : Pair<String,Transaction>){
+        val document = collection.document(transaction.first)
+        document.delete()
+            .addOnSuccessListener{
+                // Document successfully deleted
+                // Handle success or UI updates here
+                TransactionManager.updateBalance(
+                    FirebaseFirestore.getInstance(),
+                    -transaction.second.amount!!.toFloat(),
+                    transaction.second.user
+                )
+                println("Document deleted successfully.")
+                transactions.remove(transaction.first)
+                notifyDataSetChanged()
+            }
+            .addOnFailureListener { e ->
+                // An error occurred while deleting the document
+                // Handle the error here
+                println("Error deleting document: $e")
+            }
+    }
 
-    fun getTransactionsList() : ArrayList<Transaction>{
+    fun getTransactionsList() : MutableMap<String, Transaction>{
         return transactions
     }
 }
