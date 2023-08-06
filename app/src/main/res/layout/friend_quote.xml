@@ -14,12 +14,14 @@
         android:text="username"
         android:textAlignment="center"
         android:textAppearance="?attr/textAppearanceHeadline5"/>
+
     <EditText
         android:id="@+id/quote"
         android:layout_width="180dp"
         android:layout_height="48dp"
-        android:hint="Quote"
-        android:numeric="decimal"
+        android:textAlignment="center"
         android:layout_weight="1"
-        android:textAlignment="center"/>
+        android:inputType="numberDecimal"
+        android:hint="Quote"
+        ></EditText>
 </LinearLayout>

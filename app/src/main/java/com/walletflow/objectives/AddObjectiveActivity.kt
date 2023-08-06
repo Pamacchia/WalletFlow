@@ -9,10 +9,9 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.view.get
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -42,6 +41,7 @@ class AddObjectiveActivity : BaseActivity() {
     private lateinit var rvParticipants : RecyclerView
     private lateinit var selectedDate : Date
     private lateinit var participantsAdapter : ParticipantsAdapter
+
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
             // Implementation for afterTextChanged
@@ -52,8 +52,9 @@ class AddObjectiveActivity : BaseActivity() {
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            btnSumbitObjective.isEnabled = etName.text.isNotEmpty() &&
-                    etSelectDate.text.isNotEmpty()
+            btnSumbitObjective.isEnabled = etName.text.isNotEmpty()
+                    && etAmount.text.isNotEmpty()
+                    &&etSelectDate.text.isNotEmpty()
         }
     }
 
@@ -61,16 +62,18 @@ class AddObjectiveActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         btnSumbitObjective = findViewById(R.id.btnSubmitNewObjective)
-        btnSumbitObjective.isEnabled = false
-        etAmount = findViewById(R.id.etObjectiveAmount)
-        etAmount.addTextChangedListener(textWatcher)
         etName = findViewById(R.id.etObjectiveName)
-        etName.addTextChangedListener(textWatcher)
-        etSelectDate = findViewById(R.id.btnSelectDate)
-        etSelectDate.addTextChangedListener(textWatcher)
+        etAmount = findViewById(R.id.etObjectiveAmount)
+        etSelectDate = findViewById(R.id.etSelectDate)
         etMyQuote = findViewById(R.id.myQuote)
         tvMyUsername = findViewById(R.id.myUsername)
         rvParticipants = findViewById(R.id.friendRecycleView)
+
+
+        btnSumbitObjective.isEnabled = false
+        etName.addTextChangedListener(textWatcher)
+        etAmount.addTextChangedListener(textWatcher)
+        etSelectDate.addTextChangedListener(textWatcher)
 
         val db = FirebaseFirestore.getInstance()
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
@@ -105,12 +108,13 @@ class AddObjectiveActivity : BaseActivity() {
         btnSumbitObjective.setOnClickListener{
             etAmount.clearFocus()
             etMyQuote.clearFocus()
-            val etQuote = (rvParticipants.focusedChild as LinearLayout)[1]
-            etQuote.clearFocus()
+            if (rvParticipants.focusedChild!=null)
+                rvParticipants.focusedChild.clearFocus()
 
             btnSumbitObjective.requestFocus()
-            if ((rvParticipants.adapter as ParticipantsAdapter).getTotalOfTheQuotes() +
-                etMyQuote.text.toString().toDouble()
+            val total = (rvParticipants.adapter as ParticipantsAdapter).getTotalOfTheQuotes() +
+                    etMyQuote.text.toString().toDouble()
+            if (total
                 == etAmount.text.toString().toDouble()
             ){
                 val obj = Objective(etName.text.toString(),
@@ -122,7 +126,7 @@ class AddObjectiveActivity : BaseActivity() {
                 startActivity(intent)
             }
             else{
-                Toast.makeText(this, "The total of the quotes is not equal to the amount. This is wrong!",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "The total of the quotes $total is not equal to the amount ${etAmount.text}. This is wrong!",Toast.LENGTH_LONG).show()
             }
         }
     }

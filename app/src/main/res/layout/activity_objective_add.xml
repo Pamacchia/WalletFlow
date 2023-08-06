@@ -37,6 +37,7 @@
                 android:textAlignment="center"
                 android:layout_marginTop="20dp"
                 android:layout_height="48dp"
+                android:inputType="text"
                 android:hint="Objective name"
                 ></EditText>
 
@@ -51,11 +52,12 @@
                 ></EditText>
 
             <EditText
-                android:id="@+id/btnSelectDate"
+                android:id="@+id/etSelectDate"
                 android:layout_width="320dp"
                 android:layout_height="48dp"
                 android:textAlignment="center"
                 android:clickable="false"
+                android:inputType="text"
                 android:cursorVisible="false"
                 android:layout_marginTop="10dp"
                 android:hint="Select a date" />

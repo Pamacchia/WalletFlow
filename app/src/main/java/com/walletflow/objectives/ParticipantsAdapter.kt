@@ -1,10 +1,14 @@
 package com.walletflow.objectives
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.walletflow.R
 import com.walletflow.data.Participant
@@ -25,19 +29,27 @@ class ParticipantsAdapter() : RecyclerView.Adapter<ParticipantsAdapter.Participa
         private val etQuote : EditText = view.findViewById(R.id.quote)
         private var currentParticipant : Participant? = null
 
+        private val textWatcher = object : TextWatcher {
+            override fun afterTextChanged(editable: Editable?) {
+                if (etQuote.text.isNotEmpty() ){
+                    currentParticipant!!.quote = editable.toString().toDouble()
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Implementation for beforeTextChanged
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        }
+
         fun bind(participant: Participant) {
             currentParticipant = participant
             tvUser.text = participant.participant
             etQuote.setText(participant.quote.toString())
-            etQuote.setOnFocusChangeListener { view, hasFocus ->
-                if (!hasFocus && (view as EditText).text.isNotEmpty()){
-                    currentParticipant!!.quote = (view as EditText).text.toString().toDouble()
-                }
-            }
-        }
+            etQuote.addTextChangedListener(textWatcher)
 
-        fun clearFocusEtQuote(){
-            etQuote.clearFocus()
         }
     }
 
