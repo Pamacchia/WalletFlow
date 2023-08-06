@@ -5,11 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.walletflow.R
-import com.walletflow.models.Participant
-import com.walletflow.models.User
+import com.walletflow.data.Participant
+import com.walletflow.data.User
 
 class ParticipantsAdapter() : RecyclerView.Adapter<ParticipantsAdapter.ParticipantViewHolder>() {
 

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.walletflow.R
-import com.walletflow.models.Participant
+import com.walletflow.data.Participant
 
 class ObjectiveDetailFriendsAdapter (private val friendList: ArrayList<Participant>)
     : RecyclerView.Adapter<ObjectiveDetailFriendsAdapter.FriendViewHolder>() {

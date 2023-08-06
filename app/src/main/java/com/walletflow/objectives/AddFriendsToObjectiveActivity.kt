@@ -13,8 +13,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.walletflow.BaseActivity
 import com.walletflow.R
-import com.walletflow.models.FriendRequest
-import com.walletflow.models.User
+import com.walletflow.data.FriendRequest
+import com.walletflow.data.User
 
 class AddFriendsToObjectiveActivity : BaseActivity() {
 

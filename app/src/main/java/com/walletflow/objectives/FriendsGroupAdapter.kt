@@ -7,7 +7,7 @@ import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.walletflow.R
-import com.walletflow.models.User
+import com.walletflow.data.User
 
 class FriendsGroupAdapter(private val onClickDeselect : (User)->Unit) : RecyclerView.Adapter<FriendsGroupAdapter.FriendViewHolder>() {
     private var friendsGroup: ArrayList<User> = arrayListOf()

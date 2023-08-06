@@ -13,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.get
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
@@ -24,9 +23,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.walletflow.BaseActivity
 import com.walletflow.R
-import com.walletflow.models.Objective
-import com.walletflow.models.Participant
-import com.walletflow.models.User
+import com.walletflow.data.Objective
+import com.walletflow.data.Participant
+import com.walletflow.data.User
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date

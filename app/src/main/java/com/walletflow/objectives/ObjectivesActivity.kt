@@ -12,8 +12,8 @@ import androidx.cardview.widget.CardView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.BaseActivity
 import com.walletflow.R
-import com.walletflow.models.Objective
-import com.walletflow.models.Participant
+import com.walletflow.data.Objective
+import com.walletflow.data.Participant
 
 class ObjectivesActivity : BaseActivity() {
 

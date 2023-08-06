@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.R
@@ -24,6 +25,7 @@ class TransactionsFragment : Fragment() {
 
     lateinit var filterExpenseTv : TextView
     lateinit var filterEarningTv : TextView
+    lateinit var transactionsRv : RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -34,14 +36,16 @@ class TransactionsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val activityDashboard = (activity as DashboardActivity)
+        val userID = activityDashboard.userID
+        val queryRef = activityDashboard.db.collection("transactions").whereEqualTo("user", userID)
+
         filterExpenseTv = view.findViewById(R.id.tvFilterTransactionListExpense)
         filterEarningTv = view.findViewById(R.id.tvFilterTransactionListEarning)
+        transactionsRv = view.findViewById(R.id.rvTransactions)
 
-        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-        val db = FirebaseFirestore.getInstance()
-        val queryRef = db.collection("transactions")
-            .whereEqualTo("user", userID)
+        transactionsRv.adapter = TransactionsAdapter()
+
 
         filterRecordsByType(queryRef, "expense", view)
 

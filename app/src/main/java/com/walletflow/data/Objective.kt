@@ -1,8 +1,7 @@
-package com.walletflow.models
+package com.walletflow.data
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.util.Date
 
 data class Objective (
     val name :String? = null,

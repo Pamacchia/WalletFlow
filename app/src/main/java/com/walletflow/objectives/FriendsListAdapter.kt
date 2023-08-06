@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.walletflow.R
-import com.walletflow.models.User
+import com.walletflow.data.User
 
 class FriendsListAdapter (private val friendList: ArrayList<User>,
                           private val onClickAdd: (User) -> Boolean,
