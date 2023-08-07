@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -33,6 +34,7 @@ class HomeActivity : BaseActivity() {
     lateinit var expensesTv : TextView
     lateinit var savingsTv : TextView
     lateinit var totalBudget : TextView
+    lateinit var greetingUser : TextView
 
     var balance : Double = 0.0
     companion object {
@@ -54,6 +56,7 @@ class HomeActivity : BaseActivity() {
         balanceTv = findViewById(R.id.tvBalance)
         expensesTv = findViewById(R.id.tvExpenses)
         savingsTv = findViewById(R.id.tvExpenses)
+        greetingUser = findViewById(R.id.tvGreetingUser)
         loadHomeData(balanceTv)
         loadFrequentTransactions()
 
@@ -89,6 +92,8 @@ class HomeActivity : BaseActivity() {
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
 
+        "Hello, $userID".also { greetingUser.text = it }
+
         val db = FirebaseFirestore.getInstance()
 
         db.collection("users")
@@ -122,6 +127,7 @@ class HomeActivity : BaseActivity() {
         val dateLower = SimpleDateFormat("yyyy-MM").format(calendar.time)
 
         var budget : Double = 0.0
+        var thisMonthExpense : Double = 0.0
 
         db.collection("transactions")
             .whereEqualTo("user", userID)
@@ -135,13 +141,47 @@ class HomeActivity : BaseActivity() {
                         budget += document.getDouble("amount")!!
                     }
 
-                    budget = if (budget == 0.0) {
-                        balance
-                    } else {
-                        min(balance, budget)
+                } else {
+                    Log.w(this.localClassName, "Error getting documents.", task.exception)
+                }
+            }
+
+        db.collection("transactions")
+            .whereEqualTo("user", userID)
+            .whereEqualTo("type", "expense")
+            .whereGreaterThanOrEqualTo("date", dateUpper)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    for (document in task.result) {
+                        thisMonthExpense += abs(document.getDouble("amount")!!)
                     }
 
-                    totalBudget.text = " out of ${StringHelper.getShrunkForm(budget)}$" //TODO: Euro
+                    var thisMonthBudget = 0.0
+
+                    if (budget == 0.0) {
+                        budget = balance
+                        thisMonthBudget = balance + thisMonthExpense
+                    } else {
+                        thisMonthBudget = budget + thisMonthExpense
+                    }
+
+                    totalBudget.text = " ${StringHelper.getShrunkForm(budget)}$" //TODO: Euro
+                    val progressBarContainer = findViewById<FrameLayout>(R.id.budgetProgressBar)
+                    // Calculate the relative difference between budget and thisMonthBudget
+                    val difference = abs(budget - thisMonthBudget)
+                    val maxDifference = thisMonthBudget
+                    val relativeDifference = difference / maxDifference
+                    val desiredWidthInDp = 310
+                    val minProgressBarWidthInPx = 1
+                    val reversedRelativeDifference = 1 - relativeDifference
+                    val newWidthInPx = (minProgressBarWidthInPx + (reversedRelativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
+
+
+                    val layoutParams = progressBarContainer.layoutParams
+                    layoutParams.width = newWidthInPx
+                    progressBarContainer.layoutParams = layoutParams
+
 
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
