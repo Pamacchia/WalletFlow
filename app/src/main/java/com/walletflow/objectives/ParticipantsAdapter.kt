@@ -7,12 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.walletflow.R
 import com.walletflow.data.Participant
 import com.walletflow.data.User
+import kotlin.math.roundToInt
 
 class ParticipantsAdapter() : RecyclerView.Adapter<ParticipantsAdapter.ParticipantViewHolder>() {
 
@@ -69,9 +68,10 @@ class ParticipantsAdapter() : RecyclerView.Adapter<ParticipantsAdapter.Participa
     }
 
     fun setQuotes(amount : Double?){
+
         if (amount!=null){
            participants.forEach { participant ->
-               participant.quote = amount/(participants.size+1)
+               participant.quote = ((amount/(participants.size+1) * 100.0).roundToInt() / 100.0)
            }
             notifyDataSetChanged()
         }

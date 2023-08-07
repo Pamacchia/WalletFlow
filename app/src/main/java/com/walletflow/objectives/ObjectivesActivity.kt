@@ -30,7 +30,6 @@ class ObjectivesActivity : BaseActivity() {
         loadObjectives(db, userID!!)
 
         createNewObjective.setOnClickListener {
-
             val intent = Intent(this, AddObjectiveActivity::class.java)
             startActivity(intent)
         }

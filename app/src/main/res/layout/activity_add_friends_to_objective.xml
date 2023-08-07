@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".objectives.AddFriendsToObjectiveActivity">
 
+    <TextView
+        android:id="@+id/tvAddFriendsToObj"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Add your friends"
+        android:textColor="@color/black"
+        android:layout_marginTop="15dp"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -14,19 +26,21 @@
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tvAddFriendsToObj">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/groupRecycleView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:visibility="gone"
             app:layoutManager="LinearLayoutManager"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/friendRecycleView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginTop="25dp"
             app:layoutManager="LinearLayoutManager"/>
 
     </LinearLayout>
