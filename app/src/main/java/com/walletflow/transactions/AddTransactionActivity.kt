@@ -1,5 +1,6 @@
 package com.walletflow.transactions
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -15,14 +16,15 @@ import com.walletflow.R
 
 class AddTransactionActivity : BaseActivity() {
 
-    lateinit var titleTv : TextView
-    lateinit var subtitleTv : TextView
-    lateinit var amountTitleTv : TextView
-    lateinit var amountEditText : EditText
-    lateinit var noteEditText : EditText
-    lateinit var frequentCheck : CheckBox
-    lateinit var chooseCategoryBtn : Button
+    private lateinit var titleTv: TextView
+    private lateinit var subtitleTv: TextView
+    private lateinit var amountTitleTv: TextView
+    lateinit var amountEditText: EditText
+    private lateinit var noteEditText: EditText
+    private lateinit var frequentCheck: CheckBox
+    lateinit var chooseCategoryBtn: Button
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -53,12 +55,11 @@ class AddTransactionActivity : BaseActivity() {
             val note = noteEditText.text.toString()
             val frequent = frequentCheck.isChecked
 
-            if(amount.isEmpty()){
+            if (amount.isEmpty()) {
                 Toast.makeText(this, "Please specify the amount", Toast.LENGTH_LONG).show()
-            }
-            else {
+            } else {
                 val intent = Intent(this, ChooseCategoryActivity::class.java)
-                intent.putExtra("amount", amount.toFloat()*type)
+                intent.putExtra("amount", amount.toFloat() * type)
                 intent.putExtra("note", note)
                 intent.putExtra("frequent", frequent)
                 intent.putExtra("userID", userID)
@@ -75,7 +76,7 @@ class AddTransactionActivity : BaseActivity() {
         return R.layout.activity_transaction_add
     }
 
-    val textWatcher = object : TextWatcher {
+    private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
             // Implementation for afterTextChanged
         }

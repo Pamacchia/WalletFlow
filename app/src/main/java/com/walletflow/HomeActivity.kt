@@ -1,5 +1,6 @@
 package com.walletflow
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -18,8 +19,6 @@ import com.walletflow.data.Transaction
 import com.walletflow.transactions.AddTransactionActivity
 import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
-import java.lang.Double.min
-import java.lang.Math.abs
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -28,15 +27,16 @@ import java.util.Calendar
 
 class HomeActivity : BaseActivity() {
 
-    lateinit var earningBtn : Button
-    lateinit var expenseBtn : Button
-    lateinit var balanceTv : TextView
-    lateinit var expensesTv : TextView
-    lateinit var savingsTv : TextView
-    lateinit var totalBudget : TextView
-    lateinit var greetingUser : TextView
+    private lateinit var earningBtn: Button
+    private lateinit var expenseBtn: Button
+    private lateinit var balanceTv: TextView
+    private lateinit var expensesTv: TextView
+    private lateinit var savingsTv: TextView
+    private lateinit var totalBudget: TextView
+    private lateinit var greetingUser: TextView
 
-    var balance : Double = 0.0
+    private var balance: Double = 0.0
+
     companion object {
         const val EARNING_CONST = 1
         const val EXPENSE_CONST = -1
@@ -45,24 +45,24 @@ class HomeActivity : BaseActivity() {
         const val SPEND = "spend"
         const val EARN = "earn"
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
 
         earningBtn = findViewById(R.id.btnAddEarning)
         expenseBtn = findViewById(R.id.btnAddExpenses)
         totalBudget = findViewById(R.id.tvTotalBudget)
         balanceTv = findViewById(R.id.tvBalance)
         expensesTv = findViewById(R.id.tvExpenses)
-        savingsTv = findViewById(R.id.tvExpenses)
+        savingsTv = findViewById(R.id.tvSavings)
         greetingUser = findViewById(R.id.tvGreetingUser)
-        loadHomeData(balanceTv)
+
+        loadHomeData()
         loadFrequentTransactions()
 
         earningBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
-            intent.putExtra("type", HomeActivity.EARNING_CONST)
+            intent.putExtra("type", EARNING_CONST)
             intent.putExtra("type_name", EARNINGS)
             intent.putExtra("type_verb", EARN)
             startActivity(intent)
@@ -70,7 +70,7 @@ class HomeActivity : BaseActivity() {
 
         expenseBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
-            intent.putExtra("type", HomeActivity.EXPENSE_CONST)
+            intent.putExtra("type", EXPENSE_CONST)
             intent.putExtra("type_name", EXPENSES)
             intent.putExtra("type_verb", SPEND)
             startActivity(intent)
@@ -79,7 +79,7 @@ class HomeActivity : BaseActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        loadHomeData(balanceTv)
+        loadHomeData()
         loadFrequentTransactions()
     }
 
@@ -87,7 +87,8 @@ class HomeActivity : BaseActivity() {
         return R.layout.activity_home
     }
 
-    private fun loadHomeData(balanceTv : TextView){
+    @SuppressLint("SetTextI18n")
+    private fun loadHomeData() {
 
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
@@ -103,7 +104,7 @@ class HomeActivity : BaseActivity() {
                 if (task.isSuccessful) {
                     balance = task.result.first().getDouble("balance")!!
 
-                    balanceTv.text = StringHelper.getShrunkForm(balance) + "" + "€"
+                    balanceTv.text = "${StringHelper.getShrunkForm(balance)}€"
 
                     Log.w(this.toString(), task.result.first().getDouble("balance").toString())
 
@@ -115,7 +116,8 @@ class HomeActivity : BaseActivity() {
             }
     }
 
-    private fun updateTotalBudget(){
+    @SuppressLint("SimpleDateFormat", "SetTextI18n")
+    private fun updateTotalBudget() {
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
 
@@ -126,8 +128,8 @@ class HomeActivity : BaseActivity() {
         calendar.add(Calendar.MONTH, -1)
         val dateLower = SimpleDateFormat("yyyy-MM").format(calendar.time)
 
-        var budget : Double = 0.0
-        var thisMonthExpense : Double = 0.0
+        var budget = 0.0
+        var thisMonthExpense = 0.0
 
         db.collection("transactions")
             .whereEqualTo("user", userID)
@@ -154,10 +156,10 @@ class HomeActivity : BaseActivity() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     for (document in task.result) {
-                        thisMonthExpense += abs(document.getDouble("amount")!!)
+                        thisMonthExpense += kotlin.math.abs(document.getDouble("amount")!!)
                     }
 
-                    var thisMonthBudget = 0.0
+                    val thisMonthBudget: Double
 
                     if (budget == 0.0) {
                         budget = balance
@@ -169,13 +171,13 @@ class HomeActivity : BaseActivity() {
                     totalBudget.text = " ${StringHelper.getShrunkForm(budget)}$" //TODO: Euro
                     val progressBarContainer = findViewById<FrameLayout>(R.id.budgetProgressBar)
                     // Calculate the relative difference between budget and thisMonthBudget
-                    val difference = abs(budget - thisMonthBudget)
-                    val maxDifference = thisMonthBudget
-                    val relativeDifference = difference / maxDifference
+                    val difference = kotlin.math.abs(budget - thisMonthBudget)
+                    val relativeDifference = difference / thisMonthBudget
                     val desiredWidthInDp = 310
                     val minProgressBarWidthInPx = 1
                     val reversedRelativeDifference = 1 - relativeDifference
-                    val newWidthInPx = (minProgressBarWidthInPx + (reversedRelativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
+                    val newWidthInPx =
+                        (minProgressBarWidthInPx + (reversedRelativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
 
 
                     val layoutParams = progressBarContainer.layoutParams
@@ -190,7 +192,8 @@ class HomeActivity : BaseActivity() {
 
     }
 
-    private fun updateExpenses(){
+    @SuppressLint("SimpleDateFormat", "SetTextI18n")
+    private fun updateExpenses() {
         val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
 
@@ -212,7 +215,8 @@ class HomeActivity : BaseActivity() {
                         expenses += document.getDouble("amount")!!
                     }
 
-                    expensesTv.text = "${StringHelper.getShrunkForm(abs(expenses))}$" //TODO: Euro
+                    expensesTv.text =
+                        "${StringHelper.getShrunkForm(kotlin.math.abs(expenses))}$" //TODO: Euro
 
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
@@ -221,7 +225,8 @@ class HomeActivity : BaseActivity() {
 
     }
 
-    private fun loadFrequentTransactions(){
+    @SuppressLint("SetTextI18n")
+    private fun loadFrequentTransactions() {
 
         val rootView = findViewById<LinearLayout>(R.id.layoutFrequentTransactions)
         rootView.removeAllViews()
@@ -240,10 +245,17 @@ class HomeActivity : BaseActivity() {
                     for (document in task.result) {
 
                         val inflater = LayoutInflater.from(this)
-                        val cardView = inflater.inflate(R.layout.frequent_transaction_cardview, rootView, false) as CardView
-                        val tvNote = cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardNote)
-                        val tvType = cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardType)
-                        val tvAmount = cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardAmount)
+                        val cardView = inflater.inflate(
+                            R.layout.frequent_transaction_cardview,
+                            rootView,
+                            false
+                        ) as CardView
+                        val tvNote =
+                            cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardNote)
+                        val tvType =
+                            cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardType)
+                        val tvAmount =
+                            cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardAmount)
 
                         tvNote.text = document.getString("note")
                         tvType.text = document.getString("type")
@@ -256,7 +268,8 @@ class HomeActivity : BaseActivity() {
                             createAlertForFrequentTransaction(document, db, userID, true)
                         }
 
-                        val deleteButton = cardView.findViewById<Button>(R.id.btFrequentTransactionDelete)
+                        val deleteButton =
+                            cardView.findViewById<Button>(R.id.btFrequentTransactionDelete)
                         deleteButton.setOnClickListener {
                             createAlertForFrequentTransaction(document, db, userID, false)
                         }
@@ -273,11 +286,12 @@ class HomeActivity : BaseActivity() {
 
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun createAlertForFrequentTransaction(
         document: QueryDocumentSnapshot,
         db: FirebaseFirestore,
         userID: String?,
-        add : Boolean
+        add: Boolean
     ) {
 
         val alert: AlertDialog.Builder = AlertDialog.Builder(this)

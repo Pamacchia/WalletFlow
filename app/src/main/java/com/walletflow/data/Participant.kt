@@ -4,17 +4,17 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Participant(
-    val participant : String?=null,
-    var quote : Double=0.0,
-    var saved : Double?=0.0,
-    var objectiveId : String?=null) : Parcelable {
+    val participant: String? = null,
+    var quote: Double = 0.0,
+    var saved: Double? = 0.0,
+    var objectiveId: String? = null
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readDouble(),
         parcel.readValue(Double::class.java.classLoader) as? Double,
         parcel.readString()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(participant)

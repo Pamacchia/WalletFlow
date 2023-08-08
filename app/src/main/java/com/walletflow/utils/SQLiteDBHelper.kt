@@ -10,10 +10,10 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
 
     companion object {
-        private val DATABASE_NAME = "ICONS.sqlite"
-        private val DATABASE_VERSION = 1
-        const val ISADDED = "isAdded"
-        val CATEGORY_TABLE = "category_table"
+        private const val DATABASE_NAME = "ICONS.sqlite"
+        private const val DATABASE_VERSION = 1
+        const val ADDED = "isAdded"
+        const val CATEGORY_TABLE = "category_table"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -21,7 +21,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 + "id" + " INTEGER PRIMARY KEY, " +
                 "file_path" + " TEXT," +
                 "icon_name" + " TEXT," +
-                ISADDED + " INTEGER" + ");")
+                ADDED + " INTEGER" + ");")
 
         db.execSQL(query)
 
@@ -37,7 +37,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         for (i in array1.indices) {
             values.put("file_path", array1[i])
-            values.put(ISADDED, array2[i])
+            values.put(ADDED, array2[i])
             values.put("icon_name", array3[i])
 
             db.insert(CATEGORY_TABLE, null, values)
@@ -45,7 +45,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
-        db.execSQL("DROP TABLE IF EXISTS " + CATEGORY_TABLE)
+        db.execSQL("DROP TABLE IF EXISTS $CATEGORY_TABLE")
         onCreate(db)
     }
 
@@ -56,15 +56,15 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         values.put("file_path", "$selected.png")
         values.put("icon_name", name)
-        values.put(ISADDED, 1)
+        values.put(ADDED, 1)
 
-        db.update(CATEGORY_TABLE, values,"file_path=?", arrayOf<String>("$selected.png"))
+        db.update(CATEGORY_TABLE, values,"file_path=?", arrayOf("$selected.png"))
         db.close()
     }
 
     fun getCategories(type : Int): Cursor? {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM " + CATEGORY_TABLE + " WHERE $ISADDED = $type", null)
+        return db.rawQuery("SELECT * FROM $CATEGORY_TABLE WHERE $ADDED = $type", null)
     }
 
 }

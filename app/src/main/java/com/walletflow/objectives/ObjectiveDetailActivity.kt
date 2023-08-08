@@ -19,14 +19,14 @@ import kotlin.math.roundToInt
 
 class ObjectiveDetailActivity : BaseActivity() {
 
-    lateinit var titleTv : TextView
-    lateinit var recapTv : TextView
-    lateinit var etSavings : EditText
-    lateinit var addSavingsBtn : Button
-    lateinit var btnDelete : Button
-    lateinit var btnCompleted : Button
-    lateinit var tvMyRecap : TextView
-    lateinit var rvFriends : RecyclerView
+    lateinit var titleTv: TextView
+    lateinit var recapTv: TextView
+    lateinit var etSavings: EditText
+    lateinit var addSavingsBtn: Button
+    lateinit var btnDelete: Button
+    lateinit var btnCompleted: Button
+    lateinit var tvMyRecap: TextView
+    lateinit var rvFriends: RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,36 +48,43 @@ class ObjectiveDetailActivity : BaseActivity() {
 
         titleTv.text = "${objective!!.name} detail"
         val totalSaved = totalRecapInit(currentUser, friends, objective)
-        tvMyRecap.text = "You have currently saved ${currentUser!!.saved} over ${currentUser!!.quote}"
+        tvMyRecap.text =
+            "You have currently saved ${currentUser!!.saved} over ${currentUser!!.quote}"
 
-        if (totalSaved==objective.amount){
+        if (totalSaved == objective.amount) {
             btnCompleted.isEnabled = true
         }
 
-        addSavingsBtn.setOnClickListener{
+        addSavingsBtn.setOnClickListener {
             var amount = etSavings.text.toString().toDouble()
-            if (amount<=currentUser.quote && amount>0){
+            if (amount <= currentUser.quote && amount > 0) {
                 amount = ((amount * 100.0).roundToInt() / 100.0)
                 currentUser.saved = currentUser.saved?.plus(amount)
-                tvMyRecap.text = "You have currently saved ${currentUser.saved}$ over ${currentUser.quote}$"
+                tvMyRecap.text =
+                    "You have currently saved ${currentUser.saved}$ over ${currentUser.quote}$"
                 db.collection("participants").whereEqualTo("participant", currentUser.participant)
-                    .whereEqualTo("objectiveId",currentUser.objectiveId).get().addOnSuccessListener { task ->
+                    .whereEqualTo("objectiveId", currentUser.objectiveId).get()
+                    .addOnSuccessListener { task ->
                         Log.d(this.localClassName, "currentUser document found successfully!")
-                        task.documents.first().reference.update("saved",currentUser.saved).addOnSuccessListener {
-                            Log.d(this.localClassName, "savings updated ok!")
-                        }.addOnFailureListener{
+                        task.documents.first().reference.update("saved", currentUser.saved)
+                            .addOnSuccessListener {
+                                Log.d(this.localClassName, "savings updated ok!")
+                            }.addOnFailureListener {
                             Log.w(this.localClassName, "problems updating savings!")
                         }
-                    }.addOnFailureListener{
+                    }.addOnFailureListener {
                         Log.w(this.localClassName, "problems finding the currentUser document!")
                     }
-                totalRecapInit(currentUser,friends,objective)
-                if (totalSaved==objective.amount){
+                totalRecapInit(currentUser, friends, objective)
+                if (totalSaved == objective.amount) {
                     btnCompleted.isEnabled = true
                 }
-            }
-            else{
-                Toast.makeText(this,"The saving need to be lower than the quote and the balance!", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(
+                    this,
+                    "The saving need to be lower than the quote and the balance!",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -86,7 +93,7 @@ class ObjectiveDetailActivity : BaseActivity() {
         currentUser: Participant?,
         friends: ArrayList<Participant>?,
         objective: Objective
-    ) : Double? {
+    ): Double? {
         var totalSaved = currentUser!!.saved
         friends!!.forEach { friend ->
             totalSaved = friend!!.saved?.let { totalSaved?.plus(it) }

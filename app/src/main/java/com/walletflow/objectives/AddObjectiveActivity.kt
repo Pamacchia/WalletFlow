@@ -98,7 +98,7 @@ class AddObjectiveActivity : BaseActivity() {
             if (!hasFocus && etAmount.text.isNotEmpty()) {
                 val amount = etAmount.text.toString().toDouble()
                 participantsAdapter.setQuotes(amount)
-                etMyQuote.setText(((amount/(participantsAdapter.itemCount+1) * 100.0).roundToInt() / 100.0).toString())
+                etMyQuote.setText(((amount / (participantsAdapter.itemCount + 1) * 100.0).roundToInt() / 100.0).toString())
             }
         }
 

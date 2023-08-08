@@ -10,10 +10,11 @@ import com.walletflow.data.Icon
 import com.walletflow.utils.SQLiteDBHelper
 
 private const val ADD_CATEGORY_TYPE = 0
+
 class AddCategoryActivity : CategoryActivity() {
 
-    lateinit var addCategoryBtn : Button
-    lateinit var iconNameEt : EditText
+    lateinit var addCategoryBtn: Button
+    lateinit var iconNameEt: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +41,7 @@ class AddCategoryActivity : CategoryActivity() {
         return R.layout.activity_transaction_category_add
     }
 
-    val textWatcher = object : TextWatcher {
+    private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
             // Implementation for afterTextChanged
         }

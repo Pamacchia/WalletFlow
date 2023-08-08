@@ -17,9 +17,9 @@ import java.io.IOException
 
 abstract class CategoryActivity : BaseActivity() {
 
-    lateinit var selected : String
+    lateinit var selected: String
 
-    fun getIconList(activityType : Int) : MutableList<Icon> {
+    fun getIconList(activityType: Int): MutableList<Icon> {
         val db = SQLiteDBHelper(this, null)
 
         val cursor = db.getCategories(activityType)
@@ -45,14 +45,14 @@ abstract class CategoryActivity : BaseActivity() {
         return iconList
     }
 
-    fun loadIcons(iconList : MutableList<Icon>){
+    fun loadIcons(iconList: MutableList<Icon>) {
 
         val rootView = findViewById<LinearLayout>(R.id.iconsLinearLayout)
         rootView.removeAllViews()
 
         var count = 0
 
-        lateinit var linearLayout : LinearLayout
+        lateinit var linearLayout: LinearLayout
 
         linearLayout = LinearLayout(this)
         linearLayout.id = View.generateViewId()
@@ -62,7 +62,7 @@ abstract class CategoryActivity : BaseActivity() {
 
         val factor: Float = this.resources.displayMetrics.density
 
-        for (icon in iconList!!) {
+        for (icon in iconList) {
 
             val imageView = ImageView(this)
 
@@ -84,14 +84,15 @@ abstract class CategoryActivity : BaseActivity() {
                 e.printStackTrace()
             }
 
-            imageView.layoutParams = LinearLayout.LayoutParams((factor*100).toInt(), (factor*100).toInt(), 1F)
-            imageView.tag= icon.iconName
+            imageView.layoutParams =
+                LinearLayout.LayoutParams((factor * 100).toInt(), (factor * 100).toInt(), 1F)
+            imageView.tag = icon.iconName
             imageView.setOnClickListener {
                 showSelected(imageView)
             }
             count++
 
-            if(count%3==0){
+            if (count % 3 == 0) {
                 linearLayout = LinearLayout(this)
                 linearLayout.id = View.generateViewId()
                 rootView.addView(linearLayout)
@@ -100,7 +101,7 @@ abstract class CategoryActivity : BaseActivity() {
             }
         }
 
-        if(ChooseCategoryActivity::class.java.name.contains(this.localClassName)){
+        if (ChooseCategoryActivity::class.java.name.contains(this.localClassName)) {
             val btnAdd = Button(this)
             btnAdd.text = "+"
             btnAdd.setOnClickListener {
@@ -112,13 +113,13 @@ abstract class CategoryActivity : BaseActivity() {
             btnAdd.setTextColor(0xFFFFFFFF.toInt())
             btnAdd.textSize = 30f
 
-            linearLayout.layoutParams.height = (100*factor).toInt()
+            linearLayout.layoutParams.height = (100 * factor).toInt()
             linearLayout.gravity = Gravity.CENTER
             linearLayout.addView(btnAdd)
         }
     }
 
-    fun showSelected(v : View){
+    private fun showSelected(v: View) {
 
         val images = mutableListOf<ImageView>()
         val imageViews = selectAllImageViews(window.decorView.rootView, images)
@@ -130,7 +131,11 @@ abstract class CategoryActivity : BaseActivity() {
         (v as ImageView).alpha = 0.5F
         selected = v.tag.toString()
     }
-    private fun selectAllImageViews(view: View, images : MutableList<ImageView>): MutableList<ImageView> {
+
+    private fun selectAllImageViews(
+        view: View,
+        images: MutableList<ImageView>
+    ): MutableList<ImageView> {
 
         if (view is ImageView) {
             images.add(view)

@@ -15,12 +15,12 @@ import com.walletflow.utils.Hashing
 
 class RegistrationActivity : AppCompatActivity() {
 
-    lateinit var submitBtn : Button
-    lateinit var backToLoginBtn : Button
-    lateinit var usernameField : EditText
-    lateinit var emailField : EditText
-    lateinit var passwordField : EditText
-    lateinit var passwordConfirmField : EditText
+    private lateinit var submitBtn: Button
+    private lateinit var backToLoginBtn: Button
+    private lateinit var usernameField: EditText
+    private lateinit var emailField: EditText
+    private lateinit var passwordField: EditText
+    private lateinit var passwordConfirmField: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,19 +41,21 @@ class RegistrationActivity : AppCompatActivity() {
             val password = passwordField.text.toString()
             val passwordCheck = passwordConfirmField.text.toString()
 
-            if(username.isEmpty() || email.isEmpty() || password.isEmpty() || passwordCheck.isEmpty()){
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || passwordCheck.isEmpty()) {
                 Toast.makeText(this, "Please specify all the fields", Toast.LENGTH_LONG).show()
-            }
-            else if (!isPasswordValid(password)){
-                Toast.makeText(this, "Please create a password with at least one uppercase, lowercase, digit and special character", Toast.LENGTH_LONG).show()
-            }
-            else if(password != passwordCheck){
+            } else if (!isPasswordValid(password)) {
+                Toast.makeText(
+                    this,
+                    "Please create a password with at least one uppercase, lowercase, digit and special character",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else if (password != passwordCheck) {
                 Toast.makeText(
                     this,
                     "The passwords don't match!",
                     Toast.LENGTH_LONG
                 ).show()
-            } else if(!isEmailValid(email)){
+            } else if (!isEmailValid(email)) {
                 Toast.makeText(this, "Please insert a valid email", Toast.LENGTH_LONG).show()
             } else {
                 val db = FirebaseFirestore.getInstance()
@@ -62,12 +64,17 @@ class RegistrationActivity : AppCompatActivity() {
                     .get()
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            if(!task.result.isEmpty()){
-                                Toast.makeText(this, "Already existing username!", Toast.LENGTH_LONG).show()
+                            if (!task.result.isEmpty) {
+                                Toast.makeText(
+                                    this,
+                                    "Already existing username!",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             } else {
                                 addIfEmailIsNew(db, username, email, password)
 
-                                val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                                val sharedPreferences =
+                                    getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
                                 val editor = sharedPreferences.edit()
                                 editor.putString("userID", username)
                                 editor.apply()
@@ -77,7 +84,11 @@ class RegistrationActivity : AppCompatActivity() {
 
                             }
                         } else {
-                            Log.w(this.localClassName, "Error getting documents checking username.", task.exception)
+                            Log.w(
+                                this.localClassName,
+                                "Error getting documents checking username.",
+                                task.exception
+                            )
                         }
                     }
             }
@@ -91,7 +102,7 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
 
-    private fun addUser(db : FirebaseFirestore, username : String, email : String, password : String){
+    private fun addUser(db: FirebaseFirestore, username: String, email: String, password: String) {
         val user: MutableMap<String, Any> = HashMap()
         user["username"] = username
         user["email"] = email
@@ -116,13 +127,18 @@ class RegistrationActivity : AppCompatActivity() {
             }
     }
 
-    private fun addIfEmailIsNew(db : FirebaseFirestore, username : String, email : String, password : String){
+    private fun addIfEmailIsNew(
+        db: FirebaseFirestore,
+        username: String,
+        email: String,
+        password: String
+    ) {
         db.collection("users")
             .whereEqualTo("email", email)
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    if (!task.result.isEmpty()) {
+                    if (!task.result.isEmpty) {
                         Toast.makeText(
                             this,
                             "Already existing email!",
@@ -133,10 +149,15 @@ class RegistrationActivity : AppCompatActivity() {
                         addUser(db, username, email, password)
                     }
                 } else {
-                    Log.w(this.localClassName, "Error getting documents checking email.", task.exception)
+                    Log.w(
+                        this.localClassName,
+                        "Error getting documents checking email.",
+                        task.exception
+                    )
                 }
             }
     }
+
     private fun isPasswordValid(password: String): Boolean {
         val minLength = 5
         val maxLength = 20

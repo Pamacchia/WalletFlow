@@ -1,7 +1,9 @@
+@file:Suppress("DEPRECATION")
+
 package com.walletflow.profile
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -9,36 +11,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import com.google.android.gms.tasks.Tasks
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
 import com.walletflow.R
 
 class FriendsListFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_friends_list, container, false)
     }
 
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
-
     override fun onResume() {
         super.onResume()
 
-        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
         val db = FirebaseFirestore.getInstance()
         val friendCollection = db.collection("friends")
@@ -46,6 +43,7 @@ class FriendsListFragment : Fragment() {
         filterAcceptedFriends(friendCollection, true, userID)
     }
 
+    @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
     private fun filterAcceptedFriends(
         queryRef: Query,
         type: Boolean,
@@ -64,15 +62,17 @@ class FriendsListFragment : Fragment() {
 
 
                         val inflater = LayoutInflater.from(requireContext())
-                        val cardView = inflater.inflate(R.layout.friend_cardview, rootView, false) as CardView
+                        val cardView =
+                            inflater.inflate(R.layout.friend_cardview, rootView, false) as CardView
                         val tvUsername = cardView.findViewById<TextView>(R.id.tvFriendUsername)
                         val tvEmail = cardView.findViewById<TextView>(R.id.tvFriendEmail)
-                        val contentLayoutView = cardView.findViewById<LinearLayout>(R.id.contentLayoutFriendCard)
+                        val contentLayoutView =
+                            cardView.findViewById<LinearLayout>(R.id.contentLayoutFriendCard)
 
                         val sender = document.getString("sender")
                         val receiver = document.getString("receiver")
 
-                        if(userID == sender){
+                        if (userID == sender) {
                             tvUsername.text = receiver
                         } else {
                             tvUsername.text = sender
@@ -83,14 +83,15 @@ class FriendsListFragment : Fragment() {
                         val factor: Float = this.resources.displayMetrics.density
 
                         val layoutParams = LinearLayout.LayoutParams(
-                            60*factor.toInt(), // width in pixels
-                            60*factor.toInt()  // height in pixels
+                            60 * factor.toInt(), // width in pixels
+                            60 * factor.toInt()  // height in pixels
                         )
                         layoutParams.gravity = Gravity.CENTER
-                        layoutParams.leftMargin = 10*factor.toInt()
+                        layoutParams.leftMargin = 10 * factor.toInt()
 
                         val deleteButton = Button(cardView.context)
-                        deleteButton.background = resources.getDrawable(R.drawable.baseline_delete_24)
+                        deleteButton.background =
+                            resources.getDrawable(R.drawable.baseline_delete_24)
                         contentLayoutView.addView(deleteButton)
 
                         deleteButton.layoutParams = layoutParams

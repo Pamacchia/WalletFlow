@@ -1,14 +1,15 @@
+@file:Suppress("DEPRECATION", "NAME_SHADOWING")
+
 package com.walletflow.dashboard
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
@@ -19,23 +20,26 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.R
 import java.text.SimpleDateFormat
-import java.util.Arrays
 import java.util.Calendar
 import kotlin.math.abs
 
 
 class PieChartFragment : Fragment() {
 
-    lateinit var pieChart : PieChart
-    lateinit var filterMonthTv : TextView
-    lateinit var filterYearTv : TextView
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private lateinit var pieChart: PieChart
+    private lateinit var filterMonthTv: TextView
+    private lateinit var filterYearTv: TextView
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
 
         return inflater.inflate(R.layout.fragment_pie_chart, container, false)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("SimpleDateFormat", "UseCompatLoadingForDrawables")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pieChart = view.findViewById(R.id.pieChartCategories) as PieChart
@@ -47,7 +51,8 @@ class PieChartFragment : Fragment() {
         calendar.add(Calendar.MONTH, -1)
         val oneMonthAgoString = SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.time)
 
-        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
         val db = FirebaseFirestore.getInstance()
         val queryRef = db.collection("transactions")
@@ -88,7 +93,7 @@ class PieChartFragment : Fragment() {
         queryRef: Query,
         date: String
     ) {
-        var processedRecords: MutableList<Map<String, Any>?> = mutableListOf()
+        val processedRecords: MutableList<Map<String, Any>?> = mutableListOf()
 
         queryRef
             .whereGreaterThan("date", date)
@@ -107,19 +112,16 @@ class PieChartFragment : Fragment() {
             }
     }
 
-    private fun showPieChart(processedRecords : MutableList<Map<String, Any>?>) {
+    private fun showPieChart(processedRecords: MutableList<Map<String, Any>?>) {
         val pieEntries = ArrayList<PieEntry>()
 
-        val colorArray = Arrays.copyOfRange(
-            resources.getIntArray(R.array.dashboard_colors),
-            0,
-            maxOf(processedRecords.size, 1)
-        )
+        val colorArray = resources.getIntArray(R.array.dashboard_colors)
+            .copyOfRange(0, maxOf(processedRecords.size, 1))
 
         val groupedData = groupAndSumRecords(processedRecords)
         // You can now use the groupedData as needed
 
-        if(groupedData.size != 0) {
+        if (groupedData.isNotEmpty()) {
             for ((type, sumAmount) in groupedData) {
                 pieEntries.add(PieEntry(abs(sumAmount.toFloat()), type))
             }
@@ -133,7 +135,7 @@ class PieChartFragment : Fragment() {
         pieDataSet.colors = colorArray.asList()
         val pieData = PieData(pieDataSet)
         pieData.setDrawValues(false)
-        pieChart.setData(pieData)
+        pieChart.data = pieData
         pieChart.setDrawEntryLabels(false)
         pieChart.invalidate()
     }
@@ -155,19 +157,18 @@ class PieChartFragment : Fragment() {
         //adding animation so the entries pop up from 0 degree
         pieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad)
     }
-    fun groupAndSumRecords(queryRecords: MutableList<Map<String, Any>?>): Map<String, Double> {
+
+    private fun groupAndSumRecords(queryRecords: MutableList<Map<String, Any>?>): Map<String, Double> {
         val groupedData = mutableMapOf<String, Double>()
 
-        if (queryRecords != null) {
-            for (record in queryRecords) {
-                val type = record?.get("category").toString()
-                val amount = (record?.get("amount") as Number).toDouble()
+        for (record in queryRecords) {
+            val type = record?.get("category").toString()
+            val amount = (record?.get("amount") as Number).toDouble()
 
-                if (groupedData.containsKey(type)) {
-                    groupedData[type] = groupedData[type]!! + amount
-                } else {
-                    groupedData[type] = amount
-                }
+            if (groupedData.containsKey(type)) {
+                groupedData[type] = groupedData[type]!! + amount
+            } else {
+                groupedData[type] = amount
             }
         }
 

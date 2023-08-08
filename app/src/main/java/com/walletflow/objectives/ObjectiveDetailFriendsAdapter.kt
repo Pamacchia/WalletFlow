@@ -8,20 +8,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.walletflow.R
 import com.walletflow.data.Participant
 
-class ObjectiveDetailFriendsAdapter (private val friendList: ArrayList<Participant>)
-    : RecyclerView.Adapter<ObjectiveDetailFriendsAdapter.FriendViewHolder>() {
+class ObjectiveDetailFriendsAdapter(private val friendList: ArrayList<Participant>) :
+    RecyclerView.Adapter<ObjectiveDetailFriendsAdapter.FriendViewHolder>() {
 
-    private var mRecyclerView : RecyclerView? = null
+    private var mRecyclerView: RecyclerView? = null
 
     class FriendViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val username: TextView = itemView.findViewById(R.id.tvFriendUsername)
         private val savings: TextView = itemView.findViewById(R.id.tvFriendSavings)
-        var currentParticipant : Participant? = null
+        var currentParticipant: Participant? = null
 
         fun bind(participant: Participant) {
             currentParticipant = participant
             username.text = participant.participant
-            savings.text="Has saved ${participant.saved} over ${participant.quote}"
+            savings.text = "Has saved ${participant.saved} over ${participant.quote}"
         }
     }
 
@@ -32,7 +32,8 @@ class ObjectiveDetailFriendsAdapter (private val friendList: ArrayList<Participa
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.participant_detail_item, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.participant_detail_item, parent, false)
         return FriendViewHolder(view)
     }
 

@@ -71,7 +71,7 @@ class ParticipantsAdapter() : RecyclerView.Adapter<ParticipantsAdapter.Participa
 
         if (amount!=null){
            participants.forEach { participant ->
-               participant.quote = ((amount/(participants.size+1) * 100.0).roundToInt() / 100.0)
+               participant.quote = ((amount / (participants.size + 1) * 100.0).roundToInt() / 100.0)
            }
             notifyDataSetChanged()
         }

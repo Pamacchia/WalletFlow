@@ -60,7 +60,7 @@ object TransactionManager {
             }
     }
 
-    fun updateBalance(db : FirebaseFirestore, amount : Float, userID : String?){
+    fun updateBalance(db: FirebaseFirestore, amount: Float, userID: String?) {
 
         val query = db.collection("users").whereEqualTo("username", userID)
 
@@ -72,9 +72,11 @@ object TransactionManager {
                     val updatedBalance = document.getDouble("balance")?.plus(amount.toDouble())
 
                     document.reference
-                        .update(mapOf(
-                            "balance" to updatedBalance
-                        ))
+                        .update(
+                            mapOf(
+                                "balance" to updatedBalance
+                            )
+                        )
                         .addOnSuccessListener {
                             println("Document updated successfully.")
                         }

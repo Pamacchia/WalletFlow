@@ -4,9 +4,10 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class User(
-    val username :String?=null,
-    val email : String?=null,
-    val balance : Double?=null) : Parcelable {
+    val username: String? = null,
+    val email: String? = null,
+    val balance: Double? = null
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),

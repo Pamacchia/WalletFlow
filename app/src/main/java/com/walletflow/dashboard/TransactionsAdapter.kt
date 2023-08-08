@@ -1,5 +1,6 @@
 package com.walletflow.dashboard
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,25 +13,29 @@ import com.walletflow.R
 import com.walletflow.data.Transaction
 import com.walletflow.utils.TransactionManager
 
-class TransactionsAdapter(private var transactions : MutableMap<String, Transaction>, val collection : CollectionReference)
-    : RecyclerView.Adapter<TransactionsAdapter.TransactionViewHolder>() {
+class TransactionsAdapter(
+    private var transactions: MutableMap<String, Transaction>,
+    val collection: CollectionReference
+) : RecyclerView.Adapter<TransactionsAdapter.TransactionViewHolder>() {
 
     /* ViewHolder for displaying header. */
-    class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        val tvDate = view.findViewById<TextView>(R.id.tvTransactionCardDate)
-        val tvCategory = view.findViewById<TextView>(R.id.tvTransactionCardCategory)
-        val tvAmount = view.findViewById<TextView>(R.id.tvTransactionCardAmount)
-        val deleteButton = view.findViewById<Button>(R.id.btTransactionDelete)
+    class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val tvDate = view.findViewById<TextView>(R.id.tvTransactionCardDate)
+        private val tvCategory = view.findViewById<TextView>(R.id.tvTransactionCardCategory)
+        private val tvAmount = view.findViewById<TextView>(R.id.tvTransactionCardAmount)
+        private val deleteButton = view.findViewById<Button>(R.id.btTransactionDelete)
 
-        fun bind(transaction : Pair<String, Transaction>, onClick : (Pair<String, Transaction>)->Unit) {
+        @SuppressLint("SetTextI18n")
+        fun bind(
+            transaction: Pair<String, Transaction>,
+            onClick: (Pair<String, Transaction>) -> Unit
+        ) {
             tvDate.text = transaction.second.date
             tvCategory.text = transaction.second.category
             tvAmount.text = transaction.second.amount.toString() + "$"
 
             deleteButton.setOnClickListener {
-                transaction?.let{
-                    onClick(it)
-                }
+                onClick(transaction)
             }
         }
     }
@@ -53,10 +58,11 @@ class TransactionsAdapter(private var transactions : MutableMap<String, Transact
         return transactions.size
     }
 
-    private fun deleteTransactions(transaction : Pair<String,Transaction>){
+    @SuppressLint("NotifyDataSetChanged")
+    private fun deleteTransactions(transaction: Pair<String, Transaction>) {
         val document = collection.document(transaction.first)
         document.delete()
-            .addOnSuccessListener{
+            .addOnSuccessListener {
                 // Document successfully deleted
                 // Handle success or UI updates here
                 TransactionManager.updateBalance(
@@ -73,9 +79,5 @@ class TransactionsAdapter(private var transactions : MutableMap<String, Transact
                 // Handle the error here
                 println("Error deleting document: $e")
             }
-    }
-
-    fun getTransactionsList() : MutableMap<String, Transaction>{
-        return transactions
     }
 }

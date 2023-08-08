@@ -3,19 +3,18 @@ package com.walletflow.data
 import android.os.Parcel
 import android.os.Parcelable
 
-data class Objective (
-    val name :String? = null,
-    val amount : Double? = 0.0,
-    val date :  String? = null,
-    val admin : String? = null
-    ) : Parcelable {
+data class Objective(
+    val name: String? = null,
+    val amount: Double? = 0.0,
+    val date: String? = null,
+    val admin: String? = null
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readValue(Double::class.java.classLoader) as? Double,
         parcel.readString(),
         parcel.readString()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)

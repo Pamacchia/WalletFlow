@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.walletflow.profile
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -26,10 +29,14 @@ import com.walletflow.R
 
 class FriendsRequestFragment : Fragment() {
 
-    lateinit var btnAddFriend : Button
-    lateinit var etAddFriend : EditText
+    private lateinit var btnAddFriend: Button
+    private lateinit var etAddFriend: EditText
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_friends_request, container, false)
     }
@@ -41,7 +48,8 @@ class FriendsRequestFragment : Fragment() {
         btnAddFriend = view.findViewById(R.id.btnAddFriend)
         etAddFriend = view.findViewById(R.id.etAddFriend)
 
-        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
         val db = FirebaseFirestore.getInstance()
         val friendCollection = db.collection("friends")
@@ -69,6 +77,7 @@ class FriendsRequestFragment : Fragment() {
 
     }
 
+    @SuppressLint("SetTextI18n", "UseCompatLoadingForDrawables")
     private fun filterRequestedFriends(
         queryRef: Query,
         type: Boolean,
@@ -86,15 +95,21 @@ class FriendsRequestFragment : Fragment() {
                     for (document in task.result) {
 
                         val inflater = LayoutInflater.from(requireContext())
-                        val cardView = inflater.inflate(R.layout.friend_request_cardview, rootView, false) as CardView
-                        val tvUsername = cardView.findViewById<TextView>(R.id.tvFriendRequestUsername)
+                        val cardView = inflater.inflate(
+                            R.layout.friend_request_cardview,
+                            rootView,
+                            false
+                        ) as CardView
+                        val tvUsername =
+                            cardView.findViewById<TextView>(R.id.tvFriendRequestUsername)
                         val tvEmail = cardView.findViewById<TextView>(R.id.tvFriendRequestEmail)
                         val tvDate = cardView.findViewById<TextView>(R.id.tvFriendRequestDate)
 
                         val sender = document.getString("sender")
                         val receiver = document.getString("receiver")
 
-                        val contentLayoutView = cardView.findViewById<LinearLayout>(R.id.contentLayoutFriendRequestCard)
+                        val contentLayoutView =
+                            cardView.findViewById<LinearLayout>(R.id.contentLayoutFriendRequestCard)
 
                         tvEmail.text = "fake@email.com"
                         tvDate.text = "01/01/1990"
@@ -102,21 +117,22 @@ class FriendsRequestFragment : Fragment() {
                         val factor: Float = this.resources.displayMetrics.density
 
                         val layoutParams = LinearLayout.LayoutParams(
-                            60*factor.toInt(), // width in pixels
-                            60*factor.toInt()  // height in pixels
+                            60 * factor.toInt(), // width in pixels
+                            60 * factor.toInt()  // height in pixels
                         )
                         layoutParams.gravity = Gravity.CENTER
-                        layoutParams.leftMargin = 10*factor.toInt()
+                        layoutParams.leftMargin = 10 * factor.toInt()
 
 
-                        if(userID == sender){
+                        if (userID == sender) {
                             tvUsername.text = receiver
 
                             val cancelButton = Button(cardView.context)
-                            cancelButton.background = resources.getDrawable(R.drawable.baseline_delete_24)
+                            cancelButton.background =
+                                resources.getDrawable(R.drawable.baseline_delete_24)
                             contentLayoutView.addView(cancelButton)
 
-                            layoutParams.leftMargin = 80*factor.toInt()
+                            layoutParams.leftMargin = 80 * factor.toInt()
                             cancelButton.layoutParams = layoutParams
 
                             cancelButton.setOnClickListener {
@@ -133,13 +149,15 @@ class FriendsRequestFragment : Fragment() {
                             tvUsername.text = sender
 
                             val acceptButton = Button(cardView.context)
-                            acceptButton.background = resources.getDrawable(R.drawable.baseline_thumb_up_24)
-                            layoutParams.rightMargin = 10*factor.toInt()
+                            acceptButton.background =
+                                resources.getDrawable(R.drawable.baseline_thumb_up_24)
+                            layoutParams.rightMargin = 10 * factor.toInt()
                             acceptButton.layoutParams = layoutParams
                             contentLayoutView.addView(acceptButton)
 
                             val rejectButton = Button(cardView.context)
-                            rejectButton.background = resources.getDrawable(R.drawable.baseline_thumb_down_24)
+                            rejectButton.background =
+                                resources.getDrawable(R.drawable.baseline_thumb_down_24)
                             rejectButton.layoutParams = layoutParams
                             contentLayoutView.addView(rejectButton)
 
@@ -243,7 +261,11 @@ class FriendsRequestFragment : Fragment() {
         db.collection("friends")
             .add(friendRequest)
             .addOnSuccessListener { documentReference ->
-                filterRequestedFriends(db.collection("friends"), false, friendRequest["sender"].toString())
+                filterRequestedFriends(
+                    db.collection("friends"),
+                    false,
+                    friendRequest["sender"].toString()
+                )
                 Log.d(
                     "FriendRequest",
                     "DocumentSnapshot added with ID: " + documentReference.id

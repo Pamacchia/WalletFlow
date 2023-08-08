@@ -1,14 +1,10 @@
 package com.walletflow.transactions
 
-import android.content.Context
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import com.google.firebase.firestore.FirebaseFirestore
-import com.walletflow.HomeActivity
 import com.walletflow.R
 import com.walletflow.data.Icon
 import com.walletflow.utils.TransactionManager
@@ -19,7 +15,7 @@ private const val CHOOSE_CATEGORY_TYPE = 1
 
 class ChooseCategoryActivity : CategoryActivity() {
 
-    lateinit var submitBtn : Button
+    private lateinit var submitBtn: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,11 +28,17 @@ class ChooseCategoryActivity : CategoryActivity() {
         submitBtn.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
 
-            addTransaction(db, intent.getFloatExtra("amount", 0F),
+            addTransaction(
+                db, intent.getFloatExtra("amount", 0F),
                 intent.getStringExtra("note"), intent.getBooleanExtra("frequent", false),
-                intent.getStringExtra("userID"), intent.getStringExtra("typeName"), selected)
+                intent.getStringExtra("userID"), intent.getStringExtra("typeName"), selected
+            )
 
-            TransactionManager.updateBalance(db, intent.getFloatExtra("amount", 0F), intent.getStringExtra("userID"))
+            TransactionManager.updateBalance(
+                db,
+                intent.getFloatExtra("amount", 0F),
+                intent.getStringExtra("userID")
+            )
             Thread.sleep(150L)
             finish()
         }
@@ -53,7 +55,16 @@ class ChooseCategoryActivity : CategoryActivity() {
         loadIcons(iconList)
     }
 
-    private fun addTransaction(db : FirebaseFirestore, amount : Float, note : String?, frequent : Boolean, userID : String?, type_name : String?, category : String?) {
+    @SuppressLint("SimpleDateFormat")
+    private fun addTransaction(
+        db: FirebaseFirestore,
+        amount: Float,
+        note: String?,
+        frequent: Boolean,
+        userID: String?,
+        type_name: String?,
+        category: String?
+    ) {
         val transaction: MutableMap<String, Any?> = HashMap()
         transaction["user"] = userID
         transaction["type"] = type_name

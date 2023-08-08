@@ -20,7 +20,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
 
     private lateinit var friendsRecyclerView: RecyclerView
     private lateinit var groupRecyclerView: RecyclerView
-    private lateinit var fab : FloatingActionButton
+    private lateinit var fab: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +37,8 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
 
         Tasks.whenAllSuccess<QuerySnapshot>(senderQuery, receiverQuery)
             .addOnSuccessListener { requestQueryList ->
-                var userQueryList : ArrayList<Task<QuerySnapshot>> = userQueryList(requestQueryList[0], db, false)
+                var userQueryList: ArrayList<Task<QuerySnapshot>> =
+                    userQueryList(requestQueryList[0], db, false)
                 userQueryList.addAll(userQueryList(requestQueryList[1], db, true))
                 getFriends(userQueryList)
             }
@@ -50,7 +51,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
         }
     }
 
-    private fun returnGroup(){
+    private fun returnGroup() {
         val intent = Intent(this, AddObjectiveActivity::class.java)
         val friendGroup = (groupRecyclerView.adapter as FriendsGroupAdapter).getGroupList()
 
@@ -63,12 +64,16 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
         }
     }
 
-    private fun userQueryList ( requestQuery: QuerySnapshot, db: FirebaseFirestore, receiver : Boolean): ArrayList<Task<QuerySnapshot>> {
+    private fun userQueryList(
+        requestQuery: QuerySnapshot,
+        db: FirebaseFirestore,
+        receiver: Boolean
+    ): ArrayList<Task<QuerySnapshot>> {
         val userQueryList = arrayListOf<Task<QuerySnapshot>>()
         requestQuery.forEach { documentSnapshot ->
             val users = db.collection("users")
             val request = documentSnapshot.toObject(FriendRequest::class.java)
-            val username = if(receiver) request.sender else request.receiver
+            val username = if (receiver) request.sender else request.receiver
             userQueryList.add(users.whereEqualTo("username", username).get())
         }
         return userQueryList
@@ -82,9 +87,9 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
             }
             setUpRecyclerViews(friendsList)
         }
-        .addOnFailureListener {
-            Log.w(this.localClassName, "Or user query error")
-        }
+            .addOnFailureListener {
+                Log.w(this.localClassName, "Or user query error")
+            }
     }
 
     private fun setUpRecyclerViews(friendsList: ArrayList<User>) {
