@@ -32,18 +32,19 @@
             android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="15dp"
             android:gravity="center">
             <EditText
                 android:id="@+id/etSaving"
                 android:layout_width="180dp"
                 android:layout_height="match_parent"
                 android:textAlignment="center"
-                android:hint="Savings"></EditText>
+                android:hint="Add savings"></EditText>
             <Button
                 android:id="@+id/btnAddSavings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add"></Button>
+                android:text="Save"></Button>
         </LinearLayout>
 
         <TextView

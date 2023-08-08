@@ -68,15 +68,14 @@ class ObjectivesActivity : BaseActivity() {
                                 val objective = objectiveQuery.result.toObject(Objective::class.java)
                                 val otherParticipants = resultQueryList.toObjects(Participant::class.java)
 
-                                tvTitle.text = objective!!.name + "   |   " + objective.date
-                                tvParticipants.text = "|"
-                                otherParticipants.forEach{ participant ->
-                                    if (participant.participant!=currentUser.participant){
-                                        tvParticipants.append(
-                                            " ${participant.participant} |"
-                                        )
-                                    }
+                                tvTitle.text = objective!!.name + "  |  Expires: " + objective.date
+
+                                if(otherParticipants.size > 1){
+                                    tvParticipants.text = "Group Objective"
+                                } else {
+                                    tvParticipants.text = "Solo Objective"
                                 }
+
                                 tvSavings.text = "You saved ${currentUser.saved}$ out of ${objective.amount}$"
                                 rootView.addView(cardView)
 

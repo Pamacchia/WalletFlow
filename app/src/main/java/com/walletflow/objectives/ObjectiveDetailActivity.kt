@@ -13,7 +13,9 @@ import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Objective
 import com.walletflow.data.Participant
+import java.lang.Math.round
 import java.util.ArrayList
+import kotlin.math.roundToInt
 
 class ObjectiveDetailActivity : BaseActivity() {
 
@@ -53,8 +55,9 @@ class ObjectiveDetailActivity : BaseActivity() {
         }
 
         addSavingsBtn.setOnClickListener{
-            val amount = etSavings.text.toString().toDouble()
+            var amount = etSavings.text.toString().toDouble()
             if (amount<=currentUser.quote && amount>0){
+                amount = ((amount * 100.0).roundToInt() / 100.0)
                 currentUser.saved = currentUser.saved?.plus(amount)
                 tvMyRecap.text = "You have currently saved ${currentUser.saved}$ over ${currentUser.quote}$"
                 db.collection("participants").whereEqualTo("participant", currentUser.participant)
