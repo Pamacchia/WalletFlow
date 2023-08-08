@@ -1,9 +1,11 @@
 package com.walletflow
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.dashboard.DashboardActivity
 import com.walletflow.objectives.ObjectivesActivity
 import com.walletflow.profile.ProfileActivity
@@ -12,9 +14,14 @@ import com.walletflow.profile.ProfileActivity
 abstract class BaseActivity : AppCompatActivity() {
 
     private lateinit var bottomNavBar: BottomNavigationView
+    val db = FirebaseFirestore.getInstance()
+    lateinit var userID : String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getLayoutResourceId())
+
+        userID = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE).getString("userID", "") ?: ""
 
         bottomNavBar = findViewById(R.id.bottom_navigation)
 

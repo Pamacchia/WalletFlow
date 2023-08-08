@@ -2,7 +2,6 @@ package com.walletflow
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -31,7 +30,7 @@ class HomeActivity : BaseActivity() {
     private lateinit var expenseBtn: Button
     private lateinit var balanceTv: TextView
     private lateinit var expensesTv: TextView
-    private lateinit var savingsTv: TextView
+    private lateinit var objectiveMoneyTv: TextView
     private lateinit var totalBudget: TextView
     private lateinit var greetingUser: TextView
 
@@ -54,7 +53,7 @@ class HomeActivity : BaseActivity() {
         totalBudget = findViewById(R.id.tvTotalBudget)
         balanceTv = findViewById(R.id.tvBalance)
         expensesTv = findViewById(R.id.tvExpenses)
-        savingsTv = findViewById(R.id.tvSavings)
+        objectiveMoneyTv = findViewById(R.id.tvObjectiveMoney)
         greetingUser = findViewById(R.id.tvGreetingUser)
 
         loadHomeData()
@@ -90,24 +89,13 @@ class HomeActivity : BaseActivity() {
     @SuppressLint("SetTextI18n")
     private fun loadHomeData() {
 
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-
         "Hello, $userID".also { greetingUser.text = it }
 
-        val db = FirebaseFirestore.getInstance()
-
-        db.collection("users")
-            .whereEqualTo("username", userID)
-            .get(Source.SERVER)
+        db.collection("users").whereEqualTo("username", userID).get(Source.SERVER)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     balance = task.result.first().getDouble("balance")!!
-
                     balanceTv.text = "${StringHelper.getShrunkForm(balance)}€"
-
-                    Log.w(this.toString(), task.result.first().getDouble("balance").toString())
-
                     updateTotalBudget()
                     updateExpenses()
                 } else {
@@ -118,10 +106,6 @@ class HomeActivity : BaseActivity() {
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun updateTotalBudget() {
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-
-        val db = FirebaseFirestore.getInstance()
 
         val calendar = Calendar.getInstance()
         val dateUpper = SimpleDateFormat("yyyy-MM").format(calendar.time)
@@ -142,7 +126,6 @@ class HomeActivity : BaseActivity() {
                     for (document in task.result) {
                         budget += document.getDouble("amount")!!
                     }
-
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
                 }
@@ -170,20 +153,16 @@ class HomeActivity : BaseActivity() {
 
                     totalBudget.text = " ${StringHelper.getShrunkForm(budget)}$" //TODO: Euro
                     val progressBarContainer = findViewById<FrameLayout>(R.id.budgetProgressBar)
-                    // Calculate the relative difference between budget and thisMonthBudget
                     val difference = kotlin.math.abs(budget - thisMonthBudget)
                     val relativeDifference = difference / thisMonthBudget
                     val desiredWidthInDp = 310
                     val minProgressBarWidthInPx = 1
                     val reversedRelativeDifference = 1 - relativeDifference
-                    val newWidthInPx =
-                        (minProgressBarWidthInPx + (reversedRelativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
-
+                    val newWidthInPx = (minProgressBarWidthInPx + (reversedRelativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
 
                     val layoutParams = progressBarContainer.layoutParams
                     layoutParams.width = newWidthInPx
                     progressBarContainer.layoutParams = layoutParams
-
 
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
@@ -194,10 +173,6 @@ class HomeActivity : BaseActivity() {
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
     private fun updateExpenses() {
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-
-        val db = FirebaseFirestore.getInstance()
 
         val calendar = Calendar.getInstance()
         val date = SimpleDateFormat("yyyy").format(calendar.time)
@@ -211,6 +186,7 @@ class HomeActivity : BaseActivity() {
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+
                     for (document in task.result) {
                         expenses += document.getDouble("amount")!!
                     }
@@ -222,7 +198,6 @@ class HomeActivity : BaseActivity() {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
                 }
             }
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -231,14 +206,7 @@ class HomeActivity : BaseActivity() {
         val rootView = findViewById<LinearLayout>(R.id.layoutFrequentTransactions)
         rootView.removeAllViews()
 
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-
-        val db = FirebaseFirestore.getInstance()
-
-        db.collection("frequentTransactions")
-            .whereEqualTo("user", userID)
-            .get()
+        db.collection("frequentTransactions").whereEqualTo("user", userID).get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
 
@@ -246,9 +214,7 @@ class HomeActivity : BaseActivity() {
 
                         val inflater = LayoutInflater.from(this)
                         val cardView = inflater.inflate(
-                            R.layout.frequent_transaction_cardview,
-                            rootView,
-                            false
+                            R.layout.frequent_transaction_cardview, rootView, false
                         ) as CardView
                         val tvNote =
                             cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardNote)
@@ -260,7 +226,6 @@ class HomeActivity : BaseActivity() {
                         tvNote.text = document.getString("note")
                         tvType.text = document.getString("type")
                         tvAmount.text = document.getDouble("amount").toString() + "$" // TODO: Euro
-                        // Add the card view to the container layout
 
                         val addButton = cardView.findViewById<Button>(R.id.btFrequentTransactionAdd)
 
@@ -288,15 +253,12 @@ class HomeActivity : BaseActivity() {
 
     @SuppressLint("SimpleDateFormat")
     private fun createAlertForFrequentTransaction(
-        document: QueryDocumentSnapshot,
-        db: FirebaseFirestore,
-        userID: String?,
-        add: Boolean
+        document: QueryDocumentSnapshot, db: FirebaseFirestore, userID: String?, add: Boolean
     ) {
 
         val alert: AlertDialog.Builder = AlertDialog.Builder(this)
-        alert.setTitle("Add")
-        alert.setMessage("Are you sure you want to add?")
+        alert.setTitle("Confirm")
+        alert.setMessage("Are you sure?")
         alert.setPositiveButton(
             "Yes"
         ) { _, _ ->
