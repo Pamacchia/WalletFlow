@@ -12,14 +12,18 @@ import androidx.cardview.widget.CardView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.BaseActivity
 import com.walletflow.R
+import com.walletflow.data.Objective
+import com.walletflow.data.Participant
 
 class ObjectivesActivity : BaseActivity() {
 
     lateinit var createNewObjective : Button
+    lateinit var createNewGroupObjective : Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        createNewObjective = findViewById(R.id.btnAddNewObjectives)
+        createNewObjective = findViewById(R.id.btnAddNewObjective)
+        createNewGroupObjective = findViewById(R.id.btnAddNewGroupObjective)
 
         loadObjectives()
 
@@ -34,47 +38,77 @@ class ObjectivesActivity : BaseActivity() {
         return R.layout.activity_objective
     }
 
-    fun loadObjectives() {
+    private fun loadObjectives() {
 
         val rootView = findViewById<LinearLayout>(R.id.objectivesLayout)
         rootView.removeAllViews()
 
-        val db = FirebaseFirestore.getInstance()
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-
-        db.collection("objectives")
-            .whereEqualTo("admin", userID)
+        db.collection("participants")
+            .whereEqualTo("participant", userID)
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    for(objective in task.result){
+                    for(participant in task.result){
 
-                        val inflater = LayoutInflater.from(this)
-                        val cardView = inflater.inflate(R.layout.objective_cardview, rootView, false) as CardView
+                        val currentUser = Participant(participant.getString("objectiveId")!!,
+                            participant.getString("participant")!!,
+                            participant.getDouble("quote")!!,
+                            participant.getDouble("saved")!!
+                        )
+
+                        val objectiveQuery = db.collection("objectives").document(currentUser.objectiveId!!).get()
+                        val otherParticipantsQuery = db.collection("participants").whereEqualTo("objectiveId", currentUser.objectiveId!!).get()
+
+                        val cardView = LayoutInflater.from(this).inflate(R.layout.objective_cardview, rootView, false) as CardView
                         val tvTitle = cardView.findViewById<TextView>(R.id.tvObjectiveCardTitle)
                         val tvParticipants = cardView.findViewById<TextView>(R.id.tvObjectiveCardParticipants)
                         val tvSavings = cardView.findViewById<TextView>(R.id.tvObjectiveCardProgress)
 
-                        // Modify the text views with your data
-                        tvTitle.text = objective.getString("name") + "   |   " + objective.getString("date")
-                        tvParticipants.text = "Temp"
-                        // TODO: dollar to euro
-                        tvSavings.text = "You saved ${objective.get("saved").toString().toFloat()}$ out of ${objective.get("amount").toString().toFloat()}$"
+                        objectiveQuery.addOnCompleteListener {objectiveQuery ->
 
-                        // Add the card view to the container layout
-                        rootView.addView(cardView)
+                            otherParticipantsQuery.addOnSuccessListener { resultQueryList ->
 
-                        cardView.setOnClickListener{
-                            val intent = Intent(this, ObjectiveDetailActivity::class.java)
-                            intent.putExtra("name", objective.getString("name"))
-                            intent.putExtra("amount", objective.get("amount").toString().toFloat())
-                            intent.putExtra("saved", objective.get("saved").toString().toFloat())
-                            intent.putExtra("objectiveId", objective.id)
-                            startActivity(intent)
+                                val objective = Objective(objectiveQuery.result.getString("name")!!,
+                                    objectiveQuery.result.getDouble("amount"),
+                                    objectiveQuery.result.getString("date")!!,
+                                    objectiveQuery.result.getString("admin")!!
+                                )
+
+                                val participantList = ArrayList<Participant>() // ArrayList to store Participant instances
+
+                                for(otherParticipant in resultQueryList){
+                                    val tempParticipant = Participant(
+                                        otherParticipant.getString("objectiveId")!!,
+                                        otherParticipant.getString("participant")!!,
+                                        otherParticipant.getDouble("quote")!!,
+                                        otherParticipant.getDouble("saved")!!
+                                    )
+                                    participantList.add(tempParticipant)
+                                }
+
+                                tvTitle.text = objective.name + " | Exp: " + objective.date
+
+                                if(participantList.size > 1){
+                                    tvParticipants.text = "Group Objective"
+                                } else {
+                                    tvParticipants.text = "Solo Objective"
+                                }
+
+                                tvSavings.text = "You saved ${currentUser.saved} out of ${currentUser.quote}"
+                                rootView.addView(cardView)
+
+                                cardView.setOnClickListener {
+                                    val intent = Intent(this, ObjectiveDetailActivity::class.java)
+                                    intent.putExtra("objective", objective)
+                                    intent.putExtra("participants", participantList)
+                                    intent.putExtra("currentUser", currentUser)
+                                    startActivity(intent)
+                                }
+                            }.addOnFailureListener {
+                                Log.w(this.localClassName, "QueryError")
+                            }
+
                         }
-
-
                     }
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)

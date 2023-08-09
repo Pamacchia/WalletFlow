@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
+        android:gravity="center_horizontal"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -27,36 +28,120 @@
             android:textAlignment="center"
             ></TextView>
 
-        <Button
-            android:id="@+id/btnAddParticipant"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:text="Add Participant"></Button>
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:gravity="center">
 
-        <TextView
-            android:id="@+id/tvObjectiveRecap"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Placeholder"
-            android:textAlignment="center"
-            android:textSize="20dp"
-            android:layout_marginTop="25dp"
-            ></TextView>
+            <EditText
+                android:id="@+id/etAddSavings"
+                android:layout_width="180dp"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:inputType="numberDecimal"
+                android:hint="Add savings">
+            </EditText>
+
+            <Button
+                android:id="@+id/btnAddSavings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save">
+
+            </Button>
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="320dp"
+            android:layout_height="50dp"
+            android:backgroundTint="#ffffffff"
+            android:layout_marginTop="20dp"
+            card_view:cardElevation="20dp"
+            card_view:cardCornerRadius="20dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:id="@+id/objectiveProgressBar"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#FFC107">
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/tvObjectiveBudget"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0$/0$"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="10dp"
+                    android:layout_centerVertical="true"
+                    >
+
+                </TextView>
+
+
+            </RelativeLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
 
             <LinearLayout
-                android:id="@+id/participantsListLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:gravity="center_horizontal"
                 android:orientation="vertical">
 
+                <LinearLayout
+                    android:id="@+id/participantsListLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="320dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="20dp"
+                    >
+
+                    <Button
+                        android:id="@+id/btnCompletedObjective"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="5dp"
+                        android:enabled="false"
+                        android:text="Completed">
+                    </Button>
+
+                    <Button
+                        android:id="@+id/btnDeleteObjective"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginRight="5dp"
+                        android:text="delete">
+                    </Button>
+
+                </LinearLayout>
             </LinearLayout>
 
         </ScrollView>
