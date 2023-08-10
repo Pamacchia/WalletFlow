@@ -1,5 +1,6 @@
 package com.walletflow.objectives
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,6 +26,7 @@ class ObjectiveDetailActivity : BaseActivity() {
     lateinit var titleTv : TextView
     lateinit var completedBtn : Button
     lateinit var addSavingsBtn : Button
+    lateinit var deleteObjBtn : Button
     lateinit var addSavingsEt : EditText
     lateinit var objectiveBudgetTv : TextView
 
@@ -37,6 +39,7 @@ class ObjectiveDetailActivity : BaseActivity() {
 
         titleTv = findViewById(R.id.tvObjectiveTitle)
         completedBtn = findViewById(R.id.btnCompletedObjective)
+        deleteObjBtn = findViewById(R.id.btnDeleteObjective)
         addSavingsBtn = findViewById(R.id.btnAddSavings)
         addSavingsEt = findViewById(R.id.etAddSavings)
         objectiveBudgetTv = findViewById(R.id.tvObjectiveBudget)
@@ -47,7 +50,6 @@ class ObjectiveDetailActivity : BaseActivity() {
 
         addSavingsBtn.setOnClickListener {
             var amount = addSavingsEt.text.toString().toDouble()
-
             if (amount <= (currentUser!!.quote - currentUser.saved) && amount > 0){
                 amount = ((amount*100).roundToInt() / 100.0)
                 currentUser.saved = currentUser.saved?.plus(amount)!!
@@ -73,6 +75,56 @@ class ObjectiveDetailActivity : BaseActivity() {
                 Toast.makeText(this, "Invalid amount.", Toast.LENGTH_LONG).show()
             }
         }
+
+        completedBtn.setOnClickListener {
+
+            db.collection("objectives")
+                .document(currentUser!!.objectiveId)
+                .update("completed", true)
+
+            val intent = Intent(this, ObjectivesActivity::class.java)
+            startActivity(intent)
+        }
+
+        deleteObjBtn.setOnClickListener {
+
+            db.collection("objectives")
+                .document(currentUser!!.objectiveId)
+                .delete()
+                .addOnSuccessListener {
+                    Log.d(this.localClassName, "DocumentSnapshot successfully deleted!")
+
+                    // Delete participants with the same objectiveId
+                    db.collection("participants")
+                        .whereEqualTo("objectiveId", currentUser!!.objectiveId)
+                        .get()
+                        .addOnSuccessListener { querySnapshot ->
+                            val batch = db.batch()
+                            for (document in querySnapshot) {
+                                val participantRef = db.collection("participants").document(document.id)
+                                batch.delete(participantRef)
+                            }
+
+                            batch.commit()
+                                .addOnSuccessListener {
+                                    Log.d(this.localClassName, "Participants deleted successfully!")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(this.localClassName, "Error deleting participants", e)
+                                }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w(this.localClassName, "Error querying participants", e)
+                        }
+
+                    val intent = Intent(this, ObjectivesActivity::class.java)
+                    startActivity(intent)
+                }
+                .addOnFailureListener { e ->
+                    Log.w(this.localClassName, "Error deleting document", e)
+                }
+        }
+
     }
 
     private fun loadParticipantInformation(
@@ -128,7 +180,6 @@ class ObjectiveDetailActivity : BaseActivity() {
         }
 
         objectiveBudgetTv.text = " ${totalSaved}$/${objective.amount}$"
-
         val objectiveProgressBar = findViewById<FrameLayout>(R.id.objectiveProgressBar)
         val difference = kotlin.math.abs(objective.amount!! - totalSaved!!)
         val invRelativeDifference = difference / objective.amount
@@ -136,11 +187,9 @@ class ObjectiveDetailActivity : BaseActivity() {
         val minProgressBarWidthInPx = 1
         val relativeDifference = 1 - invRelativeDifference
         val newWidthInPx = (minProgressBarWidthInPx + (relativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
-
         val layoutParams = objectiveProgressBar.layoutParams
         layoutParams.width = newWidthInPx
         objectiveProgressBar.layoutParams = layoutParams
-
         return totalSaved
     }
 }

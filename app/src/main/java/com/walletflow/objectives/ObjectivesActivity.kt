@@ -77,7 +77,8 @@ class ObjectivesActivity : BaseActivity() {
                                 val objective = Objective(objectiveQuery.result.getString("name")!!,
                                     objectiveQuery.result.getDouble("amount"),
                                     objectiveQuery.result.getString("date")!!,
-                                    objectiveQuery.result.getString("admin")!!
+                                    objectiveQuery.result.getString("admin")!!,
+                                    objectiveQuery.result.getBoolean("completed")
                                 )
 
                                 val participantList = ArrayList<Participant>() // ArrayList to store Participant instances
@@ -103,6 +104,7 @@ class ObjectivesActivity : BaseActivity() {
                                 tvSavings.text = "You saved ${currentUser.saved} out of ${currentUser.quote}"
                                 rootView.addView(cardView)
 
+
                                 cardView.setOnClickListener {
                                     val intent = Intent(this, ObjectiveDetailActivity::class.java)
                                     intent.putExtra("objective", objective)
@@ -110,6 +112,7 @@ class ObjectivesActivity : BaseActivity() {
                                     intent.putExtra("currentUser", currentUser)
                                     startActivity(intent)
                                 }
+
                             }.addOnFailureListener {
                                 Log.w(this.localClassName, "QueryError")
                             }

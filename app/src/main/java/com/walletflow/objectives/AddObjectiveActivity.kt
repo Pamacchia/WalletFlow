@@ -110,7 +110,8 @@ class AddObjectiveActivity : BaseActivity() {
                     etName.text.toString(),
                     etAmount.text.toString().toDouble(),
                     SimpleDateFormat("yyyy-MM-dd").format(selectedDate),
-                    userID
+                    userID,
+                    false
                 )
 
                 saveObjective(obj, db)
@@ -153,7 +154,6 @@ class AddObjectiveActivity : BaseActivity() {
         for (i in 0 until friendQuotesLayout.childCount) {
             val friendQuoteView = friendQuotesLayout.getChildAt(i) as LinearLayout
             val friendQuoteEditText = friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
-
             val newQuote = (amount / numParticipants).toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
             friendQuoteEditText.setText(newQuote.toString())
         }
