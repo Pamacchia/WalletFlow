@@ -11,13 +11,20 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import com.google.android.gms.tasks.Task
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.BaseActivity
 import com.walletflow.R
+import com.walletflow.data.Objective
+import com.walletflow.data.Participant
+import java.math.RoundingMode
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -29,8 +36,6 @@ class AddObjectiveActivity : BaseActivity() {
     private lateinit var etName : EditText
     private lateinit var etAmount : EditText
     private lateinit var etSelectDate: EditText
-    private lateinit var cbGroupObjective : CheckBox
-
     private lateinit var selectedDate : Date
 
     private val textWatcher = object : TextWatcher {
@@ -59,25 +64,62 @@ class AddObjectiveActivity : BaseActivity() {
 
         etAmount.setText(0.0.toString())
 
-        val group = intent.getStringArrayExtra("group")
+        val group = intent.getStringArrayListExtra("group")
 
-        etAmount.setOnFocusChangeListener()
+        etAmount.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus && group!=null) {
+                updateQuoteValues(group!!.size)
+            }
+        }
+
+        val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
+
+        if(group!=null) {
+            for (friend in group!!) {
+                val friendQuoteView =
+                    layoutInflater.inflate(R.layout.friend_quote_layout, null) as LinearLayout
+                val friendUsernameTextView =
+                    friendQuoteView.findViewById<TextView>(R.id.friendUsernameTextView)
+                friendUsernameTextView.text = friend
+                friendQuotesLayout.addView(friendQuoteView)
+            }
+        }
+
+        etSelectDate.setOnClickListener{
+            showDatePicker()
+        }
 
         btnSubmitObjective.setOnClickListener{
 
-            val db = FirebaseFirestore.getInstance()
-            val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            val userID = sharedPreferences.getString("userID", "")
-            val name = etName.text.toString()
-            val amount = etAmount.text.toString().toFloat()
-            val group = cbGroupObjective.isChecked
-            val date = selectedDate
+            val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
+            var sumOfQuotes = 0.0
+            if(group!=null) {
+                for (i in 0 until friendQuotesLayout.childCount) {
+                    val friendQuoteView = friendQuotesLayout.getChildAt(i) as LinearLayout
+                    val friendQuoteEditText =
+                        friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
+                    val quoteValue = friendQuoteEditText.text.toString().toDoubleOrNull() ?: 0.0
+                    sumOfQuotes += quoteValue
+                }
+            }
 
-            saveObjective(userID, name, amount, group, date, db)
+            // Compare the sum of quote values with the original amount
+            if (sumOfQuotes == etAmount.text.toString().toDouble() || group==null) {
 
-            val intent = Intent(this, ObjectivesActivity::class.java)
-            startActivity(intent)
+                val obj = Objective(
+                    etName.text.toString(),
+                    etAmount.text.toString().toDouble(),
+                    SimpleDateFormat("yyyy-MM-dd").format(selectedDate),
+                    userID
+                )
 
+                saveObjective(obj, db)
+
+                val intent = Intent(this, ObjectivesActivity::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Quote values do not match the amount.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -92,48 +134,72 @@ class AddObjectiveActivity : BaseActivity() {
             )
             .build()
 
-        datePicker.addOnPositiveButtonClickListener(
-            MaterialPickerOnPositiveButtonClickListener<Long> { selection ->
-                selectedDate = Date(selection)
-                val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                val formattedDate = format.format(selectedDate)
-                tvSelectedDate.text = formattedDate
-            })
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            selectedDate = Date(selection)
+            val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val formattedDate = format.format(selectedDate)
+            etSelectDate.setText(formattedDate)
+        }
 
         datePicker.show(supportFragmentManager, datePicker.toString())
     }
 
+    private fun updateQuoteValues(numParticipants : Int) {
+        val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
+
+
+        val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
+
+        for (i in 0 until friendQuotesLayout.childCount) {
+            val friendQuoteView = friendQuotesLayout.getChildAt(i) as LinearLayout
+            val friendQuoteEditText = friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
+
+            val newQuote = (amount / numParticipants).toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
+            friendQuoteEditText.setText(newQuote.toString())
+        }
+    }
+
     private fun saveObjective(
-        userID: String?,
-        name: String,
-        amount: Float,
-        group: Boolean,
-        date: Date,
+        obj : Objective,
         db: FirebaseFirestore
     ) {
-        val transaction: MutableMap<String, Any?> = HashMap()
-        transaction["admin"] = userID
-        transaction["name"] = name
-        transaction["amount"] = amount
-        transaction["saved"] = 0
-        transaction["group"] = group
-        transaction["date"] = SimpleDateFormat("yyyy-MM-dd").format(date)
-
         db.collection("objectives")
-            .add(transaction)
+            .add(obj)
             .addOnSuccessListener { documentReference ->
-                Log.d(
-                    this.localClassName,
-                    "DocumentSnapshot added with ID: " + documentReference.id
+                saveParticipants(db, documentReference)
+            }
+    }
+
+    private fun saveParticipants(
+        db: FirebaseFirestore,
+        documentReference: DocumentReference
+    ) {
+        val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
+
+        if(friendQuotesLayout.childCount != 0) {
+            for (i in 0 until friendQuotesLayout.childCount) {
+                val friendQuoteView = friendQuotesLayout.getChildAt(i) as LinearLayout
+                db.collection("participants").add(
+                    Participant(
+                        documentReference.id,
+                        friendQuoteView.findViewById<TextView>(R.id.friendUsernameTextView).text.toString(),
+                        friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText).text.toString()
+                            .toDouble(),
+                        0.0
+                    ).toMap()
                 )
             }
-            .addOnFailureListener { e ->
-                Log.w(
-                    this.localClassName,
-                    "Error adding document",
-                    e
-                )
-            }
+        } else {
+            db.collection("participants").add(
+                Participant(
+                    documentReference.id,
+                    userID,
+                    etAmount.text.toString().toDouble(),
+                    0.0
+                ).toMap()
+            )
+        }
+
     }
 
     override fun getLayoutResourceId(): Int {

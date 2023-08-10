@@ -7,4 +7,13 @@ data class Participant(
     var participant : String,
     val quote : Double,
     var saved : Double,
-) : Serializable
+) : Serializable {
+    fun toMap(): Map<String, Any> {
+        return mapOf(
+            "objectiveId" to objectiveId,
+            "participant" to participant,
+            "quote" to quote,
+            "saved" to saved
+        )
+    }
+}

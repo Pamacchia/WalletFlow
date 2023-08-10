@@ -3,6 +3,7 @@ package com.walletflow.objectives
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -32,6 +33,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
         val friends = db.collection("friends").whereEqualTo("accepted", true)
         val senderQuery = friends.whereEqualTo("sender", userID).get()
         val receiverQuery = friends.whereEqualTo("receiver", userID).get()
+        selectedFriends.add(userID)
 
         Tasks.whenAllSuccess<QuerySnapshot>(senderQuery, receiverQuery)
             .addOnSuccessListener { requestQueryList ->
@@ -50,7 +52,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
         if(selectedFriends.isNullOrEmpty()) {
             Toast.makeText(this, "You need to select at least a friend!", Toast.LENGTH_LONG).show()
         } else {
-            intent.putExtra("group", selectedFriends)
+            intent.putStringArrayListExtra("group", selectedFriends)
             finish()
             startActivity(intent)
         }
@@ -90,7 +92,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
     }
 
     private fun setupFriendsList(friendsList: ArrayList<User>) {
-        val cardContainer = findViewById<LinearLayout>(R.id.cardContainer) // Assuming you have a LinearLayout to hold the cards
+        val cardContainer = findViewById<LinearLayout>(R.id.cardContainer)
 
         for (friend in friendsList) {
             val cardView = layoutInflater.inflate(R.layout.select_friend_layout, null) as CardView
@@ -105,9 +107,11 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
                 if (isSelected) {
                     selectCheckBox.isChecked = false
                     selectedFriends.remove(friend.username)
+                    Log.w(this.localClassName, selectedFriends.toString())
                 } else {
                     selectCheckBox.isChecked = true
                     selectedFriends.add(friend.username)
+                    Log.w(this.localClassName, selectedFriends.toString())
                 }
             }
 
