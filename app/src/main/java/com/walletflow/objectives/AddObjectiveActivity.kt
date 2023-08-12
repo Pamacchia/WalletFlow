@@ -16,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.android.gms.tasks.Task
 import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
 import com.google.firebase.firestore.DocumentReference
@@ -131,7 +132,7 @@ class AddObjectiveActivity : BaseActivity() {
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setCalendarConstraints(
                 CalendarConstraints.Builder()
-                    .setStart(calendar.timeInMillis)
+                    .setValidator(DateValidatorPointForward.now())
                     .build()
             )
             .build()
