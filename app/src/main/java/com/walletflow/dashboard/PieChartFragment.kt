@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.R
+import com.walletflow.utils.StringHelper
 import java.text.SimpleDateFormat
 import java.util.Arrays
 import java.util.Calendar
@@ -29,6 +31,8 @@ class PieChartFragment : Fragment() {
     lateinit var pieChart : PieChart
     lateinit var filterMonthTv : TextView
     lateinit var filterYearTv : TextView
+    lateinit var totalSpentTv : TextView
+    lateinit var savedRecapTv : TextView
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
 
@@ -41,6 +45,9 @@ class PieChartFragment : Fragment() {
         pieChart = view.findViewById(R.id.pieChartCategories) as PieChart
         filterMonthTv = view.findViewById(R.id.tvFilterDashboardMonth)
         filterYearTv = view.findViewById(R.id.tvFilterDashboardYear)
+        totalSpentTv = view.findViewById(R.id.tvTotalSpent)
+        savedRecapTv = view.findViewById(R.id.tvAdviceSaving)
+
         initPieChart()
 
         val calendar = Calendar.getInstance()
@@ -52,7 +59,6 @@ class PieChartFragment : Fragment() {
         val db = FirebaseFirestore.getInstance()
         val queryRef = db.collection("transactions")
             .whereEqualTo("user", userID)
-            .whereEqualTo("type", "expense")
 
         filterRecordsByDate(queryRef, oneMonthAgoString)
 
@@ -89,6 +95,8 @@ class PieChartFragment : Fragment() {
         date: String
     ) {
         var processedRecords: MutableList<Map<String, Any>?> = mutableListOf()
+        var totalExpense = 0.0
+        var totalEarning = 0.0
 
         queryRef
             .whereGreaterThan("date", date)
@@ -96,10 +104,22 @@ class PieChartFragment : Fragment() {
 
                 if (task.isSuccessful) {
                     for (document in task.result.documents) {
-                        processedRecords.add(document.data)
-                        Log.w(context.toString(), document.data.toString())
-                    }
 
+                        val amount = document.getDouble("amount").toString().toDouble()
+
+                        if(document.getString("type") == "expense"){
+                            processedRecords.add(document.data)
+                            totalExpense += amount
+                        } else {
+                            totalEarning += amount
+                        }
+
+                        val percentage = 100 * (totalEarning - totalExpense) / totalEarning
+                        val formattedPercentage = String.format("%.2f%%", percentage)
+                        savedRecapTv.text = "You earned ${totalEarning}$ and you spent ${abs(totalExpense)}$, " +
+                                "meaning you saved ${formattedPercentage}% of your earnings since ${date}." //todo: euro
+                    }
+                    totalSpentTv.text = "Total sum of expenses: ${abs(totalExpense).toString()}$" //todo: euro
                     showPieChart(processedRecords)
                 } else {
                     Log.w(requireContext().toString(), "Error getting transactions")
@@ -133,26 +153,19 @@ class PieChartFragment : Fragment() {
         pieDataSet.colors = colorArray.asList()
         val pieData = PieData(pieDataSet)
         pieData.setDrawValues(false)
-        pieChart.setData(pieData)
+        pieChart.data = pieData
         pieChart.setDrawEntryLabels(false)
         pieChart.invalidate()
     }
 
     private fun initPieChart() {
-        //using percentage as values instead of amount
         pieChart.setUsePercentValues(true)
-        //remove the description label on the lower left corner, default true if not set
         pieChart.description.isEnabled = false
         pieChart.legend.isEnabled = true
-        //enabling the user to rotate the chart, default true
         pieChart.isRotationEnabled = true
-        //adding friction when rotating the pie chart
         pieChart.dragDecelerationFrictionCoef = 0.9f
-        //setting the first entry start from right hand side, default starting from top
         pieChart.rotationAngle = 0f
-        //highlight the entry when it is tapped, default true if not set
-        pieChart.isHighlightPerTapEnabled = true
-        //adding animation so the entries pop up from 0 degree
+        pieChart.isHighlightPerTapEnabled = false
         pieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad)
     }
     fun groupAndSumRecords(queryRecords: MutableList<Map<String, Any>?>): Map<String, Double> {

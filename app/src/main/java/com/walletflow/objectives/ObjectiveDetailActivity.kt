@@ -125,9 +125,10 @@ class ObjectiveDetailActivity : BaseActivity() {
                     Log.w(this.localClassName, "Error deleting document", e)
                 }
 
-            Thread.sleep(150)
+            Thread.sleep(250)
             val intent = Intent(this, ObjectivesActivity::class.java)
             startActivity(intent)
+            finish()
             overridePendingTransition(0, 0)
         }
 
