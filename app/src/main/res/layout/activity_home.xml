@@ -32,6 +32,7 @@
                     android:text="Hello, user"
                     android:textColor="@color/black"
                     android:textSize="20sp"
+                    android:layout_marginTop="15dp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -40,7 +41,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:lineSpacingExtra="3dp"
-                    android:text="Budget for this month"
+                    android:text="Remaining budget for this month"
+
                     android:textAlignment="center"
                     android:textSize="20sp" />
 

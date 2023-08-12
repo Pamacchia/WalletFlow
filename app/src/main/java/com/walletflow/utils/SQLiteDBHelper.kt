@@ -28,8 +28,8 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val values = ContentValues()
 
         val array1 =
-            arrayOf("food.png", "popcorn.png", "technology.png", "tshirt.png", "transport.png", "food.png", "popcorn.png", "technology.png", "tshirt.png", "transport.png", "food.png", "popcorn.png", "technology.png", "tshirt.png", "transport.png", "food.png", "popcorn.png", "technology.png", "tshirt.png", "transport.png", "food.png", "popcorn.png", "technology.png", "tshirt.png", "transport.png")
-        val array2 = arrayOf(1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0)
+            arrayOf("food.png", "popcorn.png", "technology.png", "tshirt.png", "transport.png")
+        val array2 = arrayOf(1, 1, 1, 0, 0)
 
         val array3 = array1.map { fileName ->
             fileName.removeSuffix(".png")

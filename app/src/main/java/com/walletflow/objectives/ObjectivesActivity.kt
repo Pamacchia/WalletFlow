@@ -28,13 +28,11 @@ class ObjectivesActivity : BaseActivity() {
         loadObjectives()
 
         createNewObjective.setOnClickListener {
-
             val intent = Intent(this, AddObjectiveActivity::class.java)
             startActivity(intent)
         }
 
         createNewGroupObjective.setOnClickListener {
-
             val intent = Intent(this, AddFriendsToObjectiveActivity::class.java)
             startActivity(intent)
         }

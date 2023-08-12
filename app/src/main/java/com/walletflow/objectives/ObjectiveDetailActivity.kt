@@ -56,6 +56,7 @@ class ObjectiveDetailActivity : BaseActivity() {
 
                 db.collection("participants")
                     .whereEqualTo("objectiveId", currentUser.objectiveId)
+                    .whereEqualTo("participant", currentUser.participant)
                     .get()
                     .addOnSuccessListener {task ->
                         task.documents.first().reference.update("saved", currentUser.saved)
@@ -122,6 +123,9 @@ class ObjectiveDetailActivity : BaseActivity() {
                 .addOnFailureListener { e ->
                     Log.w(this.localClassName, "Error deleting document", e)
                 }
+
+            val intent = Intent(this, ObjectivesActivity::class.java)
+            startActivity(intent)
         }
 
     }

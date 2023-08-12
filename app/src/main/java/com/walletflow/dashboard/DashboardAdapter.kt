@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 
 class DashboardAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    private val fragmentList = listOf(PieChartFragment(), TransactionsFragment())
+    private val fragmentList = listOf(TransactionsFragment(), PieChartFragment())
 
     override fun getCount(): Int {
         return fragmentList.size

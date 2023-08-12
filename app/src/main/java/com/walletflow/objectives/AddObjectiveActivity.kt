@@ -116,6 +116,7 @@ class AddObjectiveActivity : BaseActivity() {
 
                 saveObjective(obj, db)
 
+                Thread.sleep(150)
                 val intent = Intent(this, ObjectivesActivity::class.java)
                 startActivity(intent)
             } else {

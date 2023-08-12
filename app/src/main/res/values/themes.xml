@@ -12,8 +12,8 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="android:fontFamily">@font/unisans</item>
-        <item name="android:textAllCaps">true</item>
+<!--        <item name="android:fontFamily">@font/unisans</item>-->
+<!--        <item name="android:textAllCaps">true</item>-->
         <!--<item name="windowActionBar">false</item>-->
     </style>
 </resources>

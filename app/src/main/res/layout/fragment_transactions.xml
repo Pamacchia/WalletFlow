@@ -7,6 +7,16 @@
     android:gravity="center_horizontal"
     tools:context=".dashboard.TransactionsFragment">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="All transactions"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:textSize="40sp"
+        ></TextView>
+
     <LinearLayout
         android:layout_width="320dp"
         android:layout_height="wrap_content"
@@ -49,8 +59,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal">
-
-
 
         </LinearLayout>
 

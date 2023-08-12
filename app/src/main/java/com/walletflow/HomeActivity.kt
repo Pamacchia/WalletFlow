@@ -129,7 +129,7 @@ class HomeActivity : BaseActivity() {
         calendar.add(Calendar.MONTH, -1)
         val dateLower = SimpleDateFormat("yyyy-MM").format(calendar.time)
 
-        var budget : Double = 0.0
+        var budget = 0.0
         var thisMonthExpense = 0.0
 
         db.collection("transactions")
@@ -165,6 +165,7 @@ class HomeActivity : BaseActivity() {
                         budget = balance
                         thisMonthBudget = balance + thisMonthExpense
                     } else {
+                        budget -= thisMonthExpense
                         thisMonthBudget = budget + thisMonthExpense
                     }
 
