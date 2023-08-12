@@ -103,7 +103,8 @@ class ObjectiveDetailActivity : BaseActivity() {
                         .addOnSuccessListener { querySnapshot ->
                             val batch = db.batch()
                             for (document in querySnapshot) {
-                                TransactionManager.updateBalance(db, document.getDouble("saved")!!.toFloat(), document.getString("participant"))
+                                Log.w(this.localClassName, document.getString("participants").toString())
+                                TransactionManager.updateBalance(db, document.getDouble("saved")!!.toFloat(), document.getString("participants"))
                                 val participantRef = db.collection("participants").document(document.id)
                                 batch.delete(participantRef)
                             }
@@ -124,8 +125,10 @@ class ObjectiveDetailActivity : BaseActivity() {
                     Log.w(this.localClassName, "Error deleting document", e)
                 }
 
+            Thread.sleep(150)
             val intent = Intent(this, ObjectivesActivity::class.java)
             startActivity(intent)
+            overridePendingTransition(0, 0)
         }
 
     }
