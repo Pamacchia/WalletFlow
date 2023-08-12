@@ -58,10 +58,10 @@ class ObjectiveDetailActivity : BaseActivity() {
                     .whereEqualTo("objectiveId", currentUser.objectiveId)
                     .get()
                     .addOnSuccessListener {task ->
-
                         task.documents.first().reference.update("saved", currentUser.saved)
-
                     }
+
+                TransactionManager.updateBalance(db, -amount.toFloat(), userID)
 
                 totalRecapInit(currentUser, friends, objective)
                 loadParticipantInformation(currentUser, friends, totalSaved, objective)
@@ -71,6 +71,7 @@ class ObjectiveDetailActivity : BaseActivity() {
                         completedBtn.isEnabled = true
                     }
                 }
+
             } else {
                 Toast.makeText(this, "Invalid amount.", Toast.LENGTH_LONG).show()
             }
@@ -101,6 +102,7 @@ class ObjectiveDetailActivity : BaseActivity() {
                         .addOnSuccessListener { querySnapshot ->
                             val batch = db.batch()
                             for (document in querySnapshot) {
+                                TransactionManager.updateBalance(db, document.getDouble("saved")!!.toFloat(), document.getString("participant"))
                                 val participantRef = db.collection("participants").document(document.id)
                                 batch.delete(participantRef)
                             }
@@ -116,9 +118,6 @@ class ObjectiveDetailActivity : BaseActivity() {
                         .addOnFailureListener { e ->
                             Log.w(this.localClassName, "Error querying participants", e)
                         }
-
-                    val intent = Intent(this, ObjectivesActivity::class.java)
-                    startActivity(intent)
                 }
                 .addOnFailureListener { e ->
                     Log.w(this.localClassName, "Error deleting document", e)

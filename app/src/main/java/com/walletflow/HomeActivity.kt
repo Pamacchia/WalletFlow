@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -31,10 +32,12 @@ class HomeActivity : BaseActivity() {
     lateinit var expenseBtn : Button
     lateinit var balanceTv : TextView
     lateinit var expensesTv : TextView
-    lateinit var savingsTv : TextView
+    lateinit var objectiveMoneyTv : TextView
     lateinit var totalBudget : TextView
+    private lateinit var greetingUser: TextView
 
     var balance : Double = 0.0
+    var objectiveSavedMoney : Double = 0.0
     companion object {
         const val EARNING_CONST = 1
         const val EXPENSE_CONST = -1
@@ -46,14 +49,14 @@ class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-
         earningBtn = findViewById(R.id.btnAddEarning)
         expenseBtn = findViewById(R.id.btnAddExpenses)
         totalBudget = findViewById(R.id.tvTotalBudget)
         balanceTv = findViewById(R.id.tvBalance)
         expensesTv = findViewById(R.id.tvExpenses)
-        savingsTv = findViewById(R.id.tvExpenses)
+        objectiveMoneyTv = findViewById(R.id.tvObjectiveSavings)
+        greetingUser = findViewById(R.id.tvGreetingUser)
+
         loadHomeData(balanceTv)
         loadFrequentTransactions()
 
@@ -86,10 +89,22 @@ class HomeActivity : BaseActivity() {
 
     private fun loadHomeData(balanceTv : TextView){
 
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
+        "Hello, $userID".also { greetingUser.text = it }
 
-        val db = FirebaseFirestore.getInstance()
+        db.collection("participants")
+            .whereEqualTo("participant", userID)
+            .get()
+            .addOnCompleteListener {task ->
+                if (task.isSuccessful) {
+                    for (document in task.result) {
+                        objectiveSavedMoney += document.getDouble("saved")!!
+                    }
+                    objectiveMoneyTv.text = StringHelper.getShrunkForm(objectiveSavedMoney) + "" + "€"
+                } else {
+                    Log.w(this.localClassName, "Error getting documents.", task.exception)
+                }
+
+            }
 
         db.collection("users")
             .whereEqualTo("username", userID)
@@ -97,24 +112,17 @@ class HomeActivity : BaseActivity() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     balance = task.result.first().getDouble("balance")!!
-
                     balanceTv.text = StringHelper.getShrunkForm(balance) + "" + "€"
-
-                    Log.w(this.toString(), task.result.first().getDouble("balance").toString())
-
                     updateTotalBudget()
                     updateExpenses()
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
                 }
             }
+
     }
 
     private fun updateTotalBudget(){
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-
-        val db = FirebaseFirestore.getInstance()
 
         val calendar = Calendar.getInstance()
         val dateUpper = SimpleDateFormat("yyyy-MM").format(calendar.time)
@@ -122,6 +130,7 @@ class HomeActivity : BaseActivity() {
         val dateLower = SimpleDateFormat("yyyy-MM").format(calendar.time)
 
         var budget : Double = 0.0
+        var thisMonthExpense = 0.0
 
         db.collection("transactions")
             .whereEqualTo("user", userID)
@@ -134,27 +143,51 @@ class HomeActivity : BaseActivity() {
                     for (document in task.result) {
                         budget += document.getDouble("amount")!!
                     }
-
-                    budget = if (budget == 0.0) {
-                        balance
-                    } else {
-                        min(balance, budget)
-                    }
-
-                    totalBudget.text = " out of ${StringHelper.getShrunkForm(budget)}$" //TODO: Euro
-
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
                 }
             }
 
+        db.collection("transactions")
+            .whereEqualTo("user", userID)
+            .whereEqualTo("type", "expense")
+            .whereGreaterThanOrEqualTo("date", dateUpper)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    for (document in task.result) {
+                        thisMonthExpense += kotlin.math.abs(document.getDouble("amount")!!)
+                    }
+
+                    val thisMonthBudget: Double
+
+                    if (budget == 0.0) {
+                        budget = balance
+                        thisMonthBudget = balance + thisMonthExpense
+                    } else {
+                        thisMonthBudget = budget + thisMonthExpense
+                    }
+
+                    totalBudget.text = " ${StringHelper.getShrunkForm(budget)}€"
+                    val progressBarContainer = findViewById<FrameLayout>(R.id.budgetProgressBar)
+                    val difference = kotlin.math.abs(budget - thisMonthBudget)
+                    val relativeDifference = difference / thisMonthBudget
+                    val desiredWidthInDp = 310
+                    val minProgressBarWidthInPx = 1
+                    val reversedRelativeDifference = 1 - relativeDifference
+                    val newWidthInPx = (minProgressBarWidthInPx + (reversedRelativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
+
+                    val layoutParams = progressBarContainer.layoutParams
+                    layoutParams.width = newWidthInPx
+                    progressBarContainer.layoutParams = layoutParams
+
+                } else {
+                    Log.w(this.localClassName, "Error getting documents.", task.exception)
+                }
+            }
     }
 
     private fun updateExpenses(){
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-
-        val db = FirebaseFirestore.getInstance()
 
         val calendar = Calendar.getInstance()
         val date = SimpleDateFormat("yyyy").format(calendar.time)
@@ -172,7 +205,7 @@ class HomeActivity : BaseActivity() {
                         expenses += document.getDouble("amount")!!
                     }
 
-                    expensesTv.text = "${StringHelper.getShrunkForm(abs(expenses))}$" //TODO: Euro
+                    expensesTv.text = "${StringHelper.getShrunkForm(abs(expenses))}€"
 
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
@@ -207,7 +240,7 @@ class HomeActivity : BaseActivity() {
 
                         tvNote.text = document.getString("note")
                         tvType.text = document.getString("type")
-                        tvAmount.text = document.getDouble("amount").toString() + "$" // TODO: Euro
+                        tvAmount.text = document.getDouble("amount").toString() + "€"
                         // Add the card view to the container layout
 
                         val addButton = cardView.findViewById<Button>(R.id.btFrequentTransactionAdd)
@@ -222,8 +255,6 @@ class HomeActivity : BaseActivity() {
                         }
 
                         rootView.addView(cardView)
-
-                        Log.w(this.toString(), document.data.toString())
                     }
 
                 } else {
@@ -241,8 +272,8 @@ class HomeActivity : BaseActivity() {
     ) {
 
         val alert: AlertDialog.Builder = AlertDialog.Builder(this)
-        alert.setTitle("Add")
-        alert.setMessage("Are you sure you want to add?")
+        alert.setTitle("Confirm")
+        alert.setMessage("Are you sure?")
         alert.setPositiveButton(
             "Yes"
         ) { _, _ ->
