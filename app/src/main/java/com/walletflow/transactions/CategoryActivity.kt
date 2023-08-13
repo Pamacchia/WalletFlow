@@ -18,7 +18,6 @@ import java.io.IOException
 abstract class CategoryActivity : BaseActivity() {
 
     lateinit var selected : String
-
     fun getIconList(activityType : Int) : MutableList<Icon> {
         val db = SQLiteDBHelper(this, null)
 

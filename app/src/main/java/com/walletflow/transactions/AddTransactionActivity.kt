@@ -8,20 +8,17 @@ import android.text.TextWatcher
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import com.walletflow.BaseActivity
 import com.walletflow.R
 
 class AddTransactionActivity : BaseActivity() {
 
-//    lateinit var titleTv : TextView
-//    lateinit var subtitleTv : TextView
-//    lateinit var amountTitleTv : TextView
-    lateinit var amountEditText : EditText
-    lateinit var noteEditText : EditText
-    lateinit var frequentCheck : CheckBox
-    lateinit var chooseCategoryBtn : Button
+
+    lateinit var amountEditText: EditText
+    lateinit var noteEditText: EditText
+    lateinit var frequentCheck: CheckBox
+    lateinit var chooseCategoryBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,18 +27,11 @@ class AddTransactionActivity : BaseActivity() {
         val typeName = intent.getStringExtra("type_name")
         val typeVerb = intent.getStringExtra("type_verb")
 
-//        titleTv = findViewById(R.id.tvTitle)
-//        subtitleTv = findViewById(R.id.tvSubTitle)
-//        amountTitleTv = findViewById(R.id.tvAmountTitle)
         amountEditText = findViewById(R.id.etAmount)
         noteEditText = findViewById(R.id.etNote)
         frequentCheck = findViewById(R.id.cbFrequent)
         chooseCategoryBtn = findViewById(R.id.btnChooseCategory)
 
-//        titleTv.text = typeName?.uppercase()
-//        subtitleTv.text = "Insert a new $typeName"
-//
-//        amountTitleTv.text = "How much did you $typeVerb?"
         amountEditText.addTextChangedListener(textWatcher)
         chooseCategoryBtn.isEnabled = amountEditText.text.isNotEmpty()
 
@@ -53,12 +43,11 @@ class AddTransactionActivity : BaseActivity() {
             val note = noteEditText.text.toString()
             val frequent = frequentCheck.isChecked
 
-            if(amount.isEmpty()){
+            if (amount.isEmpty()) {
                 Toast.makeText(this, "Please specify the amount", Toast.LENGTH_LONG).show()
-            }
-            else {
+            } else {
                 val intent = Intent(this, ChooseCategoryActivity::class.java)
-                intent.putExtra("amount", amount.toFloat()*type)
+                intent.putExtra("amount", amount.toFloat() * type)
                 intent.putExtra("note", note)
                 intent.putExtra("frequent", frequent)
                 intent.putExtra("userID", userID)
