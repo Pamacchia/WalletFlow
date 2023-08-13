@@ -19,14 +19,18 @@ class OnboardingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome_onboarding)
 
+        initViews()
+        setStartClickListener()
+    }
+
+    private fun initViews() {
         btnStart = findViewById(R.id.btnStartOnboarding)
         etBalance = findViewById(R.id.etBalance)
+    }
 
+    private fun setStartClickListener() {
         btnStart.setOnClickListener {
-
-            val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            val userID = sharedPreferences.getString("userID", "")
-
+            val userID = getUserID()
             val onboardingBalance = etBalance.text.toString().toFloat()
 
             val updatedFields = mapOf(
@@ -37,9 +41,13 @@ class OnboardingActivity : AppCompatActivity() {
 
             Thread.sleep(150)
 
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
+            goToHomeActivity()
         }
+    }
+
+    private fun getUserID(): String? {
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("userID", "")
     }
 
     private fun modifyRecordByUsername(
@@ -47,7 +55,6 @@ class OnboardingActivity : AppCompatActivity() {
         username: String?,
         updatedFields: Map<String, Any>
     ) {
-
         val db = FirebaseFirestore.getInstance()
 
         val query = db.collection(collectionName).whereEqualTo("username", username)
@@ -56,15 +63,7 @@ class OnboardingActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
-                    val documentRef = db.collection(collectionName).document(document.id)
-                    documentRef
-                        .update(updatedFields)
-                        .addOnSuccessListener {
-                            println("Document updated successfully.")
-                        }
-                        .addOnFailureListener { e ->
-                            println("Error updating document: $e")
-                        }
+                    updateDocumentFields(db, collectionName, document.id, updatedFields)
                 }
             }
             .addOnFailureListener { e ->
@@ -72,4 +71,24 @@ class OnboardingActivity : AppCompatActivity() {
             }
     }
 
+    private fun updateDocumentFields(
+        db: FirebaseFirestore,
+        collectionName: String,
+        documentId: String,
+        updatedFields: Map<String, Any>
+    ) {
+        val documentRef = db.collection(collectionName).document(documentId)
+        documentRef
+            .update(updatedFields)
+            .addOnSuccessListener {
+                println("Document updated successfully.")
+            }
+            .addOnFailureListener { e ->
+                println("Error updating document: $e")
+            }
+    }
+
+    private fun goToHomeActivity() {
+        startActivity(Intent(this, HomeActivity::class.java))
+    }
 }

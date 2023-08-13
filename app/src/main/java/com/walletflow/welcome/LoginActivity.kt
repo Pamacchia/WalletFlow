@@ -2,6 +2,7 @@ package com.walletflow.welcome
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -12,7 +13,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.HomeActivity
 import com.walletflow.R
 import com.walletflow.utils.Hashing
-
 
 class LoginActivity : AppCompatActivity() {
 
@@ -25,43 +25,81 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome_login)
 
+        initViews()
+        setListeners()
+    }
+
+    private fun initViews() {
         registrationBtn = findViewById(R.id.btn_register)
         loginBtn = findViewById(R.id.btn_login)
         usernameField = findViewById(R.id.login_user_name)
         passwordField = findViewById(R.id.login_password)
+    }
 
+    private fun setListeners() {
         registrationBtn.setOnClickListener {
-            val intent = Intent(this, RegistrationActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, RegistrationActivity::class.java))
         }
 
         loginBtn.setOnClickListener {
-            val db = FirebaseFirestore.getInstance()
             val username = usernameField.text.toString()
             val password = passwordField.text.toString()
 
-            db.collection("users")
-                .whereEqualTo("username", username)
-                .whereEqualTo("password", Hashing.hashPassword(password)).get()
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        if (!task.result.isEmpty) {
-                            val sharedPreferences =
-                                getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-                            val editor = sharedPreferences.edit()
-                            editor.putString("userID", username)
-                            editor.apply()
-
-                            val intent = Intent(this, HomeActivity::class.java)
-                            startActivity(intent)
-                        } else {
-                            Toast.makeText(this, "Wrong credentials", Toast.LENGTH_LONG).show()
-                            passwordField.text.clear()
-                        }
-                    } else {
-                        Log.w(this.localClassName, "Error getting documents.", task.exception)
-                    }
-                }
+            validateCredentials(username, password)
         }
+    }
+
+    private fun validateCredentials(username: String, password: String) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("users")
+            .whereEqualTo("username", username)
+            .whereEqualTo("password", Hashing.hashPassword(password))
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    handleLoginResult(task.result.isEmpty, username)
+                } else {
+                    handleDatabaseError(task.exception)
+                }
+            }
+    }
+
+    private fun handleLoginResult(isEmpty: Boolean, username: String) {
+        if (isEmpty) {
+            showToast("Wrong credentials")
+            passwordField.text.clear()
+        } else {
+            saveUserID(username)
+            goToHomeActivity()
+        }
+    }
+
+    private fun saveUserID(username: String) {
+        getSharedPreferencesEditor("MyPrefs") {
+            putString("userID", username)
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun handleDatabaseError(exception: Exception?) {
+        Log.w(this.localClassName, "Error getting documents.", exception)
+    }
+
+    private fun goToHomeActivity() {
+        startActivity(Intent(this, HomeActivity::class.java))
+    }
+
+    private inline fun Context.getSharedPreferencesEditor(
+        name: String,
+        mode: Int = Context.MODE_PRIVATE,
+        action: SharedPreferences.Editor.() -> Unit
+    ) {
+        val sharedPreferences = getSharedPreferences(name, mode)
+        val editor = sharedPreferences.edit()
+        action(editor)
+        editor.apply()
     }
 }
