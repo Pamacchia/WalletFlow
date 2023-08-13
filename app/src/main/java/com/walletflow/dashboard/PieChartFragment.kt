@@ -145,7 +145,7 @@ class PieChartFragment : Fragment() {
             }
         } else {
             pieEntries.add(PieEntry(1f, "None"))
-            colorArray[0] = R.color.teal_200
+            colorArray[0] = R.color.black
         }
 
         val pieDataSet = PieDataSet(pieEntries, "")

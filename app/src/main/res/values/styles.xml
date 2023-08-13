@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<style name="GreenTheme">
+    <item name="colorPrimary">@color/nordGreen</item>
+    <!-- Add other theme attributes if needed -->
+</style>
+<style name="LoginTheme">
+    <item name="colorPrimary">@color/vividYellow</item>
+    <!-- Add other theme attributes if needed -->
+</style>
+</resources>
