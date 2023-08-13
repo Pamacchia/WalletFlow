@@ -1,29 +1,27 @@
 package com.walletflow.profile
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import com.google.android.gms.tasks.Tasks
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
 import com.walletflow.R
 
 class FriendsListFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_friends_list, container, false)
     }
@@ -37,7 +35,8 @@ class FriendsListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val userID = sharedPreferences.getString("userID", "")
         val db = FirebaseFirestore.getInstance()
         val friendCollection = db.collection("friends")
@@ -63,14 +62,15 @@ class FriendsListFragment : Fragment() {
 
 
                         val inflater = LayoutInflater.from(requireContext())
-                        val cardView = inflater.inflate(R.layout.friend_cardview, rootView, false) as CardView
+                        val cardView =
+                            inflater.inflate(R.layout.friend_cardview, rootView, false) as CardView
                         val tvUsername = cardView.findViewById<TextView>(R.id.tvFriendUsername)
                         val tvEmail = cardView.findViewById<TextView>(R.id.tvFriendEmail)
 
                         val sender = document.getString("sender")
                         val receiver = document.getString("receiver")
 
-                        if(userID == sender){
+                        if (userID == sender) {
                             tvUsername.text = receiver
                         } else {
                             tvUsername.text = sender

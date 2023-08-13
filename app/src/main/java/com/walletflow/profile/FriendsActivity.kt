@@ -1,11 +1,9 @@
 package com.walletflow.profile
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.viewpager.widget.ViewPager
 import com.walletflow.BaseActivity
 import com.walletflow.R
-import com.walletflow.dashboard.DashboardAdapter
 
 class FriendsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
