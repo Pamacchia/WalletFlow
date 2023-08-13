@@ -1,11 +1,9 @@
 package com.walletflow.dashboard
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,16 +16,27 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.R
-import com.walletflow.objectives.ObjectiveDetailActivity
 import com.walletflow.utils.TransactionManager
 
 class TransactionsFragment : Fragment() {
 
-    lateinit var filterExpenseTv : TextView
-    lateinit var filterEarningTv : TextView
+    private lateinit var filterExpenseTv: TextView
+    private lateinit var filterEarningTv: TextView
+    private lateinit var rootView: LinearLayout
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+    private val db = FirebaseFirestore.getInstance()
+    private val sharedPreferences by lazy {
+        requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+    }
+    private val userID by lazy {
+        sharedPreferences.getString("userID", "")
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_transactions, container, false)
     }
 
@@ -35,99 +44,73 @@ class TransactionsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        rootView = view.findViewById(R.id.layoutTransactionList)
         filterExpenseTv = view.findViewById(R.id.tvFilterTransactionListExpense)
         filterEarningTv = view.findViewById(R.id.tvFilterTransactionListEarning)
 
-        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-        val db = FirebaseFirestore.getInstance()
-        val queryRef = db.collection("transactions")
-            .whereEqualTo("user", userID)
-
-        filterRecordsByType(queryRef, "expense", view)
+        val queryRef = db.collection("transactions").whereEqualTo("user", userID)
 
         filterExpenseTv.setOnClickListener {
 
             filterExpenseTv.setTypeface(null, Typeface.BOLD)
             filterEarningTv.setTypeface(null, Typeface.NORMAL)
+            filterRecordsByType(queryRef, "expense")
 
-            filterRecordsByType(queryRef, filterExpenseTv.text.toString().lowercase(), view)
         }
 
         filterEarningTv.setOnClickListener {
-
             filterExpenseTv.setTypeface(null, Typeface.NORMAL)
             filterEarningTv.setTypeface(null, Typeface.BOLD)
-
-            filterRecordsByType(queryRef, filterEarningTv.text.toString().lowercase(), view)
+            filterRecordsByType(queryRef, "earning")
         }
 
+        filterRecordsByType(queryRef, "expense")
     }
 
-    private fun filterRecordsByType(
-        queryRef: Query,
-        type: String,
-        view: View?
-    ) {
-
-        val rootView = requireView().findViewById<LinearLayout>(R.id.layoutTransactionList)
+    private fun filterRecordsByType(queryRef: Query, type: String) {
         rootView.removeAllViews()
 
-        queryRef
-            .whereEqualTo("type", type)
-            .get().addOnCompleteListener { task ->
+        queryRef.whereEqualTo("type", type).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                for (document in task.result) {
+                    val cardView = layoutInflater.inflate(
+                        R.layout.transaction_cardview,
+                        rootView,
+                        false
+                    ) as CardView
+                    val tvDate = cardView.findViewById<TextView>(R.id.tvTransactionCardDate)
+                    val tvCategory = cardView.findViewById<TextView>(R.id.tvTransactionCardCategory)
+                    val tvAmount = cardView.findViewById<TextView>(R.id.tvTransactionCardAmount)
 
-                if (task.isSuccessful) {
-                    for (document in task.result) {
+                    tvDate.text = document.getString("date")
+                    tvCategory.text = document.getString("category")
+                    tvAmount.text = "${document.getDouble("amount")} $" // TODO: Euro
 
-                        val inflater = LayoutInflater.from(requireContext())
-                        val cardView = inflater.inflate(R.layout.transaction_cardview, rootView, false) as CardView
-                        val tvDate = cardView.findViewById<TextView>(R.id.tvTransactionCardDate)
-                        val tvCategory = cardView.findViewById<TextView>(R.id.tvTransactionCardCategory)
-                        val tvAmount = cardView.findViewById<TextView>(R.id.tvTransactionCardAmount)
-
-                        tvDate.text = document.getString("date")
-                        tvCategory.text = document.getString("category")
-                        tvAmount.text = document.getDouble("amount").toString() + "$" // TODO: Euro
-                        // Add the card view to the container layout
-
-                        val deleteButton = cardView.findViewById<Button>(R.id.btTransactionDelete)
-                        deleteButton.setOnClickListener {
-                            FirebaseFirestore.getInstance().collection("transactions").document(document.id).delete()
-                                .addOnSuccessListener {
-                                    // Document successfully deleted
-                                    // Handle success or UI updates here
-                                    TransactionManager.updateBalance(FirebaseFirestore.getInstance(), -document.getDouble("amount")!!.toFloat(), document.getString("user"))
-                                    refreshTransactionList(type)
-                                    println("Document deleted successfully.")
-                                }
-                                .addOnFailureListener { e ->
-                                    // An error occurred while deleting the document
-                                    // Handle the error here
-                                    println("Error deleting document: $e")
-                                }
-                        }
-
-                        rootView.addView(cardView)
-
-                        Log.w(context.toString(), document.data.toString())
+                    val deleteButton = cardView.findViewById<Button>(R.id.btTransactionDelete)
+                    deleteButton.setOnClickListener {
+                        deleteTransaction(document.id, document.getDouble("amount"))
+                        refreshTransactionList(type)
                     }
 
-                } else {
-                    Log.w(requireContext().toString(), "Error getting transactions")
+                    rootView.addView(cardView)
                 }
+            } else {
+                println("Error getting transactions")
             }
+        }
     }
 
-    private fun refreshTransactionList(type : String) {
-        val db = FirebaseFirestore.getInstance()
-        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-        val queryRef = db.collection("transactions")
-            .whereEqualTo("user", userID)
-
-        // Call the filterRecordsByType method again with the updated query
-        filterRecordsByType(queryRef, type, this.view)
+    private fun deleteTransaction(documentId: String, amount: Double?) {
+        db.collection("transactions").document(documentId).delete().addOnSuccessListener {
+            amount?.let { TransactionManager.updateBalance(db, -it.toFloat(), userID) }
+            println("Document deleted successfully.")
+        }.addOnFailureListener { e ->
+            println("Error deleting document: $e")
+        }
     }
 
+    private fun refreshTransactionList(type: String) {
+        val queryRef = db.collection("transactions").whereEqualTo("user", userID)
+        filterRecordsByType(queryRef, type)
+    }
 }

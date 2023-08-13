@@ -33,16 +33,16 @@ class HomeActivity : BaseActivity() {
         const val EARN = "earn"
     }
 
-    private lateinit var earningBtn : Button
-    private lateinit var expenseBtn : Button
-    private lateinit var balanceTv : TextView
-    private lateinit var expensesTv : TextView
-    private lateinit var objectiveMoneyTv : TextView
-    private lateinit var totalBudget : TextView
+    private lateinit var earningBtn: Button
+    private lateinit var expenseBtn: Button
+    private lateinit var balanceTv: TextView
+    private lateinit var expensesTv: TextView
+    private lateinit var objectiveMoneyTv: TextView
+    private lateinit var totalBudget: TextView
     private lateinit var greetingUser: TextView
 
-    private var balance : Double = 0.0
-    private var objectiveSavedMoney : Double = 0.0
+    private var balance: Double = 0.0
+    private var objectiveSavedMoney: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,19 +85,20 @@ class HomeActivity : BaseActivity() {
         return R.layout.activity_home
     }
 
-    private fun loadHomeData(balanceTv : TextView){
+    private fun loadHomeData(balanceTv: TextView) {
 
         "Hello, $userID".also { greetingUser.text = it }
 
         db.collection("participants")
             .whereEqualTo("participant", userID)
             .get()
-            .addOnCompleteListener {task ->
+            .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     for (document in task.result) {
                         objectiveSavedMoney += document.getDouble("saved")!!
                     }
-                    objectiveMoneyTv.text = StringHelper.getShrunkForm(objectiveSavedMoney) + "" + "€"
+                    objectiveMoneyTv.text =
+                        StringHelper.getShrunkForm(objectiveSavedMoney) + "" + "€"
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
                 }
@@ -118,7 +119,7 @@ class HomeActivity : BaseActivity() {
             }
     }
 
-    private fun updateTotalBudget(){
+    private fun updateTotalBudget() {
 
         val calendar = Calendar.getInstance()
         val dateUpper = SimpleDateFormat("yyyy-MM").format(calendar.time)
@@ -165,7 +166,8 @@ class HomeActivity : BaseActivity() {
                         thisMonthBudget = budget + thisMonthExpense
                     }
 
-                    expensesTv.text = "${StringHelper.getShrunkForm(kotlin.math.abs(thisMonthExpense))}€"
+                    expensesTv.text =
+                        "${StringHelper.getShrunkForm(kotlin.math.abs(thisMonthExpense))}€"
                     totalBudget.text = " ${StringHelper.getShrunkForm(budget)}€"
                     val progressBarContainer = findViewById<FrameLayout>(R.id.budgetProgressBar)
 
@@ -174,7 +176,8 @@ class HomeActivity : BaseActivity() {
                     val desiredWidthInDp = 310
                     val minProgressBarWidthInPx = 1
                     val reversedRelativeDifference = 1 - relativeDifference
-                    val newWidthInPx = (minProgressBarWidthInPx + (reversedRelativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
+                    val newWidthInPx =
+                        (minProgressBarWidthInPx + (reversedRelativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
 
                     val layoutParams = progressBarContainer.layoutParams
                     layoutParams.width = newWidthInPx
@@ -186,7 +189,7 @@ class HomeActivity : BaseActivity() {
             }
     }
 
-    private fun loadFrequentTransactions(){
+    private fun loadFrequentTransactions() {
 
         val rootView = findViewById<LinearLayout>(R.id.layoutFrequentTransactions)
         rootView.removeAllViews()
@@ -200,10 +203,17 @@ class HomeActivity : BaseActivity() {
                     for (document in task.result) {
 
                         val inflater = LayoutInflater.from(this)
-                        val cardView = inflater.inflate(R.layout.frequent_transaction_cardview, rootView, false) as CardView
-                        val tvNote = cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardNote)
-                        val tvType = cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardType)
-                        val tvAmount = cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardAmount)
+                        val cardView = inflater.inflate(
+                            R.layout.frequent_transaction_cardview,
+                            rootView,
+                            false
+                        ) as CardView
+                        val tvNote =
+                            cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardNote)
+                        val tvType =
+                            cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardType)
+                        val tvAmount =
+                            cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardAmount)
 
                         tvNote.text = document.getString("note")
                         tvType.text = document.getString("type")
@@ -214,7 +224,8 @@ class HomeActivity : BaseActivity() {
                             createAlertForFrequentTransaction(document, db, userID, true)
                         }
 
-                        val deleteButton = cardView.findViewById<Button>(R.id.btFrequentTransactionDelete)
+                        val deleteButton =
+                            cardView.findViewById<Button>(R.id.btFrequentTransactionDelete)
                         deleteButton.setOnClickListener {
                             createAlertForFrequentTransaction(document, db, userID, false)
                         }
@@ -233,7 +244,7 @@ class HomeActivity : BaseActivity() {
         document: QueryDocumentSnapshot,
         db: FirebaseFirestore,
         userID: String?,
-        add : Boolean
+        add: Boolean
     ) {
 
         val alert: AlertDialog.Builder = AlertDialog.Builder(this)
@@ -250,7 +261,8 @@ class HomeActivity : BaseActivity() {
                     document.getString("note"),
                     document.getString("type"),
                     document.getString("user"),
-                    SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time
+                    SimpleDateFormat("yyyy-MM-dd HH:mm").format(
+                        Calendar.getInstance().time
                     )
                 )
                 TransactionManager.addTransactionRecordToDB(db, transaction, document, userID)

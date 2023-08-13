@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -20,146 +19,173 @@ import com.github.mikephil.charting.data.PieEntry
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.R
-import com.walletflow.utils.StringHelper
 import java.text.SimpleDateFormat
-import java.util.Arrays
 import java.util.Calendar
 import kotlin.math.abs
 
 
 class PieChartFragment : Fragment() {
 
-    lateinit var pieChart : PieChart
-    lateinit var filterMonthTv : TextView
-    lateinit var filterYearTv : TextView
-    lateinit var totalSpentTv : TextView
-    lateinit var savedRecapTv : TextView
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-
+    lateinit var pieChart: PieChart
+    lateinit var filterMonthTv: TextView
+    lateinit var filterYearTv: TextView
+    lateinit var totalSpentTv: TextView
+    lateinit var savedRecapTv: TextView
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_pie_chart, container, false)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        pieChart = view.findViewById(R.id.pieChartCategories) as PieChart
+
+        initViews(view)
+        initListeners()
+
+        val oneMonthAgoString = getDateStringWithOffset(-1, Calendar.MONTH)
+
+        val userID = getSharedPreferencesValue("userID", "")
+        val queryRef = getTransactionQueryRef(userID)
+
+        filterRecordsByDate(queryRef, oneMonthAgoString)
+    }
+
+    private fun initViews(view: View) {
+        pieChart = view.findViewById(R.id.pieChartCategories)
         filterMonthTv = view.findViewById(R.id.tvFilterDashboardMonth)
         filterYearTv = view.findViewById(R.id.tvFilterDashboardYear)
         totalSpentTv = view.findViewById(R.id.tvTotalSpent)
         savedRecapTv = view.findViewById(R.id.tvAdviceSaving)
+    }
 
-        initPieChart()
-
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.MONTH, -1)
-        val oneMonthAgoString = SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.time)
-
-        val sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-        val db = FirebaseFirestore.getInstance()
-        val queryRef = db.collection("transactions")
-            .whereEqualTo("user", userID)
-
-        filterRecordsByDate(queryRef, oneMonthAgoString)
-
+    private fun initListeners() {
         filterMonthTv.setOnClickListener {
-
-            filterYearTv.setTypeface(null, Typeface.NORMAL)
-            filterMonthTv.setTypeface(null, Typeface.BOLD)
-
-            initPieChart()
-
-            val calendar = Calendar.getInstance()
-            calendar.add(Calendar.MONTH, -1)
-            val dateString = SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.time)
-            filterRecordsByDate(queryRef, dateString)
+            updateFilterViews(true)
+            updateChartAndSummary(getDateStringWithOffset(-1, Calendar.MONTH))
         }
 
         filterYearTv.setOnClickListener {
-
-            filterYearTv.setTypeface(null, Typeface.BOLD)
-            filterMonthTv.setTypeface(null, Typeface.NORMAL)
-
-            initPieChart()
-
-            val calendar = Calendar.getInstance()
-            calendar.add(Calendar.YEAR, -1)
-            val dateString = SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.time)
-            filterRecordsByDate(queryRef, dateString)
+            updateFilterViews(false)
+            updateChartAndSummary(getDateStringWithOffset(-1, Calendar.YEAR))
         }
-
     }
 
-    private fun filterRecordsByDate(
-        queryRef: Query,
-        date: String
-    ) {
+    private fun updateFilterViews(isMonthFilter: Boolean) {
+        filterYearTv.setTypeface(null, if (isMonthFilter) Typeface.NORMAL else Typeface.BOLD)
+        filterMonthTv.setTypeface(null, if (isMonthFilter) Typeface.BOLD else Typeface.NORMAL)
+    }
+
+    private fun updateChartAndSummary(date: String) {
+        val userID = getSharedPreferencesValue("userID", "")
+        val queryRef = getTransactionQueryRef(userID)
+
+        filterRecordsByDate(queryRef, date)
+    }
+
+    private fun getDateStringWithOffset(offset: Int, field: Int): String {
+        val calendar = Calendar.getInstance()
+        calendar.add(field, offset)
+        return SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.time)
+    }
+
+    private fun getSharedPreferencesValue(key: String, defaultValue: String): String {
+        val sharedPreferences =
+            requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString(key, defaultValue) ?: ""
+    }
+
+    private fun getTransactionQueryRef(userID: String): Query {
+        val db = FirebaseFirestore.getInstance()
+        return db.collection("transactions").whereEqualTo("user", userID)
+    }
+
+
+    private fun filterRecordsByDate(queryRef: Query, date: String) {
         var processedRecords: MutableList<Map<String, Any>?> = mutableListOf()
         var totalExpense = 0.0
         var totalEarning = 0.0
 
-        queryRef
-            .whereGreaterThan("date", date)
-            .get().addOnCompleteListener { task ->
+        queryRef.whereGreaterThan("date", date).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                task.result.documents.forEach { document ->
+                    val amount = document.getDouble("amount").toString().toDouble()
+                    val type = document.getString("type")
 
-                if (task.isSuccessful) {
-                    for (document in task.result.documents) {
-
-                        val amount = document.getDouble("amount").toString().toDouble()
-
-                        if(document.getString("type") == "expense"){
-                            processedRecords.add(document.data)
-                            totalExpense += amount
-                        } else {
-                            totalEarning += amount
-                        }
-
-                        val percentage = 100 * (totalEarning - totalExpense) / totalEarning
-                        val formattedPercentage = String.format("%.2f%%", percentage)
-                        savedRecapTv.text = "You earned ${totalEarning}$ and you spent ${abs(totalExpense)}$, " +
-                                "meaning you saved ${formattedPercentage}% of your earnings since ${date}." //todo: euro
+                    if (type == "expense") {
+                        processedRecords.add(document.data)
+                        totalExpense += amount
+                    } else {
+                        totalEarning += amount
                     }
-                    totalSpentTv.text = "Total sum of expenses: ${abs(totalExpense).toString()}$" //todo: euro
-                    showPieChart(processedRecords)
-                } else {
-                    Log.w(requireContext().toString(), "Error getting transactions")
                 }
+
+                val percentage = calculateSavingsPercentage(totalEarning, totalExpense)
+                val formattedPercentage = String.format("%.2f%%", percentage)
+                val summaryText = "You earned $totalEarning and you spent ${abs(totalExpense)}$, " +
+                        "meaning you saved $formattedPercentage of your earnings since $date."
+
+                savedRecapTv.text = summaryText
+                totalSpentTv.text = "Total sum of expenses: ${abs(totalExpense)}$" // todo: euro
+                showPieChart(processedRecords)
+            } else {
+                Log.w(requireContext().toString(), "Error getting transactions")
             }
+        }
     }
 
-    private fun showPieChart(processedRecords : MutableList<Map<String, Any>?>) {
-        val pieEntries = ArrayList<PieEntry>()
+    private fun calculateSavingsPercentage(totalEarning: Double, totalExpense: Double): Double {
+        return if (totalEarning != 0.0) {
+            100 * (totalEarning - totalExpense) / totalEarning
+        } else {
+            0.0
+        }
+    }
 
-        val colorArray = Arrays.copyOfRange(
-            resources.getIntArray(R.array.dashboard_colors),
-            0,
-            maxOf(processedRecords.size, 1)
-        )
 
+    private fun showPieChart(processedRecords: MutableList<Map<String, Any>?>) {
+        val pieEntries = generatePieEntries(processedRecords)
+        val colorArray = getColorArray(processedRecords.size)
+
+        val pieDataSet = PieDataSet(pieEntries, "")
+        pieDataSet.valueTextSize = 15f
+        pieDataSet.colors = colorArray.asList()
+
+        val pieData = PieData(pieDataSet)
+        pieData.setDrawValues(false)
+
+        configurePieChart()
+        pieChart.data = pieData
+        pieChart.invalidate()
+    }
+
+    private fun generatePieEntries(processedRecords: MutableList<Map<String, Any>?>): List<PieEntry> {
         val groupedData = groupAndSumRecords(processedRecords)
-        // You can now use the groupedData as needed
+        val pieEntries = mutableListOf<PieEntry>()
 
-        if(groupedData.size != 0) {
+        if (groupedData.isNotEmpty()) {
             for ((type, sumAmount) in groupedData) {
                 pieEntries.add(PieEntry(abs(sumAmount.toFloat()), type))
             }
         } else {
             pieEntries.add(PieEntry(1f, "None"))
-            colorArray[0] = R.color.black
         }
 
-        val pieDataSet = PieDataSet(pieEntries, "")
-        pieDataSet.valueTextSize = 15f
-        pieDataSet.colors = colorArray.asList()
-        val pieData = PieData(pieDataSet)
-        pieData.setDrawValues(false)
-        pieChart.data = pieData
-        pieChart.setDrawEntryLabels(false)
-        pieChart.invalidate()
+        return pieEntries
     }
 
-    private fun initPieChart() {
+    private fun getColorArray(recordsSize: Int): IntArray {
+        val defaultColor = R.color.black
+        val colors = resources.getIntArray(R.array.dashboard_colors)
+        return if (recordsSize > 0) {
+            colors.copyOfRange(0, recordsSize)
+        } else {
+            intArrayOf(defaultColor)
+        }
+    }
+
+    private fun configurePieChart() {
         pieChart.setUsePercentValues(true)
         pieChart.description.isEnabled = false
         pieChart.legend.isEnabled = true
@@ -169,23 +195,19 @@ class PieChartFragment : Fragment() {
         pieChart.isHighlightPerTapEnabled = false
         pieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad)
     }
+
     fun groupAndSumRecords(queryRecords: MutableList<Map<String, Any>?>): Map<String, Double> {
         val groupedData = mutableMapOf<String, Double>()
 
-        if (queryRecords != null) {
-            for (record in queryRecords) {
-                val type = record?.get("category").toString()
-                val amount = (record?.get("amount") as Number).toDouble()
+        for (record in queryRecords) {
+            val type = record?.get("category").toString()
+            val amount = (record?.get("amount") as Number).toDouble()
 
-                if (groupedData.containsKey(type)) {
-                    groupedData[type] = groupedData[type]!! + amount
-                } else {
-                    groupedData[type] = amount
-                }
-            }
+            groupedData[type] = groupedData.getOrDefault(type, 0.0) + amount
         }
 
         return groupedData
     }
+
 
 }
