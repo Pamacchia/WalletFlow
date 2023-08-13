@@ -35,6 +35,8 @@ class OnboardingActivity : AppCompatActivity() {
 
             modifyRecordByUsername("users", userID, updatedFields)
 
+            Thread.sleep(150)
+
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
         }

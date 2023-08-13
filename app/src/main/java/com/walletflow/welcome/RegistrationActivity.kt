@@ -2,30 +2,37 @@ package com.walletflow.welcome
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.R
 import com.walletflow.utils.Hashing
 
-
 class RegistrationActivity : AppCompatActivity() {
 
-    lateinit var submitBtn : Button
-    lateinit var backToLoginBtn : Button
-    lateinit var usernameField : EditText
-    lateinit var emailField : EditText
-    lateinit var passwordField : EditText
-    lateinit var passwordConfirmField : EditText
+    private lateinit var submitBtn: Button
+    private lateinit var backToLoginBtn: Button
+    private lateinit var usernameField: EditText
+    private lateinit var emailField: EditText
+    private lateinit var passwordField: EditText
+    private lateinit var passwordConfirmField: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome_registration)
 
+        initViews()
+        setSubmitClickListener()
+        setBackToLoginClickListener()
+    }
+
+    private fun initViews() {
         usernameField = findViewById(R.id.registration_user_name)
         emailField = findViewById(R.id.registraiton_email)
         passwordField = findViewById(R.id.registration_password)
@@ -33,145 +40,121 @@ class RegistrationActivity : AppCompatActivity() {
 
         submitBtn = findViewById(R.id.btn_submit)
         backToLoginBtn = findViewById(R.id.btn_back)
+    }
 
+    private fun setSubmitClickListener() {
         submitBtn.setOnClickListener {
-
             val username = usernameField.text.toString()
             val email = emailField.text.toString()
             val password = passwordField.text.toString()
             val passwordCheck = passwordConfirmField.text.toString()
 
-            if(username.isEmpty() || email.isEmpty() || password.isEmpty() || passwordCheck.isEmpty()){
-                Toast.makeText(this, "Please specify all the fields", Toast.LENGTH_LONG).show()
+            when {
+                fieldsAreEmpty(username, email, password, passwordCheck) -> showToast("Please specify all the fields")
+                !isPasswordValid(password) -> showToast("Please create a valid password")
+                password != passwordCheck -> showToast("The passwords don't match!")
+                !isEmailValid(email) -> showToast("Please insert a valid email")
+                else -> handleRegistration(username, email, password)
             }
-            else if (!isPasswordValid(password)){
-                Toast.makeText(this, "Please create a password with at least one uppercase, lowercase, digit and special character", Toast.LENGTH_LONG).show()
-            }
-            else if(password != passwordCheck){
-                Toast.makeText(
-                    this,
-                    "The passwords don't match!",
-                    Toast.LENGTH_LONG
-                ).show()
-            } else if(!isEmailValid(email)){
-                Toast.makeText(this, "Please insert a valid email", Toast.LENGTH_LONG).show()
-            } else {
-                val db = FirebaseFirestore.getInstance()
-                db.collection("users")
-                    .whereEqualTo("username", username)
-                    .get()
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            if(!task.result.isEmpty()){
-                                Toast.makeText(this, "Already existing username!", Toast.LENGTH_LONG).show()
-                            } else {
-                                addIfEmailIsNew(db, username, email, password)
-
-                                val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-                                val editor = sharedPreferences.edit()
-                                editor.putString("userID", username)
-                                editor.apply()
-
-                                val intent = Intent(this, OnboardingActivity::class.java)
-                                startActivity(intent)
-
-                            }
-                        } else {
-                            Log.w(this.localClassName, "Error getting documents checking username.", task.exception)
-                        }
-                    }
-            }
-
-        }
-
-        backToLoginBtn.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
         }
     }
 
+    private fun fieldsAreEmpty(vararg fields: String) = fields.any { it.isEmpty() }
 
-    private fun addUser(db : FirebaseFirestore, username : String, email : String, password : String){
-        val user: MutableMap<String, Any> = HashMap()
-        user["username"] = username
-        user["email"] = email
-        user["password"] = Hashing.hashPassword(password)
-        user["balance"] = 0f
-
-        // Add a new document with a generated ID
+    private fun handleRegistration(username: String, email: String, password: String) {
+        val db = FirebaseFirestore.getInstance()
         db.collection("users")
-            .add(user)
-            .addOnSuccessListener { documentReference ->
-                Log.d(
-                    this.localClassName,
-                    "DocumentSnapshot added with ID: " + documentReference.id
-                )
-            }
-            .addOnFailureListener { e ->
-                Log.w(
-                    this.localClassName,
-                    "Error adding document",
-                    e
-                )
-            }
-    }
-
-    private fun addIfEmailIsNew(db : FirebaseFirestore, username : String, email : String, password : String){
-        db.collection("users")
-            .whereEqualTo("email", email)
+            .whereEqualTo("username", username)
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    if (!task.result.isEmpty()) {
-                        Toast.makeText(
-                            this,
-                            "Already existing email!",
-                            Toast.LENGTH_LONG
-                        ).show()
+                    if (!task.result.isEmpty) {
+                        showToast("Already existing username!")
                     } else {
-                        // Create a new user with a first and last name
-                        addUser(db, username, email, password)
+                        addIfEmailIsNew(db, username, email, password)
+                        saveUserID(username)
+                        goToOnboardingActivity()
                     }
                 } else {
-                    Log.w(this.localClassName, "Error getting documents checking email.", task.exception)
+                    handleDatabaseError(task.exception)
                 }
             }
     }
+
+    private fun setBackToLoginClickListener() {
+        backToLoginBtn.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun saveUserID(username: String) {
+        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit {
+            putString("userID", username)
+        }
+    }
+
+    private fun addIfEmailIsNew(db: FirebaseFirestore, username: String, email: String, password: String) {
+        db.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    addUser(db, username, email, password)
+                } else {
+                    showToast("Already existing email!")
+                }
+            }
+            .addOnFailureListener { exception ->
+                handleDatabaseError(exception)
+            }
+    }
+
+    private fun addUser(db: FirebaseFirestore, username: String, email: String, password: String) {
+        val user = mapOf(
+            "username" to username,
+            "email" to email,
+            "password" to Hashing.hashPassword(password),
+            "balance" to 0f
+        )
+        db.collection("users").add(user)
+    }
+
     private fun isPasswordValid(password: String): Boolean {
-        val minLength = 5
-        val maxLength = 20
+        val lengthRange = 5..20
 
-        // Check length
-        if (password.length !in minLength..maxLength) {
-            return false
-        }
-
-        // Check for at least one uppercase letter
-        if (!password.any { it.isUpperCase() }) {
-            return false
-        }
-
-        // Check for at least one lowercase letter
-        if (!password.any { it.isLowerCase() }) {
-            return false
-        }
-
-        // Check for at least one digit
-        if (!password.any { it.isDigit() }) {
-            return false
-        }
-
-        // Check for at least one special character
-        if (!password.any { !it.isLetterOrDigit() }) {
-            return false
-        }
-
-        // All checks passed, password is valid
-        return true
+        return password.length in lengthRange &&
+                password.any { it.isUpperCase() } &&
+                password.any { it.isLowerCase() } &&
+                password.any { it.isDigit() } &&
+                password.any { !it.isLetterOrDigit() }
     }
 
     private fun isEmailValid(email: String): Boolean {
         val emailRegex = Regex("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}")
         return email.matches(emailRegex)
+    }
+
+    private fun handleDatabaseError(exception: Exception?) {
+        Log.w(this.localClassName, "Error getting documents from the database.", exception)
+    }
+
+    private fun goToOnboardingActivity() {
+        startActivity(Intent(this, OnboardingActivity::class.java))
+    }
+
+    private inline fun Context.getSharedPreferencesEditor(
+        name: String,
+        mode: Int = Context.MODE_PRIVATE,
+        action: SharedPreferences.Editor.() -> Unit
+    ) {
+        val sharedPreferences = getSharedPreferences(name, mode)
+        val editor = sharedPreferences.edit()
+        action(editor)
+        editor.apply()
     }
 }
