@@ -1,7 +1,7 @@
 package com.walletflow
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -18,26 +18,12 @@ import com.walletflow.data.Transaction
 import com.walletflow.transactions.AddTransactionActivity
 import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
-import java.lang.Double.min
-import java.lang.Math.abs
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-
-//TODO : Home balance and Objective Balance
-
+@SuppressLint("SetTextI18n", "SimpleDateFormat")
 class HomeActivity : BaseActivity() {
 
-    lateinit var earningBtn : Button
-    lateinit var expenseBtn : Button
-    lateinit var balanceTv : TextView
-    lateinit var expensesTv : TextView
-    lateinit var objectiveMoneyTv : TextView
-    lateinit var totalBudget : TextView
-    private lateinit var greetingUser: TextView
-
-    var balance : Double = 0.0
-    var objectiveSavedMoney : Double = 0.0
     companion object {
         const val EARNING_CONST = 1
         const val EXPENSE_CONST = -1
@@ -46,6 +32,18 @@ class HomeActivity : BaseActivity() {
         const val SPEND = "spend"
         const val EARN = "earn"
     }
+
+    private lateinit var earningBtn : Button
+    private lateinit var expenseBtn : Button
+    private lateinit var balanceTv : TextView
+    private lateinit var expensesTv : TextView
+    private lateinit var objectiveMoneyTv : TextView
+    private lateinit var totalBudget : TextView
+    private lateinit var greetingUser: TextView
+
+    private var balance : Double = 0.0
+    private var objectiveSavedMoney : Double = 0.0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -62,7 +60,7 @@ class HomeActivity : BaseActivity() {
 
         earningBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
-            intent.putExtra("type", HomeActivity.EARNING_CONST)
+            intent.putExtra("type", EARNING_CONST)
             intent.putExtra("type_name", EARNINGS)
             intent.putExtra("type_verb", EARN)
             startActivity(intent)
@@ -70,7 +68,7 @@ class HomeActivity : BaseActivity() {
 
         expenseBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
-            intent.putExtra("type", HomeActivity.EXPENSE_CONST)
+            intent.putExtra("type", EXPENSE_CONST)
             intent.putExtra("type_name", EXPENSES)
             intent.putExtra("type_verb", SPEND)
             startActivity(intent)
@@ -114,12 +112,10 @@ class HomeActivity : BaseActivity() {
                     balance = task.result.first().getDouble("balance")!!
                     balanceTv.text = StringHelper.getShrunkForm(balance) + "" + "€"
                     updateTotalBudget()
-                    updateExpenses()
                 } else {
                     Log.w(this.localClassName, "Error getting documents.", task.exception)
                 }
             }
-
     }
 
     private fun updateTotalBudget(){
@@ -169,8 +165,10 @@ class HomeActivity : BaseActivity() {
                         thisMonthBudget = budget + thisMonthExpense
                     }
 
+                    expensesTv.text = "${StringHelper.getShrunkForm(kotlin.math.abs(thisMonthExpense))}€"
                     totalBudget.text = " ${StringHelper.getShrunkForm(budget)}€"
                     val progressBarContainer = findViewById<FrameLayout>(R.id.budgetProgressBar)
+
                     val difference = kotlin.math.abs(budget - thisMonthBudget)
                     val relativeDifference = difference / thisMonthBudget
                     val desiredWidthInDp = 310
@@ -188,42 +186,10 @@ class HomeActivity : BaseActivity() {
             }
     }
 
-    private fun updateExpenses(){
-
-        val calendar = Calendar.getInstance()
-        val date = SimpleDateFormat("yyyy").format(calendar.time)
-
-        var expenses = 0.0
-
-        db.collection("transactions")
-            .whereEqualTo("user", userID)
-            .whereEqualTo("type", "expense")
-            .whereGreaterThanOrEqualTo("date", date)
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    for (document in task.result) {
-                        expenses += document.getDouble("amount")!!
-                    }
-
-                    expensesTv.text = "${StringHelper.getShrunkForm(abs(expenses))}€"
-
-                } else {
-                    Log.w(this.localClassName, "Error getting documents.", task.exception)
-                }
-            }
-
-    }
-
     private fun loadFrequentTransactions(){
 
         val rootView = findViewById<LinearLayout>(R.id.layoutFrequentTransactions)
         rootView.removeAllViews()
-
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-
-        val db = FirebaseFirestore.getInstance()
 
         db.collection("frequentTransactions")
             .whereEqualTo("user", userID)
@@ -242,10 +208,8 @@ class HomeActivity : BaseActivity() {
                         tvNote.text = document.getString("note")
                         tvType.text = document.getString("type")
                         tvAmount.text = document.getDouble("amount").toString() + "€"
-                        // Add the card view to the container layout
 
                         val addButton = cardView.findViewById<Button>(R.id.btFrequentTransactionAdd)
-
                         addButton.setOnClickListener {
                             createAlertForFrequentTransaction(document, db, userID, true)
                         }
@@ -286,7 +250,8 @@ class HomeActivity : BaseActivity() {
                     document.getString("note"),
                     document.getString("type"),
                     document.getString("user"),
-                    SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
+                    SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time
+                    )
                 )
                 TransactionManager.addTransactionRecordToDB(db, transaction, document, userID)
             } else {
@@ -296,7 +261,6 @@ class HomeActivity : BaseActivity() {
             finish()
             val intent = Intent(this, SuccessActivity::class.java)
             startActivity(intent)
-
         }
         alert.setNegativeButton(
             "No"
