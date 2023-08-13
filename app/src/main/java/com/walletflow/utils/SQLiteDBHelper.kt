@@ -58,11 +58,11 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         values.put("icon_name", name)
         values.put(ISADDED, 1)
 
-        db.update(CATEGORY_TABLE, values,"file_path=?", arrayOf<String>("$selected.png"))
+        db.update(CATEGORY_TABLE, values, "file_path=?", arrayOf<String>("$selected.png"))
         db.close()
     }
 
-    fun getCategories(type : Int): Cursor? {
+    fun getCategories(type: Int): Cursor? {
         val db = this.readableDatabase
         return db.rawQuery("SELECT * FROM " + CATEGORY_TABLE + " WHERE $ISADDED = $type", null)
     }
