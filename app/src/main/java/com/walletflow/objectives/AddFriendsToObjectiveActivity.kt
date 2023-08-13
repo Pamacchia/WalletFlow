@@ -1,7 +1,6 @@
 package com.walletflow.objectives
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.CheckBox
@@ -12,13 +11,10 @@ import androidx.cardview.widget.CardView
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.walletflow.BaseActivity
 import com.walletflow.R
-import com.walletflow.data.Participant
 import com.walletflow.data.User
-import kotlinx.coroutines.selects.select
 
 class AddFriendsToObjectiveActivity : BaseActivity() {
 
@@ -29,7 +25,6 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         fab = findViewById(R.id.confirmGroupObjectiveFriends)
-
         val friends = db.collection("friends").whereEqualTo("accepted", true)
         val senderQuery = friends.whereEqualTo("sender", userID).get()
         val receiverQuery = friends.whereEqualTo("receiver", userID).get()
@@ -37,7 +32,8 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
 
         Tasks.whenAllSuccess<QuerySnapshot>(senderQuery, receiverQuery)
             .addOnSuccessListener { requestQueryList ->
-                var userQueryList: ArrayList<Task<QuerySnapshot>> = userQueryList(requestQueryList[0], false)
+                var userQueryList: ArrayList<Task<QuerySnapshot>> =
+                    userQueryList(requestQueryList[0], false)
                 userQueryList.addAll(userQueryList(requestQueryList[1], true))
                 getFriends(userQueryList)
             }
@@ -49,7 +45,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
     private fun returnGroup() {
         val intent = Intent(this, AddObjectiveActivity::class.java)
 
-        if(selectedFriends.isNullOrEmpty()) {
+        if (selectedFriends.isNullOrEmpty()) {
             Toast.makeText(this, "You need to select at least a friend!", Toast.LENGTH_LONG).show()
         } else {
             intent.putStringArrayListExtra("group", selectedFriends)
@@ -75,20 +71,21 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
     private fun getFriends(userQueryList: ArrayList<Task<QuerySnapshot>>) {
         Tasks.whenAllSuccess<QuerySnapshot>(userQueryList)
             .addOnSuccessListener { queryList ->
-            val friendsList = arrayListOf<User>()
-            queryList.forEach { result ->
+                val friendsList = arrayListOf<User>()
+                queryList.forEach { result ->
 
-                val friend = User(result.first().getString("username")!!,
-                    result.first().getString("email")!!,
-                    result.first().getDouble("balance")!!
-                )
+                    val friend = User(
+                        result.first().getString("username")!!,
+                        result.first().getString("email")!!,
+                        result.first().getDouble("balance")!!
+                    )
 
-                friendsList.add(
-                    friend
-                )
+                    friendsList.add(
+                        friend
+                    )
+                }
+                setupFriendsList(friendsList)
             }
-            setupFriendsList(friendsList)
-        }
     }
 
     private fun setupFriendsList(friendsList: ArrayList<User>) {
@@ -100,7 +97,8 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
             val selectCheckBox = cardView.findViewById<CheckBox>(R.id.selectCheckBox)
 
             friendNameTextView.text = friend.username
-            selectCheckBox.isChecked = selectedFriends.contains(friend.username) // Assuming selectedFriends is a list that keeps track of selected usernames
+            selectCheckBox.isChecked =
+                selectedFriends.contains(friend.username)
 
             cardView.setOnClickListener {
                 val isSelected = selectCheckBox.isChecked

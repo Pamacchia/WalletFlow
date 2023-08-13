@@ -11,24 +11,21 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContentProviderCompat.requireContext
-import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Objective
 import com.walletflow.data.Participant
-import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
 import kotlin.math.roundToInt
 
 class ObjectiveDetailActivity : BaseActivity() {
 
-    lateinit var titleTv : TextView
-    lateinit var completedBtn : Button
-    lateinit var addSavingsBtn : Button
-    lateinit var deleteObjBtn : Button
-    lateinit var addSavingsEt : EditText
-    lateinit var objectiveBudgetTv : TextView
+    lateinit var titleTv: TextView
+    lateinit var completedBtn: Button
+    lateinit var addSavingsBtn: Button
+    lateinit var deleteObjBtn: Button
+    lateinit var addSavingsEt: EditText
+    lateinit var objectiveBudgetTv: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,15 +47,15 @@ class ObjectiveDetailActivity : BaseActivity() {
 
         addSavingsBtn.setOnClickListener {
             var amount = addSavingsEt.text.toString().toDouble()
-            if (amount <= (currentUser!!.quote - currentUser.saved) && amount > 0){
-                amount = ((amount*100).roundToInt() / 100.0)
+            if (amount <= (currentUser!!.quote - currentUser.saved) && amount > 0) {
+                amount = ((amount * 100).roundToInt() / 100.0)
                 currentUser.saved = currentUser.saved?.plus(amount)!!
 
                 db.collection("participants")
                     .whereEqualTo("objectiveId", currentUser.objectiveId)
                     .whereEqualTo("participant", currentUser.participant)
                     .get()
-                    .addOnSuccessListener {task ->
+                    .addOnSuccessListener { task ->
                         task.documents.first().reference.update("saved", currentUser.saved)
                     }
 
@@ -103,9 +100,17 @@ class ObjectiveDetailActivity : BaseActivity() {
                         .addOnSuccessListener { querySnapshot ->
                             val batch = db.batch()
                             for (document in querySnapshot) {
-                                Log.w(this.localClassName, document.getString("participants").toString())
-                                TransactionManager.updateBalance(db, document.getDouble("saved")!!.toFloat(), document.getString("participants"))
-                                val participantRef = db.collection("participants").document(document.id)
+                                Log.w(
+                                    this.localClassName,
+                                    document.getString("participants").toString()
+                                )
+                                TransactionManager.updateBalance(
+                                    db,
+                                    document.getDouble("saved")!!.toFloat(),
+                                    document.getString("participants")
+                                )
+                                val participantRef =
+                                    db.collection("participants").document(document.id)
                                 batch.delete(participantRef)
                             }
 
@@ -149,7 +154,7 @@ class ObjectiveDetailActivity : BaseActivity() {
             val usernameTv = cardView.findViewById<TextView>(R.id.tvUsername)
             val savingsTv = cardView.findViewById<TextView>(R.id.tvSavings)
 
-            if(participant.participant == currentUser!!.participant){
+            if (participant.participant == currentUser!!.participant) {
                 usernameTv.text = currentUser.participant
                 savingsTv.text = "Has saved ${currentUser.saved}$ over ${currentUser.quote}$"
 
@@ -171,15 +176,15 @@ class ObjectiveDetailActivity : BaseActivity() {
     }
 
     private fun totalRecapInit(
-        currentUser : Participant?,
+        currentUser: Participant?,
         friends: ArrayList<Participant>?,
         objective: Objective
-    ) : Double? {
+    ): Double? {
 
         var totalSaved = 0.0
 
         friends!!.forEach { friend ->
-            if(friend.participant == currentUser!!.participant){
+            if (friend.participant == currentUser!!.participant) {
                 totalSaved = currentUser!!.saved?.let { totalSaved?.plus(it) }!!
             } else {
                 totalSaved = friend!!.saved?.let { totalSaved?.plus(it) }!!
@@ -193,7 +198,8 @@ class ObjectiveDetailActivity : BaseActivity() {
         val desiredWidthInDp = 325
         val minProgressBarWidthInPx = 1
         val relativeDifference = 1 - invRelativeDifference
-        val newWidthInPx = (minProgressBarWidthInPx + (relativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
+        val newWidthInPx =
+            (minProgressBarWidthInPx + (relativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
         val layoutParams = objectiveProgressBar.layoutParams
         layoutParams.width = newWidthInPx
         objectiveProgressBar.layoutParams = layoutParams

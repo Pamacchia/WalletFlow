@@ -1,6 +1,5 @@
 package com.walletflow.objectives
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +8,6 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Objective
@@ -17,8 +15,8 @@ import com.walletflow.data.Participant
 
 class ObjectivesActivity : BaseActivity() {
 
-    lateinit var createNewObjective : Button
-    lateinit var createNewGroupObjective : Button
+    lateinit var createNewObjective: Button
+    lateinit var createNewGroupObjective: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -52,36 +50,44 @@ class ObjectivesActivity : BaseActivity() {
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    for(participant in task.result){
+                    for (participant in task.result) {
 
-                        val currentUser = Participant(participant.getString("objectiveId")!!,
+                        val currentUser = Participant(
+                            participant.getString("objectiveId")!!,
                             participant.getString("participant")!!,
                             participant.getDouble("quote")!!,
                             participant.getDouble("saved")!!
                         )
 
-                        val objectiveQuery = db.collection("objectives").document(currentUser.objectiveId!!).get()
-                        val otherParticipantsQuery = db.collection("participants").whereEqualTo("objectiveId", currentUser.objectiveId!!).get()
+                        val objectiveQuery =
+                            db.collection("objectives").document(currentUser.objectiveId!!).get()
+                        val otherParticipantsQuery = db.collection("participants")
+                            .whereEqualTo("objectiveId", currentUser.objectiveId!!).get()
 
-                        val cardView = LayoutInflater.from(this).inflate(R.layout.objective_cardview, rootView, false) as CardView
+                        val cardView = LayoutInflater.from(this)
+                            .inflate(R.layout.objective_cardview, rootView, false) as CardView
                         val tvTitle = cardView.findViewById<TextView>(R.id.tvObjectiveCardTitle)
-                        val tvParticipants = cardView.findViewById<TextView>(R.id.tvObjectiveCardParticipants)
-                        val tvSavings = cardView.findViewById<TextView>(R.id.tvObjectiveCardProgress)
+                        val tvParticipants =
+                            cardView.findViewById<TextView>(R.id.tvObjectiveCardParticipants)
+                        val tvSavings =
+                            cardView.findViewById<TextView>(R.id.tvObjectiveCardProgress)
 
-                        objectiveQuery.addOnCompleteListener {objectiveQuery ->
+                        objectiveQuery.addOnCompleteListener { objectiveQuery ->
 
                             otherParticipantsQuery.addOnSuccessListener { resultQueryList ->
 
-                                val objective = Objective(objectiveQuery.result.getString("name")!!,
+                                val objective = Objective(
+                                    objectiveQuery.result.getString("name")!!,
                                     objectiveQuery.result.getDouble("amount"),
                                     objectiveQuery.result.getString("date")!!,
                                     objectiveQuery.result.getString("admin")!!,
                                     objectiveQuery.result.getBoolean("completed")
                                 )
 
-                                val participantList = ArrayList<Participant>() // ArrayList to store Participant instances
+                                val participantList =
+                                    ArrayList<Participant>() // ArrayList to store Participant instances
 
-                                for(otherParticipant in resultQueryList){
+                                for (otherParticipant in resultQueryList) {
                                     val tempParticipant = Participant(
                                         otherParticipant.getString("objectiveId")!!,
                                         otherParticipant.getString("participant")!!,
@@ -93,13 +99,14 @@ class ObjectivesActivity : BaseActivity() {
 
                                 tvTitle.text = objective.name + " | Exp: " + objective.date
 
-                                if(participantList.size > 1){
+                                if (participantList.size > 1) {
                                     tvParticipants.text = "Group Objective"
                                 } else {
                                     tvParticipants.text = "Solo Objective"
                                 }
 
-                                tvSavings.text = "You saved ${currentUser.saved} out of ${currentUser.quote}"
+                                tvSavings.text =
+                                    "You saved ${currentUser.saved} out of ${currentUser.quote}"
                                 rootView.addView(cardView)
 
 

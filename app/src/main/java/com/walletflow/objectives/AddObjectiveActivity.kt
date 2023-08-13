@@ -1,24 +1,17 @@
 package com.walletflow.objectives
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.CheckBox
-import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.google.android.gms.tasks.Task
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.BaseActivity
@@ -33,11 +26,11 @@ import java.util.Locale
 
 class AddObjectiveActivity : BaseActivity() {
 
-    private lateinit var btnSubmitObjective : Button
-    private lateinit var etName : EditText
-    private lateinit var etAmount : EditText
+    private lateinit var btnSubmitObjective: Button
+    private lateinit var etName: EditText
+    private lateinit var etAmount: EditText
     private lateinit var etSelectDate: EditText
-    private lateinit var selectedDate : Date
+    private lateinit var selectedDate: Date
 
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(p0: Editable?) {
@@ -48,7 +41,7 @@ class AddObjectiveActivity : BaseActivity() {
             TODO("Not yet implemented")
         }
 
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int){
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             btnSubmitObjective.isEnabled = etName.text.isNotEmpty()
                     && etAmount.text.isNotEmpty()
                     && etSelectDate.text.isNotEmpty()
@@ -68,14 +61,14 @@ class AddObjectiveActivity : BaseActivity() {
         val group = intent.getStringArrayListExtra("group")
 
         etAmount.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus && group!=null) {
+            if (!hasFocus && group != null) {
                 updateQuoteValues(group!!.size)
             }
         }
 
         val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
 
-        if(group!=null) {
+        if (group != null) {
             for (friend in group!!) {
                 val friendQuoteView =
                     layoutInflater.inflate(R.layout.friend_quote_layout, null) as LinearLayout
@@ -86,15 +79,15 @@ class AddObjectiveActivity : BaseActivity() {
             }
         }
 
-        etSelectDate.setOnClickListener{
+        etSelectDate.setOnClickListener {
             showDatePicker()
         }
 
-        btnSubmitObjective.setOnClickListener{
+        btnSubmitObjective.setOnClickListener {
 
             val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
             var sumOfQuotes = 0.0
-            if(group!=null) {
+            if (group != null) {
                 for (i in 0 until friendQuotesLayout.childCount) {
                     val friendQuoteView = friendQuotesLayout.getChildAt(i) as LinearLayout
                     val friendQuoteEditText =
@@ -105,7 +98,7 @@ class AddObjectiveActivity : BaseActivity() {
             }
 
             // Compare the sum of quote values with the original amount
-            if (sumOfQuotes == etAmount.text.toString().toDouble() || group==null) {
+            if (sumOfQuotes == etAmount.text.toString().toDouble() || group == null) {
 
                 val obj = Objective(
                     etName.text.toString(),
@@ -121,7 +114,8 @@ class AddObjectiveActivity : BaseActivity() {
                 val intent = Intent(this, ObjectivesActivity::class.java)
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "Quote values do not match the amount.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Quote values do not match the amount.", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -147,7 +141,7 @@ class AddObjectiveActivity : BaseActivity() {
         datePicker.show(supportFragmentManager, datePicker.toString())
     }
 
-    private fun updateQuoteValues(numParticipants : Int) {
+    private fun updateQuoteValues(numParticipants: Int) {
         val amount = etAmount.text.toString().toDoubleOrNull() ?: 0.0
 
 
@@ -155,14 +149,16 @@ class AddObjectiveActivity : BaseActivity() {
 
         for (i in 0 until friendQuotesLayout.childCount) {
             val friendQuoteView = friendQuotesLayout.getChildAt(i) as LinearLayout
-            val friendQuoteEditText = friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
-            val newQuote = (amount / numParticipants).toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
+            val friendQuoteEditText =
+                friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
+            val newQuote =
+                (amount / numParticipants).toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
             friendQuoteEditText.setText(newQuote.toString())
         }
     }
 
     private fun saveObjective(
-        obj : Objective,
+        obj: Objective,
         db: FirebaseFirestore
     ) {
         db.collection("objectives")
@@ -178,7 +174,7 @@ class AddObjectiveActivity : BaseActivity() {
     ) {
         val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
 
-        if(friendQuotesLayout.childCount != 0) {
+        if (friendQuotesLayout.childCount != 0) {
             for (i in 0 until friendQuotesLayout.childCount) {
                 val friendQuoteView = friendQuotesLayout.getChildAt(i) as LinearLayout
                 db.collection("participants").add(
