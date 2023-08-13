@@ -6,24 +6,21 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.HomeActivity
 import com.walletflow.R
 import com.walletflow.utils.Hashing
-import java.text.SimpleDateFormat
-import java.util.Calendar
 
 
 class LoginActivity : AppCompatActivity() {
 
-    lateinit var registrationBtn : Button
-    lateinit var loginBtn : Button
-    lateinit var usernameField : EditText
-    lateinit var passwordField : EditText
-    
+    private lateinit var registrationBtn: Button
+    private lateinit var loginBtn: Button
+    private lateinit var usernameField: EditText
+    private lateinit var passwordField: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome_login)
@@ -40,7 +37,6 @@ class LoginActivity : AppCompatActivity() {
 
         loginBtn.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
-
             val username = usernameField.text.toString()
             val password = passwordField.text.toString()
 
@@ -49,11 +45,13 @@ class LoginActivity : AppCompatActivity() {
                 .whereEqualTo("password", Hashing.hashPassword(password)).get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        if(!task.result.isEmpty()){
-                            val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                        if (!task.result.isEmpty) {
+                            val sharedPreferences =
+                                getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
                             val editor = sharedPreferences.edit()
                             editor.putString("userID", username)
                             editor.apply()
+
                             val intent = Intent(this, HomeActivity::class.java)
                             startActivity(intent)
                         } else {
