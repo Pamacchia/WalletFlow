@@ -1,6 +1,7 @@
 package com.walletflow.dashboard
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -64,8 +65,8 @@ class PieChartFragment : Fragment() {
 
         filterMonthTv.setOnClickListener {
 
-            filterYearTv.background = null
-            filterMonthTv.background = resources.getDrawable(R.drawable.edittext_rectangle)
+            filterYearTv.setTypeface(null, Typeface.NORMAL)
+            filterMonthTv.setTypeface(null, Typeface.BOLD)
 
             initPieChart()
 
@@ -77,8 +78,8 @@ class PieChartFragment : Fragment() {
 
         filterYearTv.setOnClickListener {
 
-            filterMonthTv.background = null
-            filterYearTv.background = resources.getDrawable(R.drawable.edittext_rectangle)
+            filterYearTv.setTypeface(null, Typeface.BOLD)
+            filterMonthTv.setTypeface(null, Typeface.NORMAL)
 
             initPieChart()
 

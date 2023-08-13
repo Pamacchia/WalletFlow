@@ -2,6 +2,7 @@ package com.walletflow.dashboard
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -47,16 +48,16 @@ class TransactionsFragment : Fragment() {
 
         filterExpenseTv.setOnClickListener {
 
-            filterEarningTv.background = null
-            filterExpenseTv.background = resources.getDrawable(R.drawable.edittext_rectangle)
+            filterExpenseTv.setTypeface(null, Typeface.BOLD)
+            filterEarningTv.setTypeface(null, Typeface.NORMAL)
 
             filterRecordsByType(queryRef, filterExpenseTv.text.toString().lowercase(), view)
         }
 
         filterEarningTv.setOnClickListener {
 
-            filterExpenseTv.background = null
-            filterEarningTv.background = resources.getDrawable(R.drawable.edittext_rectangle)
+            filterExpenseTv.setTypeface(null, Typeface.NORMAL)
+            filterEarningTv.setTypeface(null, Typeface.BOLD)
 
             filterRecordsByType(queryRef, filterEarningTv.text.toString().lowercase(), view)
         }
