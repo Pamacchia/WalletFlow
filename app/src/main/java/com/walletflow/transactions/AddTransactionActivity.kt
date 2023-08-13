@@ -15,9 +15,9 @@ import com.walletflow.R
 
 class AddTransactionActivity : BaseActivity() {
 
-    lateinit var titleTv : TextView
-    lateinit var subtitleTv : TextView
-    lateinit var amountTitleTv : TextView
+//    lateinit var titleTv : TextView
+//    lateinit var subtitleTv : TextView
+//    lateinit var amountTitleTv : TextView
     lateinit var amountEditText : EditText
     lateinit var noteEditText : EditText
     lateinit var frequentCheck : CheckBox
@@ -30,18 +30,18 @@ class AddTransactionActivity : BaseActivity() {
         val typeName = intent.getStringExtra("type_name")
         val typeVerb = intent.getStringExtra("type_verb")
 
-        titleTv = findViewById(R.id.tvTitle)
-        subtitleTv = findViewById(R.id.tvSubTitle)
-        amountTitleTv = findViewById(R.id.tvAmountTitle)
+//        titleTv = findViewById(R.id.tvTitle)
+//        subtitleTv = findViewById(R.id.tvSubTitle)
+//        amountTitleTv = findViewById(R.id.tvAmountTitle)
         amountEditText = findViewById(R.id.etAmount)
         noteEditText = findViewById(R.id.etNote)
         frequentCheck = findViewById(R.id.cbFrequent)
         chooseCategoryBtn = findViewById(R.id.btnChooseCategory)
 
-        titleTv.text = typeName?.uppercase()
-        subtitleTv.text = "Insert a new $typeName"
-
-        amountTitleTv.text = "How much did you $typeVerb?"
+//        titleTv.text = typeName?.uppercase()
+//        subtitleTv.text = "Insert a new $typeName"
+//
+//        amountTitleTv.text = "How much did you $typeVerb?"
         amountEditText.addTextChangedListener(textWatcher)
         chooseCategoryBtn.isEnabled = amountEditText.text.isNotEmpty()
 
