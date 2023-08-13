@@ -4,7 +4,7 @@
     <item name="colorPrimary">@color/nordGreen</item>
     <!-- Add other theme attributes if needed -->
 </style>
-<style name="LoginTheme">
+<style name="BaseTheme">
     <item name="colorPrimary">@color/vividYellow</item>
     <!-- Add other theme attributes if needed -->
 </style>

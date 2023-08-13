@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:theme="@style/LoginTheme"
+    android:theme="@style/BaseTheme"
     tools:context=".welcome.LoginActivity">
 
     <TextView
