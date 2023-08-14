@@ -27,18 +27,28 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         val values = ContentValues()
 
-        val array1 =
-            arrayOf("food.png", "popcorn.png", "technology.png", "tshirt.png", "transport.png")
-        val array2 = arrayOf(1, 1, 1, 0, 0)
+        val arrayExpense = arrayOf("bills.png", "food.png", "transports.png",
+            "clothes.png", "health.png", "technology.png",
+            "entertainment.png", "sports.png", "gifts.png")
+        val arrayEarning = arrayOf()
+        val array1 = arrayExpense+arrayEarning
+        val maskDefault = IntArray(array1.size) { 1 }
 
-        val array3 = array1.map { fileName ->
+        val array2 = arrayOf("car.png", "gambling.png", "games.png", "pets.png", "home.png")
+        val maskNotDefault = IntArray(array2.size) { 0 }
+
+        val concatenatedArray = array1 + array2
+        val concatenatedMaskArray = maskDefault + maskNotDefault
+
+
+        val concatenatedLabelArray = concatenatedArray.map { fileName ->
             fileName.removeSuffix(".png")
         }.toTypedArray()
 
-        for (i in array1.indices) {
-            values.put("file_path", array1[i])
-            values.put(ISADDED, array2[i])
-            values.put("icon_name", array3[i])
+        for (i in concatenatedArray.indices) {
+            values.put("file_path", concatenatedArray[i])
+            values.put(ISADDED, concatenatedMaskArray[i])
+            values.put("icon_name", concatenatedLabelArray[i])
 
             db.insert(CATEGORY_TABLE, null, values)
         }
