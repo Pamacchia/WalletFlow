@@ -6,6 +6,7 @@
     android:id="@+id/ll_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".transactions.ChooseCategoryActivity">
 
 
@@ -18,15 +19,22 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tvAddCategoryTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="📝"
+            android:textColor="@color/black"
+            android:textSize="40sp" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="10dp"
             android:gravity="center"
-            android:text="CHOOSE CATEGORY"
+            android:text="Choose the category"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="48dp" />
+            android:textSize="20sp" />
 
         <LinearLayout
             android:id="@+id/buttonLinearLayout"
@@ -38,11 +46,12 @@
 
             <Button
                 android:id="@+id/btnSubmitCategory"
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:text="SUBMIT"
-                android:layout_weight="1"/>
+                android:theme="@style/BaseTheme"
+                android:background="@drawable/round_button"
+                android:enabled="false"/>
         </LinearLayout>
 
         <ScrollView

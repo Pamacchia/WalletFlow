@@ -49,7 +49,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         onCreate(db)
     }
 
-    fun addCategory(selected: String, name: String) {
+    fun addCategory(selected: String?, name: String) {
         val db = this.writableDatabase
         val values = ContentValues()
 

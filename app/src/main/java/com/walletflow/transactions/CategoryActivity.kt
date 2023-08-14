@@ -17,10 +17,9 @@ import java.io.IOException
 
 abstract class CategoryActivity : BaseActivity() {
 
-    lateinit var selected : String
+    var selected : String? = null
     fun getIconList(activityType : Int) : MutableList<Icon> {
         val db = SQLiteDBHelper(this, null)
-
         val cursor = db.getCategories(activityType)
 
         val iconList: MutableList<Icon> = mutableListOf()
@@ -48,7 +47,6 @@ abstract class CategoryActivity : BaseActivity() {
 
         val rootView = findViewById<LinearLayout>(R.id.iconsLinearLayout)
         rootView.removeAllViews()
-
         var count = 0
 
         lateinit var linearLayout : LinearLayout
@@ -100,9 +98,11 @@ abstract class CategoryActivity : BaseActivity() {
         }
 
         if(ChooseCategoryActivity::class.java.name.contains(this.localClassName)){
+
             val btnAdd = Button(this)
             btnAdd.text = "+"
             btnAdd.setOnClickListener {
+                selected = null
                 val intent = Intent(this, AddCategoryActivity::class.java)
                 startActivity(intent)
             }
@@ -118,7 +118,6 @@ abstract class CategoryActivity : BaseActivity() {
     }
 
     fun showSelected(v : View){
-
         val images = mutableListOf<ImageView>()
         val imageViews = selectAllImageViews(window.decorView.rootView, images)
 
@@ -129,7 +128,7 @@ abstract class CategoryActivity : BaseActivity() {
         (v as ImageView).alpha = 0.5F
         selected = v.tag.toString()
     }
-    private fun selectAllImageViews(view: View, images : MutableList<ImageView>): MutableList<ImageView> {
+    fun selectAllImageViews(view: View, images : MutableList<ImageView>): MutableList<ImageView> {
 
         if (view is ImageView) {
             images.add(view)

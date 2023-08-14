@@ -2,7 +2,9 @@ package com.walletflow.transactions
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.R
 import com.walletflow.data.Icon
@@ -15,6 +17,7 @@ private const val CHOOSE_CATEGORY_TYPE = 1
 class ChooseCategoryActivity : CategoryActivity() {
 
     lateinit var submitBtn: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

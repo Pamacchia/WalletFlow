@@ -107,7 +107,7 @@ class ObjectiveDetailActivity : BaseActivity() {
                                 TransactionManager.updateBalance(
                                     db,
                                     document.getDouble("saved")!!.toFloat(),
-                                    document.getString("participants")
+                                    document.getString("participant")
                                 )
                                 val participantRef =
                                     db.collection("participants").document(document.id)
@@ -130,7 +130,7 @@ class ObjectiveDetailActivity : BaseActivity() {
                     Log.w(this.localClassName, "Error deleting document", e)
                 }
 
-            Thread.sleep(250)
+            Thread.sleep(350)
             val intent = Intent(this, ObjectivesActivity::class.java)
             startActivity(intent)
             finish()
