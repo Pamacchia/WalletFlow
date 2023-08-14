@@ -6,8 +6,6 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-private const val s = "type"
-
 class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
 
@@ -15,6 +13,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         private val DATABASE_NAME = "ICONS.sqlite"
         private val DATABASE_VERSION = 1
         const val ISADDED = "isAdded"
+        const val TYPE = "type"
         val CATEGORY_TABLE = "category_table"
     }
 
@@ -24,7 +23,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 "file_path" + " TEXT," +
                 "icon_name" + " TEXT," +
                 ISADDED + " INTEGER," +
-                "type" + " TEXT" + ");")
+                TYPE + " TEXT" + ");")
 
         db.execSQL(query)
 
@@ -48,7 +47,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val maskCategoryEarningNotDefault = Array(arrayEarningNotDefault.size) { "earning" }
         val maskTypeNotDefault = maskCategoryExpenseNotDefault + maskCategoryEarningNotDefault
 
-        val concatenatedArray = arrayDefault + arrayExpenseNotDefault
+        val concatenatedArray = arrayDefault + arrayNotDefault
         val concatenatedMaskDefault = maskDefault + maskNotDefault
         val concatenatedMaskType = maskTypeDefault + maskTypeNotDefault
 
@@ -59,7 +58,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         for (i in concatenatedArray.indices) {
             values.put("file_path", concatenatedArray[i])
             values.put(ISADDED, concatenatedMaskDefault[i])
-            values.put("type", concatenatedMaskType[i])
+            values.put(TYPE, concatenatedMaskType[i])
             values.put("icon_name", concatenatedLabelArray[i])
 
             db.insert(CATEGORY_TABLE, null, values)
@@ -75,7 +74,6 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val db = this.writableDatabase
         val values = ContentValues()
 
-
         values.put("file_path", "$selected.png")
         values.put("icon_name", name)
         values.put(ISADDED, 1)
@@ -86,7 +84,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     fun getCategories(default: Int, type: String): Cursor? {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM " + CATEGORY_TABLE + " WHERE $ISADDED = $default AND type = $type", null)
+        return db.rawQuery("SELECT * FROM $CATEGORY_TABLE WHERE $ISADDED = $default AND `$TYPE` = '$type'", null)
     }
 
 }
