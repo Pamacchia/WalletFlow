@@ -78,7 +78,8 @@
             android:text="Submit"
             android:layout_marginTop="20dp"
             android:theme="@style/BaseTheme"
-            android:background="@drawable/round_button">
+            android:background="@drawable/round_button"
+            />
 
     </LinearLayout>
 
