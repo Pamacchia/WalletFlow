@@ -1,7 +1,9 @@
 package com.walletflow.transactions
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -17,15 +19,15 @@ private const val CHOOSE_CATEGORY_TYPE = 1
 class ChooseCategoryActivity : CategoryActivity() {
 
     lateinit var submitBtn: Button
+    lateinit var btnAdd : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val iconList: MutableList<Icon> = getIconList(CHOOSE_CATEGORY_TYPE)
-
-        loadIcons(iconList)
-
         submitBtn = findViewById(R.id.btnSubmitCategory)
+        btnAdd = findViewById(R.id.btnAddNewCategory)
+        loadIcons(iconList)
 
         submitBtn.setOnClickListener {
             val db = FirebaseFirestore.getInstance()
@@ -53,7 +55,6 @@ class ChooseCategoryActivity : CategoryActivity() {
     override fun onRestart() {
         super.onRestart()
         val iconList: MutableList<Icon> = getIconList(CHOOSE_CATEGORY_TYPE)
-
         loadIcons(iconList)
     }
 
@@ -117,5 +118,20 @@ class ChooseCategoryActivity : CategoryActivity() {
                     )
                 }
         }
+    }
+
+    override fun loadIcons(iconList : MutableList<Icon>){
+        super.loadIcons(iconList)
+        btnAdd.setOnClickListener {
+            selected = null
+            val intent = Intent(this, AddCategoryActivity::class.java)
+            startActivity(intent)
+        }
+        submitBtn.isEnabled=false
+    }
+
+    override fun showSelected(v : View){
+        super.showSelected(v)
+        submitBtn.isEnabled=true
     }
 }

@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import com.walletflow.R
 import com.walletflow.data.Icon
 import com.walletflow.utils.SQLiteDBHelper
@@ -32,8 +33,13 @@ class AddCategoryActivity : CategoryActivity() {
         iconNameEt.addTextChangedListener(textWatcher)
 
         addCategoryBtn.setOnClickListener {
-            db.addCategory(selected, iconNameEt.text.toString())
-            finish()
+
+            if(selected==null){
+                Toast.makeText(this, "Select one icon", Toast.LENGTH_SHORT).show()
+            } else {
+                db.addCategory(selected, iconNameEt.text.toString())
+                finish()
+            }
         }
     }
 
@@ -43,15 +49,13 @@ class AddCategoryActivity : CategoryActivity() {
 
     val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-            // Implementation for afterTextChanged
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            // Implementation for beforeTextChanged
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            addCategoryBtn.isEnabled = iconNameEt.text.isNotEmpty()
+            addCategoryBtn.isEnabled = iconNameEt.text.trim().isNotEmpty()
         }
     }
 }

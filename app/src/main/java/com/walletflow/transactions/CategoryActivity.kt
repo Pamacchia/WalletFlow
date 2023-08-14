@@ -43,7 +43,7 @@ abstract class CategoryActivity : BaseActivity() {
         return iconList
     }
 
-    fun loadIcons(iconList : MutableList<Icon>){
+    open fun loadIcons(iconList : MutableList<Icon>){
 
         val rootView = findViewById<LinearLayout>(R.id.iconsLinearLayout)
         rootView.removeAllViews()
@@ -96,28 +96,9 @@ abstract class CategoryActivity : BaseActivity() {
                 linearLayout.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
         }
-
-        if(ChooseCategoryActivity::class.java.name.contains(this.localClassName)){
-
-            val btnAdd = Button(this)
-            btnAdd.text = "+"
-            btnAdd.setOnClickListener {
-                selected = null
-                val intent = Intent(this, AddCategoryActivity::class.java)
-                startActivity(intent)
-            }
-
-            btnAdd.setBackgroundResource(R.drawable.add_button)
-            btnAdd.setTextColor(0xFFFFFFFF.toInt())
-            btnAdd.textSize = 30f
-
-            linearLayout.layoutParams.height = (100*factor).toInt()
-            linearLayout.gravity = Gravity.CENTER
-            linearLayout.addView(btnAdd)
-        }
     }
 
-    fun showSelected(v : View){
+    open fun showSelected(v : View){
         val images = mutableListOf<ImageView>()
         val imageViews = selectAllImageViews(window.decorView.rootView, images)
 

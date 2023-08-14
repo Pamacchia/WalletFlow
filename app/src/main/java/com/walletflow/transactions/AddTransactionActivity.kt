@@ -37,14 +37,14 @@ class AddTransactionActivity : BaseActivity() {
 
         chooseCategoryBtn.setOnClickListener {
 
-            val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-            val userID = sharedPreferences.getString("userID", "")
             val amount = amountEditText.text.toString()
             val note = noteEditText.text.toString()
             val frequent = frequentCheck.isChecked
 
             if (amount.isEmpty()) {
                 Toast.makeText(this, "Please specify the amount", Toast.LENGTH_LONG).show()
+            } else if(noteEditText.text.isEmpty() && frequentCheck.isChecked) {
+                Toast.makeText(this, "Please add a note for frequent transactions", Toast.LENGTH_LONG).show()
             } else {
                 val intent = Intent(this, ChooseCategoryActivity::class.java)
                 intent.putExtra("amount", amount.toFloat() * type)

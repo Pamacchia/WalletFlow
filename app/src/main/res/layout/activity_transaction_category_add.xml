@@ -6,13 +6,14 @@
     android:id="@+id/ll_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/BaseTheme"
     tools:context=".transactions.AddCategoryActivity">
 
     <LinearLayout
         android:id="@+id/mainLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,17 +21,25 @@
         <TextView
             android:id="@+id/tvAddCategoryTitle"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="10dp"
-            android:text="ADD CATEGORY"
+            android:layout_marginTop="10dp"
+            android:text="🔠"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="40dp" />
+        <TextView
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginVertical="10dp"
+            android:text="Add a new category"
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="320dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
 
             <EditText
                 android:id="@+id/etCategoryName"
@@ -38,21 +47,24 @@
                 android:layout_height="48dp"
                 android:hint="Add category name"
                 android:gravity="center"
+                android:background="@drawable/edittext_rectangle"
                 android:textSize="18dp" />
 
             <Button
                 android:id="@+id/btnAddCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ADD"
+                android:text="Add"
+                android:background="@drawable/round_button"
                 android:layout_marginLeft="20dp"
-                android:clickable="false"/>
+                android:enabled="false"/>
 
         </LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:scrollbars="vertical">
 
             <LinearLayout
