@@ -6,6 +6,8 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
+private const val s = "type"
+
 class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
 
@@ -21,25 +23,34 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 + "id" + " INTEGER PRIMARY KEY, " +
                 "file_path" + " TEXT," +
                 "icon_name" + " TEXT," +
-                ISADDED + " INTEGER" + ");")
+                ISADDED + " INTEGER," +
+                "type" + " TEXT" + ");")
 
         db.execSQL(query)
 
         val values = ContentValues()
 
-        val arrayExpense = arrayOf("bills.png", "food.png", "transports.png",
+        val arrayExpenseDefault = arrayOf("bills.png", "food.png", "transports.png",
             "clothes.png", "health.png", "technology.png",
             "entertainment.png", "sports.png", "gifts.png")
-        val arrayEarning = arrayOf()
-        val array1 = arrayExpense+arrayEarning
-        val maskDefault = IntArray(array1.size) { 1 }
+        val arrayEarningDefault = arrayOf("salary.png","item-sold.png")
+        val arrayDefault = arrayExpenseDefault+arrayEarningDefault
+        val maskDefault = IntArray(arrayDefault.size) { 1 }
+        val maskCategoryExpenseDefault = Array(arrayExpenseDefault.size) { "expense" }
+        val maskCategoryEarningDefault = Array(arrayEarningDefault.size) { "earning" }
+        val maskTypeDefault = maskCategoryExpenseDefault + maskCategoryEarningDefault
 
-        val array2 = arrayOf("car.png", "gambling.png", "games.png", "pets.png", "home.png")
-        val maskNotDefault = IntArray(array2.size) { 0 }
+        val arrayExpenseNotDefault = arrayOf("car.png", "gambling.png", "games.png", "pets.png", "home.png")
+        val arrayEarningNotDefault = arrayOf("coin.png","pay.png","investments.png")
+        val arrayNotDefault = arrayExpenseNotDefault+arrayEarningNotDefault
+        val maskNotDefault = IntArray(arrayNotDefault.size) { 0 }
+        val maskCategoryExpenseNotDefault = Array(arrayExpenseNotDefault.size) { "expense" }
+        val maskCategoryEarningNotDefault = Array(arrayEarningNotDefault.size) { "earning" }
+        val maskTypeNotDefault = maskCategoryExpenseNotDefault + maskCategoryEarningNotDefault
 
-        val concatenatedArray = array1 + array2
-        val concatenatedMaskArray = maskDefault + maskNotDefault
-
+        val concatenatedArray = arrayDefault + arrayExpenseNotDefault
+        val concatenatedMaskDefault = maskDefault + maskNotDefault
+        val concatenatedMaskType = maskTypeDefault + maskTypeNotDefault
 
         val concatenatedLabelArray = concatenatedArray.map { fileName ->
             fileName.removeSuffix(".png")
@@ -47,7 +58,8 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         for (i in concatenatedArray.indices) {
             values.put("file_path", concatenatedArray[i])
-            values.put(ISADDED, concatenatedMaskArray[i])
+            values.put(ISADDED, concatenatedMaskDefault[i])
+            values.put("type", concatenatedMaskType[i])
             values.put("icon_name", concatenatedLabelArray[i])
 
             db.insert(CATEGORY_TABLE, null, values)
@@ -72,9 +84,9 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.close()
     }
 
-    fun getCategories(type: Int): Cursor? {
+    fun getCategories(default: Int, type: String): Cursor? {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM " + CATEGORY_TABLE + " WHERE $ISADDED = $type", null)
+        return db.rawQuery("SELECT * FROM " + CATEGORY_TABLE + " WHERE $ISADDED = $default AND type = $type", null)
     }
 
 }

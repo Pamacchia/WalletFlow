@@ -18,9 +18,9 @@ import java.io.IOException
 abstract class CategoryActivity : BaseActivity() {
 
     var selected : String? = null
-    fun getIconList(activityType : Int) : MutableList<Icon> {
+    fun getIconList(activityType : Int, type : String) : MutableList<Icon> {
         val db = SQLiteDBHelper(this, null)
-        val cursor = db.getCategories(activityType)
+        val cursor = db.getCategories(activityType, type)
 
         val iconList: MutableList<Icon> = mutableListOf()
 

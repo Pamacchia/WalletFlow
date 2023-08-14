@@ -10,20 +10,21 @@ import com.walletflow.R
 import com.walletflow.data.Icon
 import com.walletflow.utils.SQLiteDBHelper
 
-private const val ADD_CATEGORY_TYPE = 0
+private const val DEFAULT = 0
 
 class AddCategoryActivity : CategoryActivity() {
 
     lateinit var addCategoryBtn: Button
     lateinit var iconNameEt: EditText
+    lateinit var transactionType : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
+        transactionType = intent.getStringExtra("typeName")!!
         val db = SQLiteDBHelper(this, null)
 
-        val iconList: MutableList<Icon> = getIconList(ADD_CATEGORY_TYPE)
+        val iconList: MutableList<Icon> = getIconList(DEFAULT, transactionType)
 
         loadIcons(iconList)
 

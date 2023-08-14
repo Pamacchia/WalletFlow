@@ -3,10 +3,8 @@ package com.walletflow.transactions
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.widget.Button
-import android.widget.ImageView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.R
 import com.walletflow.data.Icon
@@ -14,17 +12,19 @@ import com.walletflow.utils.TransactionManager
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-private const val CHOOSE_CATEGORY_TYPE = 1
+private const val DEFAULT = 1
 
 class ChooseCategoryActivity : CategoryActivity() {
 
     lateinit var submitBtn: Button
     lateinit var btnAdd : Button
+    lateinit var transactionType : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val iconList: MutableList<Icon> = getIconList(CHOOSE_CATEGORY_TYPE)
+        transactionType = intent.getStringExtra("typeName")!!
+        val iconList: MutableList<Icon> = getIconList(DEFAULT, transactionType)
         submitBtn = findViewById(R.id.btnSubmitCategory)
         btnAdd = findViewById(R.id.btnAddNewCategory)
         loadIcons(iconList)
@@ -54,7 +54,7 @@ class ChooseCategoryActivity : CategoryActivity() {
 
     override fun onRestart() {
         super.onRestart()
-        val iconList: MutableList<Icon> = getIconList(CHOOSE_CATEGORY_TYPE)
+        val iconList: MutableList<Icon> = getIconList(DEFAULT, transactionType)
         loadIcons(iconList)
     }
 
@@ -125,6 +125,7 @@ class ChooseCategoryActivity : CategoryActivity() {
         btnAdd.setOnClickListener {
             selected = null
             val intent = Intent(this, AddCategoryActivity::class.java)
+            intent.putExtra("typeName", transactionType)
             startActivity(intent)
         }
         submitBtn.isEnabled=false
