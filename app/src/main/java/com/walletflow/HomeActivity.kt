@@ -162,8 +162,8 @@ class HomeActivity : BaseActivity() {
                         budget = balance
                         thisMonthBudget = balance + thisMonthExpense
                     } else {
+                        thisMonthBudget = budget
                         budget -= thisMonthExpense
-                        thisMonthBudget = budget + thisMonthExpense
                     }
 
                     expensesTv.text =
@@ -171,7 +171,7 @@ class HomeActivity : BaseActivity() {
                     totalBudget.text = " ${StringHelper.getShrunkForm(budget)}€"
                     val progressBarContainer = findViewById<FrameLayout>(R.id.budgetProgressBar)
 
-                    val difference = kotlin.math.abs(budget - thisMonthBudget)
+                    var difference = thisMonthBudget - budget
                     val relativeDifference = difference / thisMonthBudget
                     val desiredWidthInDp = 310
                     val minProgressBarWidthInPx = 1
