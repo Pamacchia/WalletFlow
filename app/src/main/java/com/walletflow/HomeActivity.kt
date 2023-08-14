@@ -221,13 +221,13 @@ class HomeActivity : BaseActivity() {
 
                         val addButton = cardView.findViewById<Button>(R.id.btFrequentTransactionAdd)
                         addButton.setOnClickListener {
-                            createAlertForFrequentTransaction(document, db, userID, true)
+                            createAlertForFrequentTransaction(document, db, userID, true, "Confirm adding operation")
                         }
 
                         val deleteButton =
                             cardView.findViewById<Button>(R.id.btFrequentTransactionDelete)
                         deleteButton.setOnClickListener {
-                            createAlertForFrequentTransaction(document, db, userID, false)
+                            createAlertForFrequentTransaction(document, db, userID, false, "Confirm deleting operation")
                         }
 
                         rootView.addView(cardView)
@@ -244,34 +244,41 @@ class HomeActivity : BaseActivity() {
         document: QueryDocumentSnapshot,
         db: FirebaseFirestore,
         userID: String?,
-        add: Boolean
+        add: Boolean,
+        message: String
     ) {
 
         val alert: AlertDialog.Builder = AlertDialog.Builder(this)
-        alert.setTitle("Confirm")
+        alert.setTitle(message)
         alert.setMessage("Are you sure?")
         alert.setPositiveButton(
             "Yes"
         ) { _, _ ->
 
-            if (add) {
-                val transaction = Transaction(
-                    document.getDouble("amount"),
-                    document.getString("category"),
-                    document.getString("note"),
-                    document.getString("type"),
-                    document.getString("user"),
-                    SimpleDateFormat("yyyy-MM-dd HH:mm").format(
-                        Calendar.getInstance().time
-                    )
+            val transaction = Transaction(
+                document.getDouble("amount"),
+                document.getString("category"),
+                document.getString("note"),
+                document.getString("type"),
+                document.getString("user"),
+                SimpleDateFormat("yyyy-MM-dd HH:mm").format(
+                    Calendar.getInstance().time
                 )
+            )
+
+            val operation : String
+            if (add) {
                 TransactionManager.addTransactionRecordToDB(db, transaction, document, userID)
+                operation = "Add"
             } else {
                 TransactionManager.deleteFrequentTransactionRecordFromDB(document)
+                operation = "Delete"
             }
 
             finish()
             val intent = Intent(this, SuccessActivity::class.java)
+            intent.putExtra("transaction", transaction)
+            intent.putExtra("operation", operation)
             startActivity(intent)
         }
         alert.setNegativeButton(

@@ -28,11 +28,12 @@
 
             <TextView
                 android:id="@+id/tvGreetingUser"
-                android:layout_width="wrap_content"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:text="Hello, "
                 android:textColor="@color/black"
                 android:textSize="20sp"
+                android:paddingLeft="14dp"
                 android:layout_marginTop="15dp"
                 android:textStyle="bold" />
 
@@ -43,7 +44,6 @@
                 android:layout_marginTop="10dp"
                 android:lineSpacingExtra="3dp"
                 android:text="Remaining budget for this month"
-
                 android:textAlignment="center"
                 android:textSize="20sp" />
 

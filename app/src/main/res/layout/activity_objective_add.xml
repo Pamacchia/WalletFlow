@@ -34,6 +34,7 @@
             android:layout_marginTop="20dp"
             android:layout_height="48dp"
             android:hint="Objective name"
+            android:background="@drawable/edittext_rectangle"
             ></EditText>
 
         <EditText
@@ -44,6 +45,7 @@
             android:layout_height="48dp"
             android:inputType="numberDecimal"
             android:hint="Amount"
+            android:background="@drawable/edittext_rectangle"
             ></EditText>
 
         <EditText
@@ -55,7 +57,8 @@
             android:inputType="text"
             android:cursorVisible="false"
             android:layout_marginTop="10dp"
-            android:hint="Select a date">
+            android:hint="Select a date"
+            android:background="@drawable/edittext_rectangle">
 
         </EditText>
 
@@ -73,7 +76,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Submit"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:theme="@style/BaseTheme"
+            android:background="@drawable/round_button">
 
     </LinearLayout>
 

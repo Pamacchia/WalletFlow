@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.view.marginTop
 import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Icon
@@ -81,20 +82,23 @@ abstract class CategoryActivity : BaseActivity() {
                 e.printStackTrace()
             }
 
-            imageView.layoutParams = LinearLayout.LayoutParams((factor*100).toInt(), (factor*100).toInt(), 1F)
+            imageView.layoutParams = LinearLayout.LayoutParams((factor*90).toInt(), (factor*90).toInt(), 1F)
             imageView.tag= icon.iconName
             imageView.setOnClickListener {
                 showSelected(imageView)
             }
             count++
 
-            if(count%3==0){
+            if (count % 3 == 0) {
                 linearLayout = LinearLayout(this)
                 linearLayout.id = View.generateViewId()
                 rootView.addView(linearLayout)
                 linearLayout.orientation = LinearLayout.HORIZONTAL
-                linearLayout.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+
+                // Set up layout parameters with margins
+                (linearLayout.layoutParams as LinearLayout.LayoutParams).setMargins(0, (factor*25).toInt(), 0, 0) // Add 10dp top margin
             }
+
         }
     }
 
