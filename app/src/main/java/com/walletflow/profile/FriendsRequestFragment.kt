@@ -16,6 +16,7 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
@@ -85,6 +86,7 @@ class FriendsRequestFragment : Fragment() {
 
         queryRef
             .whereEqualTo("accepted", type)
+
             .get().addOnCompleteListener { task ->
 
                 if (task.isSuccessful) {
@@ -98,7 +100,6 @@ class FriendsRequestFragment : Fragment() {
                         ) as CardView
                         val tvUsername =
                             cardView.findViewById<TextView>(R.id.tvFriendRequestUsername)
-                        val tvEmail = cardView.findViewById<TextView>(R.id.tvFriendRequestEmail)
                         val tvDate = cardView.findViewById<TextView>(R.id.tvFriendRequestDate)
 
                         val sender = document.getString("sender")
@@ -107,7 +108,6 @@ class FriendsRequestFragment : Fragment() {
                         val contentLayoutView =
                             cardView.findViewById<LinearLayout>(R.id.contentLayoutFriendRequestCard)
 
-                        tvEmail.text = "fake@email.com"
                         tvDate.text = "01/01/1990"
 
                         val factor: Float = this.resources.displayMetrics.density
