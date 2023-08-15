@@ -87,7 +87,7 @@ class PieChartFragment : Fragment() {
     private fun getDateStringWithOffset(offset: Int, field: Int): String {
         val calendar = Calendar.getInstance()
         calendar.add(field, offset)
-        return SimpleDateFormat("yyyy-MM-dd HH:mm").format(calendar.time)
+        return SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
     }
 
     private fun getSharedPreferencesValue(key: String, defaultValue: String): String {
