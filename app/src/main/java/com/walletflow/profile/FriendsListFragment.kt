@@ -70,28 +70,32 @@ class FriendsListFragment : Fragment() {
                         val sender = document.getString("sender")
                         val receiver = document.getString("receiver")
 
-                        if (userID == sender) {
-                            tvUsername.text = receiver
-                        } else {
-                            tvUsername.text = sender
+                        if (userID == sender || userID == receiver) {
+
+                            if (userID == sender) {
+                                tvUsername.text = receiver
+                            } else {
+                                tvUsername.text = sender
+                            }
+
+                            tvEmail.text = "fake@email.com"
+
+                            val deleteButton =
+                                cardView.findViewById<Button>(R.id.btFriendElimination)
+                            deleteButton.setOnClickListener {
+                                document.reference.delete()
+                                    .addOnSuccessListener {
+                                        filterAcceptedFriends(queryRef, true, userID)
+                                        println("Document deleted successfully.")
+                                    }
+                                    .addOnFailureListener { e ->
+                                        println("Error deleting document: $e")
+                                    }
+                            }
+
+                            rootView.addView(cardView)
+                            Log.w(context.toString(), document.data.toString())
                         }
-
-                        tvEmail.text = "fake@email.com"
-
-                        val deleteButton = cardView.findViewById<Button>(R.id.btFriendElimination)
-                        deleteButton.setOnClickListener {
-                            document.reference.delete()
-                                .addOnSuccessListener {
-                                    filterAcceptedFriends(queryRef, true, userID)
-                                    println("Document deleted successfully.")
-                                }
-                                .addOnFailureListener { e ->
-                                    println("Error deleting document: $e")
-                                }
-                        }
-
-                        rootView.addView(cardView)
-                        Log.w(context.toString(), document.data.toString())
                     }
 
                 } else {

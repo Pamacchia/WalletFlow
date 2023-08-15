@@ -86,7 +86,6 @@ class FriendsRequestFragment : Fragment() {
 
         queryRef
             .whereEqualTo("accepted", type)
-
             .get().addOnCompleteListener { task ->
 
                 if (task.isSuccessful) {
@@ -141,7 +140,8 @@ class FriendsRequestFragment : Fragment() {
                                         println("Error deleting document: $e")
                                     }
                             }
-                        } else {
+                            rootView.addView(cardView)
+                        } else if(userID == receiver){
                             tvUsername.text = sender
 
                             val acceptButton = Button(cardView.context)
@@ -184,9 +184,8 @@ class FriendsRequestFragment : Fragment() {
                                         println("Error updating document: $e")
                                     }
                             }
+                            rootView.addView(cardView)
                         }
-
-                        rootView.addView(cardView)
                         Log.w(context.toString(), document.data.toString())
                     }
 
@@ -277,4 +276,3 @@ class FriendsRequestFragment : Fragment() {
     }
 
 }
-
