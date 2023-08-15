@@ -16,8 +16,17 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
+        <Button
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/baseline_push_pin_24">
+
+        </Button>
+
         <LinearLayout
-            android:layout_width="210dp"
+            android:layout_width="160dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -65,7 +74,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginLeft="25dp"
-            android:background="@drawable/baseline_add_24"
+            android:background="@drawable/baseline_autorenew_24"
+            android:theme="@style/BlueTheme"
             android:layout_gravity="center">
 
         </Button>
@@ -76,6 +86,7 @@
             android:layout_height="30dp"
             android:layout_marginLeft="10dp"
             android:background="@drawable/baseline_delete_24"
+            android:theme="@style/RedTheme"
             android:layout_gravity="center">
 
         </Button>
