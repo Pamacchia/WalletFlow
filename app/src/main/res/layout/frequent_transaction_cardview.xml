@@ -16,14 +16,14 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <Button
+        <ImageView
+            android:id="@+id/frequentTransactionIv"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="20dp"
-            android:background="@drawable/baseline_push_pin_24">
-
-        </Button>
+            android:src="@drawable/baseline_push_pin_24">
+        </ImageView>
 
         <LinearLayout
             android:layout_width="160dp"

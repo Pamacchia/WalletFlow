@@ -3,19 +3,23 @@ package com.walletflow
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import com.github.mikephil.charting.data.PieEntry
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.Source
 import com.walletflow.data.Transaction
 import com.walletflow.transactions.AddTransactionActivity
+import com.walletflow.utils.SQLiteDBHelper
 import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
 import java.text.SimpleDateFormat
@@ -214,10 +218,13 @@ class HomeActivity : BaseActivity() {
                             cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardType)
                         val tvAmount =
                             cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardAmount)
+                        val ivCategory = cardView.findViewById<ImageView>(R.id.frequentTransactionIv)
 
                         tvNote.text = document.getString("note")
                         tvType.text = document.getString("type")
                         tvAmount.text = document.getDouble("amount").toString() + "€"
+
+                        setIconCard(document.getString("category"), ivCategory)
 
                         val addButton = cardView.findViewById<Button>(R.id.btFrequentTransactionAdd)
                         addButton.setOnClickListener {
@@ -287,6 +294,15 @@ class HomeActivity : BaseActivity() {
             dialog.cancel()
         }
         alert.show()
+    }
+
+    private fun setIconCard(categoryName : String?, frequentTransactionIv : ImageView) {
+        val local_db = SQLiteDBHelper(this, null)
+        val file_path = local_db.getCategoryImage(categoryName!!)
+        val inputStream = this.assets?.open("icons/${file_path}")
+        val drawable = Drawable.createFromStream(inputStream, null)
+        frequentTransactionIv.setImageDrawable(drawable)
+        inputStream!!.close()
     }
 
 }

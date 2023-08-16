@@ -2,12 +2,14 @@ package com.walletflow.dashboard
 
 import android.content.Context
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -16,6 +18,7 @@ import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.R
+import com.walletflow.utils.SQLiteDBHelper
 import com.walletflow.utils.TransactionManager
 
 class TransactionsFragment : Fragment() {
@@ -81,6 +84,9 @@ class TransactionsFragment : Fragment() {
                     val tvDate = cardView.findViewById<TextView>(R.id.tvTransactionCardDate)
                     val tvCategory = cardView.findViewById<TextView>(R.id.tvTransactionCardCategory)
                     val tvAmount = cardView.findViewById<TextView>(R.id.tvTransactionCardAmount)
+                    val ivCategory = cardView.findViewById<ImageView>(R.id.transactionIv)
+
+                    setIconCard(document.getString("category"), ivCategory)
 
                     tvDate.text = document.getString("date")
                     tvCategory.text = document.getString("category")
@@ -112,5 +118,14 @@ class TransactionsFragment : Fragment() {
     private fun refreshTransactionList(type: String) {
         val queryRef = db.collection("transactions").whereEqualTo("user", userID)
         filterRecordsByType(queryRef, type)
+    }
+
+    private fun setIconCard(categoryName : String?, frequentTransactionIv : ImageView) {
+        val local_db = SQLiteDBHelper(requireContext(), null)
+        val file_path = local_db.getCategoryImage(categoryName!!)
+        val inputStream = requireContext().assets?.open("icons/${file_path}")
+        val drawable = Drawable.createFromStream(inputStream, null)
+        frequentTransactionIv.setImageDrawable(drawable)
+        inputStream!!.close()
     }
 }

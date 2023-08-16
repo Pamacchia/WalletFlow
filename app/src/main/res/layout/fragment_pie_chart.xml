@@ -1,148 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
-    tools:context=".dashboard.PieChartFragment">
-
-    <LinearLayout
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal">
-
-        <TextView
-            android:id="@+id/tvFilterDashboardMonth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:text="Month"
-            android:textSize="17sp"
-            android:textColor="@color/black"
-            android:textStyle="bold">
-
-        </TextView>
-
-        <TextView
-            android:id="@+id/tvFilterDashboardYear"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="17sp"
-            android:textColor="@color/black"
-            android:text="Year">
-
-        </TextView>
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tvTotalSpent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:text="Total sum of expenses: "
-        android:layout_marginTop="20dp">
-    </TextView>
-
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pieChartCategories"
-        android:layout_width="320dp"
-        android:layout_height="320dp"
-        android:layout_marginTop="15dp"/>
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center_horizontal"
+        tools:context=".dashboard.PieChartFragment">
 
-        <com.google.android.material.card.MaterialCardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/cardDashboardAdviceSaved"
+        <LinearLayout
             android:layout_width="320dp"
-            android:layout_height="70dp"
-            android:layout_marginVertical="10dp"
-            android:backgroundTint="#ffffffff"
-            card_view:strokeColor="@color/vividYellow"
-            card_view:strokeWidth="3dp"
-            card_view:cardElevation="20dp"
-            card_view:cardCornerRadius="20dp">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center">
+            <TextView
+                android:id="@+id/tvFilterDashboardMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:text="Month"
+                android:textSize="17sp"
+                android:textColor="@color/black"
+                android:textStyle="bold">
 
-                <TextView
-                    android:id="@+id/tvEmojiSaving"
-                    android:layout_width="80dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textSize="30sp"
-                    android:textColor="@color/black"
-                    android:text="🫥"
-                    android:layout_marginLeft="10dp">
-                </TextView>
+            </TextView>
 
-                <TextView
-                    android:id="@+id/tvAdviceSaving"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:text="Are you a good saver? This is the difference between what you spent and what you earned"
-                    android:layout_marginHorizontal="10dp"/>
-            </LinearLayout>
+            <TextView
+                android:id="@+id/tvFilterDashboardYear"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="17sp"
+                android:textColor="@color/black"
+                android:text="Year">
 
-        </com.google.android.material.card.MaterialCardView>
+            </TextView>
 
-        <com.google.android.material.card.MaterialCardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvTotalSpent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:text="Total sum of expenses: "
+            android:layout_marginTop="20dp">
+        </TextView>
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChartCategories"
             android:layout_width="320dp"
-            android:layout_height="70dp"
-            android:layout_marginVertical="10dp"
-            android:backgroundTint="#ffffffff"
-            card_view:strokeColor="@color/nordGreen"
-            card_view:strokeWidth="3dp"
-            card_view:cardElevation="20dp"
-            card_view:cardCornerRadius="20dp">
+            android:layout_height="320dp"
+            android:layout_marginTop="15dp"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:gravity="center">
 
-                <TextView
-                    android:layout_width="80dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textSize="30sp"
-                    android:textColor="@color/black"
-                    android:text="🤑"
-                    android:layout_marginLeft="10dp">
-                </TextView>
+            <com.google.android.material.card.MaterialCardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cardDashboardAdviceSaved"
+                android:layout_width="320dp"
+                android:layout_height="70dp"
+                android:layout_marginVertical="10dp"
+                android:backgroundTint="#ffffffff"
+                card_view:strokeColor="@color/vividYellow"
+                card_view:strokeWidth="3dp"
+                card_view:cardElevation="20dp"
+                card_view:cardCornerRadius="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:text="Are you a good saver? This is the difference between what you spent and what you earned"
-                    android:layout_marginHorizontal="10dp"/>
-            </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
-        </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:id="@+id/tvEmojiSaving"
+                        android:layout_width="80dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textSize="30sp"
+                        android:textColor="@color/black"
+                        android:text="🫥"
+                        android:layout_marginLeft="10dp">
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/tvAdviceSaving"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Are you a good saver? This is the difference between what you spent and what you earned"
+                        android:layout_marginHorizontal="10dp"/>
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:layout_width="320dp"
+                android:layout_height="70dp"
+                android:layout_marginVertical="10dp"
+                android:backgroundTint="#ffffffff"
+                card_view:strokeColor="@color/nordBlue"
+                card_view:strokeWidth="3dp"
+                card_view:cardElevation="20dp"
+                card_view:cardCornerRadius="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+<!--                    <TextView-->
+<!--                        android:layout_width="80dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:gravity="center"-->
+<!--                        android:textSize="30sp"-->
+<!--                        android:textColor="@color/black"-->
+<!--                        android:text="🏷"-->
+<!--                        android:layout_marginLeft="10dp">-->
+<!--                    </TextView>-->
+
+                    <ImageView
+                        android:id="@+id/categoryImageView"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/baseline_push_pin_24">
+
+                    </ImageView>
+
+                    <TextView
+                        android:id="@+id/tvAdviceCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Which is the category in which you spent the most? Here it is"
+                        android:layout_marginHorizontal="10dp"/>
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

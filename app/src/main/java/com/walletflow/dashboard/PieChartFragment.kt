@@ -2,15 +2,16 @@ package com.walletflow.dashboard
 
 import android.content.Context
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
@@ -21,7 +22,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.R
-import org.w3c.dom.Text
+import com.walletflow.utils.SQLiteDBHelper
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import kotlin.math.abs
@@ -36,6 +37,8 @@ class PieChartFragment : Fragment() {
     lateinit var savedRecapTv: TextView
     lateinit var dashboardAdviceSavingsCard: MaterialCardView
     lateinit var emojiSavingTv : TextView
+    lateinit var adviceCategoryTv : TextView
+    lateinit var categoryIv : ImageView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -65,6 +68,8 @@ class PieChartFragment : Fragment() {
         savedRecapTv = view.findViewById(R.id.tvAdviceSaving)
         dashboardAdviceSavingsCard = view.findViewById(R.id.cardDashboardAdviceSaved)
         emojiSavingTv = view.findViewById(R.id.tvEmojiSaving)
+        adviceCategoryTv = view.findViewById(R.id.tvAdviceCategory)
+        categoryIv = view.findViewById(R.id.categoryImageView)
     }
 
     private fun initListeners() {
@@ -163,6 +168,28 @@ class PieChartFragment : Fragment() {
         val pieEntries = generatePieEntries(processedRecords)
         val colorArray = getColorArray(processedRecords.size)
 
+        var maxEntry: PieEntry? = null
+        var maxAmount = Float.MIN_VALUE
+        var totalSum = 0f
+
+        for (entry in pieEntries) {
+            totalSum += entry.value
+            if (entry.value > maxAmount) {
+                maxAmount = entry.value
+                maxEntry = entry
+            }
+        }
+
+        var maxEntryPercentage = 0f
+        if (maxEntry != null) {
+            maxEntryPercentage = (maxAmount / totalSum) * 100
+        }
+        val roundedMaxEntryPercentage = String.format("%.2f", maxEntryPercentage)
+
+        adviceCategoryTv.text = "You spent the most on: ${maxEntry?.label}. Amount spent: $maxAmount$. Percentage: $roundedMaxEntryPercentage%"
+
+        setIconCard(maxEntry)
+
         val pieDataSet = PieDataSet(pieEntries, "")
         pieDataSet.valueTextSize = 15f
         pieDataSet.colors = colorArray.asList()
@@ -173,6 +200,16 @@ class PieChartFragment : Fragment() {
         configurePieChart()
         pieChart.data = pieData
         pieChart.invalidate()
+    }
+
+    private fun setIconCard(maxEntry: PieEntry?) {
+        val local_db = SQLiteDBHelper(requireContext(), null)
+        val file_path = local_db.getCategoryImage(maxEntry!!.label)
+
+        val inputStream = context?.assets?.open("icons/${file_path}")
+        val drawable = Drawable.createFromStream(inputStream, null)
+        categoryIv.setImageDrawable(drawable)
+        inputStream!!.close()
     }
 
     private fun generatePieEntries(processedRecords: MutableList<Map<String, Any>?>): List<PieEntry> {
@@ -202,8 +239,10 @@ class PieChartFragment : Fragment() {
 
     private fun configurePieChart() {
         pieChart.setUsePercentValues(true)
+        pieChart.setDrawEntryLabels(false)
         pieChart.description.isEnabled = false
         pieChart.legend.isEnabled = true
+        pieChart.legend.isWordWrapEnabled = true
         pieChart.isRotationEnabled = true
         pieChart.dragDecelerationFrictionCoef = 0.9f
         pieChart.rotationAngle = 0f

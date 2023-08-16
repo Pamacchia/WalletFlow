@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
+
 class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
 
@@ -13,6 +14,8 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         private val DATABASE_NAME = "ICONS.sqlite"
         private val DATABASE_VERSION = 1
         const val ISADDED = "isAdded"
+        const val ICON_NAME = "icon_name"
+        const val FILE_PATH = "file_path"
         const val TYPE = "type"
         val CATEGORY_TABLE = "category_table"
     }
@@ -20,8 +23,8 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     override fun onCreate(db: SQLiteDatabase) {
         val query = ("CREATE TABLE " + CATEGORY_TABLE + " ("
                 + "id" + " INTEGER PRIMARY KEY, " +
-                "file_path" + " TEXT," +
-                "icon_name" + " TEXT," +
+                FILE_PATH + " TEXT," +
+                ICON_NAME + " TEXT," +
                 ISADDED + " INTEGER," +
                 TYPE + " TEXT" + ");")
 
@@ -56,10 +59,10 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }.toTypedArray()
 
         for (i in concatenatedArray.indices) {
-            values.put("file_path", concatenatedArray[i])
+            values.put(FILE_PATH, concatenatedArray[i])
             values.put(ISADDED, concatenatedMaskDefault[i])
             values.put(TYPE, concatenatedMaskType[i])
-            values.put("icon_name", concatenatedLabelArray[i])
+            values.put(ICON_NAME, concatenatedLabelArray[i])
 
             db.insert(CATEGORY_TABLE, null, values)
         }
@@ -74,8 +77,8 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val db = this.writableDatabase
         val values = ContentValues()
 
-        values.put("file_path", "$selected.png")
-        values.put("icon_name", name)
+        values.put(FILE_PATH, "$selected.png")
+        values.put(ICON_NAME, name)
         values.put(ISADDED, 1)
 
         db.update(CATEGORY_TABLE, values, "file_path=?", arrayOf<String>("$selected.png"))
@@ -85,6 +88,18 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun getCategories(default: Int, type: String): Cursor? {
         val db = this.readableDatabase
         return db.rawQuery("SELECT * FROM $CATEGORY_TABLE WHERE $ISADDED = $default AND `$TYPE` = '$type'", null)
+    }
+
+    fun getCategoryImage(type: String): String? {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $CATEGORY_TABLE WHERE `$ICON_NAME` = '$type'", null)
+
+        if(cursor!!.moveToFirst()){
+            val index = cursor.getColumnIndexOrThrow(FILE_PATH)
+            return cursor.getString(index)
+        }
+
+        return null
     }
 
 }
