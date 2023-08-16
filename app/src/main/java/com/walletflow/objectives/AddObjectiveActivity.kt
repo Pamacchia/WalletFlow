@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.marginTop
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -74,8 +75,11 @@ class AddObjectiveActivity : BaseActivity() {
                     layoutInflater.inflate(R.layout.friend_quote_layout, null) as LinearLayout
                 val friendUsernameTextView =
                     friendQuoteView.findViewById<TextView>(R.id.friendUsernameTextView)
+                val factor: Float = this.resources.displayMetrics.density
                 friendUsernameTextView.text = friend
                 friendQuotesLayout.addView(friendQuoteView)
+                (friendQuoteView.layoutParams as LinearLayout.LayoutParams).setMargins(0, (factor*15).toInt(), 0, 0) // Add 10dp top margin
+
             }
         }
 

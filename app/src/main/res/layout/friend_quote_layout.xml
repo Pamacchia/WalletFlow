@@ -3,24 +3,31 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center"
     android:orientation="horizontal">
 
     <TextView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/baseline_account_circle"
+        android:layout_marginLeft="10dp"
+        android:backgroundTint="@color/vividYellow">
+
+    </TextView>
+
+    <TextView
         android:id="@+id/friendUsernameTextView"
-        android:layout_width="0dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:layout_gravity="center_vertical"
-        android:paddingEnd="16dp"/>
+        android:textSize="18sp"
+        android:textAlignment="center"/>
 
     <EditText
         android:id="@+id/friendQuoteEditText"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="48dp"
         android:inputType="numberDecimal"
-        android:layout_weight="1"
         android:textAlignment="center"
-        android:hint="Enter quote"
+        android:hint="Quote"
         android:background="@drawable/edittext_rectangle"/>
 </LinearLayout>

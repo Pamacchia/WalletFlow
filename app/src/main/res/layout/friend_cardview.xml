@@ -14,12 +14,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/baseline_account_circle"
+            android:layout_marginLeft="10dp"
+            android:backgroundTint="@color/vividYellow">
+
+        </TextView>
 
         <LinearLayout
-            android:layout_width="250dp"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/tvFriendUsername"
@@ -27,19 +38,15 @@
                 android:layout_height="wrap_content"
                 android:text="Username"
                 android:textStyle="bold"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="20dp"
-                android:layout_weight="1"/>
+                android:layout_marginLeft="20dp"/>
 
             <TextView
                 android:id="@+id/tvFriendEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="email@email.com"
-                android:layout_weight="1"
                 android:textSize="10sp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginLeft="20dp"/>
 
         </LinearLayout>

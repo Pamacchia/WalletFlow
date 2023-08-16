@@ -22,10 +22,29 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textAlignment="center"
-            android:text="Add objective"
+            android:text="🎯"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="40dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textAlignment="center"
+            android:text="Setup your objective"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/btnSubmitNewObjective"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Submit"
+            android:layout_marginTop="20dp"
+            android:theme="@style/BaseTheme"
+            android:background="@drawable/round_button"
+            />
 
         <EditText
             android:id="@+id/etObjectiveName"
@@ -62,24 +81,23 @@
 
         </EditText>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/friendQuotesLayout">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
-        </LinearLayout>
+            android:fillViewport="true">
 
-        <Button
-            android:id="@+id/btnSubmitNewObjective"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Submit"
-            android:layout_marginTop="20dp"
-            android:theme="@style/BaseTheme"
-            android:background="@drawable/round_button"
-            />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/friendQuotesLayout"
+                android:layout_marginTop="20dp">
+
+            </LinearLayout>
+
+        </ScrollView>
+
 
     </LinearLayout>
 

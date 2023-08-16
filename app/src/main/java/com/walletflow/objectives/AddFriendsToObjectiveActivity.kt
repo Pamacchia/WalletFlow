@@ -115,6 +115,9 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
             }
 
             cardContainer.addView(cardView)
+            val factor: Float = this.resources.displayMetrics.density
+            cardView.layoutParams.width = 320 * factor.toInt()
+            cardView.layoutParams.height = 80 * factor.toInt()
         }
     }
 
