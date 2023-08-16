@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.view.marginTop
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -34,18 +33,18 @@ class AddObjectiveActivity : BaseActivity() {
     private lateinit var selectedDate: Date
 
     private val textWatcher = object : TextWatcher {
-        override fun afterTextChanged(p0: Editable?) {
-            TODO("Not yet implemented")
+        override fun afterTextChanged(s: Editable?) {
+            updateQuoteValues(intent.getStringArrayListExtra("group")!!.size)
         }
 
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            TODO("Not yet implemented")
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            // Implementation for beforeTextChanged
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             btnSubmitObjective.isEnabled = etName.text.isNotEmpty()
                     && etAmount.text.isNotEmpty()
-                    && etSelectDate.text.isNotEmpty()
+                    &&etSelectDate.text.isNotEmpty()
         }
     }
 
@@ -58,6 +57,11 @@ class AddObjectiveActivity : BaseActivity() {
         etSelectDate = findViewById(R.id.etSelectDate)
 
         etAmount.setText(0.0.toString())
+
+        btnSubmitObjective.isEnabled = false
+        etName.addTextChangedListener(textWatcher)
+        etAmount.addTextChangedListener(textWatcher)
+        etSelectDate.addTextChangedListener(textWatcher)
 
         val group = intent.getStringArrayListExtra("group")
 
@@ -75,8 +79,10 @@ class AddObjectiveActivity : BaseActivity() {
                     layoutInflater.inflate(R.layout.friend_quote_layout, null) as LinearLayout
                 val friendUsernameTextView =
                     friendQuoteView.findViewById<TextView>(R.id.friendUsernameTextView)
+                val friendQuoteEditText = friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
                 val factor: Float = this.resources.displayMetrics.density
                 friendUsernameTextView.text = friend
+                friendQuoteEditText.setText(0.0.toString())
                 friendQuotesLayout.addView(friendQuoteView)
                 (friendQuoteView.layoutParams as LinearLayout.LayoutParams).setMargins(0, (factor*15).toInt(), 0, 0) // Add 10dp top margin
 
@@ -150,15 +156,22 @@ class AddObjectiveActivity : BaseActivity() {
 
 
         val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
+        var sum = 0.0.toBigDecimal()
 
-        for (i in 0 until friendQuotesLayout.childCount) {
+        for (i in 1 until friendQuotesLayout.childCount) {
             val friendQuoteView = friendQuotesLayout.getChildAt(i) as LinearLayout
             val friendQuoteEditText =
                 friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
             val newQuote =
                 (amount / numParticipants).toBigDecimal().setScale(2, RoundingMode.HALF_EVEN)
+            sum += newQuote
             friendQuoteEditText.setText(newQuote.toString())
         }
+
+        val friendQuoteView = friendQuotesLayout.getChildAt(0) as LinearLayout
+        val friendQuoteEditText = friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
+        val adminQuote = (amount.toBigDecimal() - sum)
+        friendQuoteEditText.setText(adminQuote.toString())
     }
 
     private fun saveObjective(

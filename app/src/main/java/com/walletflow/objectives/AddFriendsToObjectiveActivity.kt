@@ -48,7 +48,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
         if (selectedFriends.isNullOrEmpty()) {
             Toast.makeText(this, "You need to select at least a friend!", Toast.LENGTH_LONG).show()
         } else {
-            selectedFriends.add(userID)
+            selectedFriends.add(0,userID)
             intent.putStringArrayListExtra("group", selectedFriends)
             finish()
             startActivity(intent)
