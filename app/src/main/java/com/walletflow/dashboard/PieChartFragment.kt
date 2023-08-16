@@ -10,15 +10,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.google.android.material.card.MaterialCardView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.R
+import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import kotlin.math.abs
@@ -31,6 +34,8 @@ class PieChartFragment : Fragment() {
     lateinit var filterYearTv: TextView
     lateinit var totalSpentTv: TextView
     lateinit var savedRecapTv: TextView
+    lateinit var dashboardAdviceSavingsCard: MaterialCardView
+    lateinit var emojiSavingTv : TextView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -58,6 +63,8 @@ class PieChartFragment : Fragment() {
         filterYearTv = view.findViewById(R.id.tvFilterDashboardYear)
         totalSpentTv = view.findViewById(R.id.tvTotalSpent)
         savedRecapTv = view.findViewById(R.id.tvAdviceSaving)
+        dashboardAdviceSavingsCard = view.findViewById(R.id.cardDashboardAdviceSaved)
+        emojiSavingTv = view.findViewById(R.id.tvEmojiSaving)
     }
 
     private fun initListeners() {
@@ -126,6 +133,14 @@ class PieChartFragment : Fragment() {
                 val summaryText = "You earned $totalEarning and you spent ${abs(totalExpense)}$, " +
                         "meaning you saved $formattedPercentage of your earnings since $date."
 
+                if(percentage > 10) {
+                    dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.nordGreen)
+                    emojiSavingTv.text = "\uD83E\uDD11"
+                } else if (percentage < 0) {
+                    dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.nordRed)
+                    emojiSavingTv.text = "\uD83E\uDD2C"
+                }
+
                 savedRecapTv.text = summaryText
                 totalSpentTv.text = "Total sum of expenses: ${abs(totalExpense)}$" // todo: euro
                 showPieChart(processedRecords)
@@ -137,7 +152,7 @@ class PieChartFragment : Fragment() {
 
     private fun calculateSavingsPercentage(totalEarning: Double, totalExpense: Double): Double {
         return if (totalEarning != 0.0) {
-            100 * (totalEarning - totalExpense) / totalEarning
+            100 * (totalEarning + totalExpense) / totalEarning
         } else {
             0.0
         }
