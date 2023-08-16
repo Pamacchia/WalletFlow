@@ -17,16 +17,56 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tvObjectiveTitle"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Objective Detail"
-            android:textSize="40dp"
-            android:textStyle="bold"
+            android:gravity="center"
+            android:text="🎯"
+            android:layout_marginTop="20dp"
             android:textColor="@color/black"
+            android:textSize="40dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvObjectiveTitle"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
             android:textAlignment="center"
-            ></TextView>
+            android:layout_gravity="center_horizontal"
+            android:text="Your active objective"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            android:textSize="20sp"></TextView>
+
+        <LinearLayout
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            >
+
+            <Button
+                android:id="@+id/btnCompletedObjective"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="5dp"
+                android:enabled="false"
+                android:text="Completed"
+                android:theme="@style/GreenTheme">
+            </Button>
+
+            <Button
+                android:id="@+id/btnDeleteObjective"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="5dp"
+                android:text="delete"
+                android:theme="@style/RedTheme">
+            </Button>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="320dp"
@@ -41,14 +81,17 @@
                 android:layout_height="match_parent"
                 android:textAlignment="center"
                 android:inputType="numberDecimal"
-                android:hint="Add savings">
+                android:hint="Add savings"
+                android:background="@drawable/edittext_rectangle">
             </EditText>
 
             <Button
                 android:id="@+id/btnAddSavings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save">
+                android:text="Save"
+                android:layout_marginLeft="10dp"
+                android:theme="@style/BaseTheme">
 
             </Button>
         </LinearLayout>
@@ -97,13 +140,8 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_marginTop="20dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/participantsListLayout"
@@ -113,36 +151,6 @@
                     android:orientation="vertical">
 
                 </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="320dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_marginTop="20dp"
-                    >
-
-                    <Button
-                        android:id="@+id/btnCompletedObjective"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginRight="5dp"
-                        android:enabled="false"
-                        android:text="Completed">
-                    </Button>
-
-                    <Button
-                        android:id="@+id/btnDeleteObjective"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginRight="5dp"
-                        android:text="delete">
-                    </Button>
-
-                </LinearLayout>
-            </LinearLayout>
 
         </ScrollView>
 

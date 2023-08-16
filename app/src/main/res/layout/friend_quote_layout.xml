@@ -17,8 +17,10 @@
     <EditText
         android:id="@+id/friendQuoteEditText"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:inputType="numberDecimal"
+        android:layout_weight="1"
+        android:textAlignment="center"
         android:hint="Enter quote"
-        android:layout_gravity="center_vertical"/>
+        android:background="@drawable/edittext_rectangle"/>
 </LinearLayout>
