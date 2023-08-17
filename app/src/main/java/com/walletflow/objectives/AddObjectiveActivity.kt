@@ -1,5 +1,6 @@
 package com.walletflow.objectives
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -18,14 +19,17 @@ import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Objective
 import com.walletflow.data.Participant
+import com.walletflow.transactions.ChooseCategoryActivity
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
+import java.util.ArrayList
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
 class AddObjectiveActivity : BaseActivity() {
 
+    private val chooseCategoryRequestCode = 1
     private lateinit var btnSubmitObjective: Button
     private lateinit var etName: EditText
     private lateinit var etAmount: EditText
@@ -96,39 +100,53 @@ class AddObjectiveActivity : BaseActivity() {
         }
 
         btnSubmitObjective.setOnClickListener {
+            val intent = Intent(this, ChooseCategoryActivity::class.java)
+            intent.putExtra("typeName", "expense")
+            startActivityForResult(intent, chooseCategoryRequestCode)
+        }
+    }
 
-            val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
-            var sumOfQuotes = 0.0
-            if (group != null) {
-                for (i in 0 until friendQuotesLayout.childCount) {
-                    val friendQuoteView = friendQuotesLayout.getChildAt(i) as LinearLayout
-                    val friendQuoteEditText =
-                        friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
-                    val quoteValue = friendQuoteEditText.text.toString().toDoubleOrNull() ?: 0.0
-                    sumOfQuotes += quoteValue
-                }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intentData)
+
+        if (requestCode == chooseCategoryRequestCode && resultCode == Activity.RESULT_OK) {
+            intentData?.let { data ->
+                addObjective(data.getStringExtra("category"))
+                Thread.sleep(150L)
+                finish()
             }
-
-            // Compare the sum of quote values with the original amount
-            if (sumOfQuotes == etAmount.text.toString().toDouble() || group == null) {
-
-                val obj = Objective(
-                    etName.text.toString(),
-                    etAmount.text.toString().toDouble(),
-                    SimpleDateFormat("yyyy-MM-dd").format(selectedDate),
-                    userID,
-                    false
-                )
-
-                saveObjective(obj, db)
-
-                Thread.sleep(150)
-                val intent = Intent(this, ObjectivesActivity::class.java)
-                startActivity(intent)
-            } else {
-                Toast.makeText(this, "Quote values do not match the amount.", Toast.LENGTH_SHORT)
-                    .show()
+        }
+    }
+    private fun addObjective(category : String?) {
+        val group = intent.getStringArrayListExtra("group")
+        val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
+        var sumOfQuotes = 0.0
+        if (group != null) {
+            for (i in 0 until friendQuotesLayout.childCount) {
+                val friendQuoteView = friendQuotesLayout.getChildAt(i) as LinearLayout
+                val friendQuoteEditText =
+                    friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
+                val quoteValue = friendQuoteEditText.text.toString().toDoubleOrNull() ?: 0.0
+                sumOfQuotes += quoteValue
             }
+        }
+
+        // Compare the sum of quote values with the original amount
+        if (sumOfQuotes == etAmount.text.toString().toDouble() || group == null) {
+
+            val obj = Objective(
+                etName.text.toString(),
+                etAmount.text.toString().toDouble(),
+                SimpleDateFormat("yyyy-MM-dd").format(selectedDate),
+                userID,
+                false,
+                category
+            )
+
+            saveObjective(obj, db)
+        } else {
+            Toast.makeText(this, "Quote values do not match the amount.", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 

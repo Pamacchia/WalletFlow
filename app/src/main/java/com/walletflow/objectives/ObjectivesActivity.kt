@@ -36,6 +36,11 @@ class ObjectivesActivity : BaseActivity() {
         }
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        loadObjectives()
+    }
+
     override fun getLayoutResourceId(): Int {
         return R.layout.activity_objective
     }
@@ -81,7 +86,8 @@ class ObjectivesActivity : BaseActivity() {
                                     objectiveQuery.result.getDouble("amount"),
                                     objectiveQuery.result.getString("date")!!,
                                     objectiveQuery.result.getString("admin")!!,
-                                    objectiveQuery.result.getBoolean("completed")
+                                    objectiveQuery.result.getBoolean("completed"),
+                                    objectiveQuery.result.getString("category")
                                 )
 
                                 val participantList =
