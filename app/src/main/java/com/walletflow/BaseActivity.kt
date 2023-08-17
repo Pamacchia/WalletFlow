@@ -8,6 +8,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.dashboard.DashboardActivity
 import com.walletflow.objectives.ObjectivesActivity
+import com.walletflow.profile.FriendsActivity
 import com.walletflow.profile.ProfileActivity
 
 
@@ -30,6 +31,7 @@ abstract class BaseActivity : AppCompatActivity(){
                 R.id.nav_home -> openActivity(HomeActivity::class.java)
                 R.id.nav_dashboard -> openActivity(DashboardActivity::class.java)
                 R.id.nav_objectives -> openActivity(ObjectivesActivity::class.java)
+                R.id.nav_friends -> openActivity(FriendsActivity::class.java)
                 R.id.nav_settings -> openActivity(ProfileActivity::class.java)
             }
             false

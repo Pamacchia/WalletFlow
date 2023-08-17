@@ -34,7 +34,9 @@ class AddObjectiveActivity : BaseActivity() {
 
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-            updateQuoteValues(intent.getStringArrayListExtra("group")!!.size)
+            if(intent.getStringArrayListExtra("group") != null){
+                updateQuoteValues(intent.getStringArrayListExtra("group")!!.size)
+            }
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
