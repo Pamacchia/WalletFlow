@@ -1,4 +1,4 @@
-package com.walletflow.profile
+package com.walletflow.friends
 
 import android.content.Context
 import android.os.Bundle
@@ -16,7 +16,6 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot

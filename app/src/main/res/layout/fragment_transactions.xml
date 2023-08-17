@@ -39,8 +39,7 @@
             android:textAlignment="center"
             android:textSize="17sp"
             android:text="Expense"
-            android:textColor="@color/black"
-            android:textStyle="bold">
+            android:textColor="@color/black">
 
         </TextView>
 

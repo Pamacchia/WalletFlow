@@ -117,10 +117,16 @@ class ObjectiveDetailActivity : BaseActivity() {
                             batch.commit()
                                 .addOnSuccessListener {
                                     Log.d(this.localClassName, "Participants deleted successfully!")
+                                    Thread.sleep(150)
+                                    val intent = Intent(this, ObjectivesActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
+                                    overridePendingTransition(0, 0)
                                 }
                                 .addOnFailureListener { e ->
                                     Log.w(this.localClassName, "Error deleting participants", e)
                                 }
+
                         }
                         .addOnFailureListener { e ->
                             Log.w(this.localClassName, "Error querying participants", e)
@@ -129,12 +135,6 @@ class ObjectiveDetailActivity : BaseActivity() {
                 .addOnFailureListener { e ->
                     Log.w(this.localClassName, "Error deleting document", e)
                 }
-
-            Thread.sleep(350)
-            val intent = Intent(this, ObjectivesActivity::class.java)
-            startActivity(intent)
-            finish()
-            overridePendingTransition(0, 0)
         }
 
     }

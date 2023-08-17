@@ -31,8 +31,7 @@
                 android:textAlignment="center"
                 android:text="Month"
                 android:textSize="17sp"
-                android:textColor="@color/black"
-                android:textStyle="bold">
+                android:textColor="@color/black">
 
             </TextView>
 

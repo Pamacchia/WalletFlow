@@ -1,4 +1,4 @@
-package com.walletflow.profile
+package com.walletflow.friends
 
 import android.content.Context
 import android.os.Bundle
@@ -13,9 +13,12 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.walletflow.BaseActivity
 import com.walletflow.R
 
 class FriendsListFragment : Fragment() {
+
+    private lateinit var fragmentActivity : BaseActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,19 +32,16 @@ class FriendsListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        fragmentActivity = (activity as BaseActivity)
     }
 
     override fun onResume() {
         super.onResume()
-
-        val sharedPreferences =
-            requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-        val db = FirebaseFirestore.getInstance()
-        val friendCollection = db.collection("friends")
-
-        filterAcceptedFriends(friendCollection, true, userID)
+        filterAcceptedFriends(
+            fragmentActivity.db.collection("friends"),
+            true,
+            fragmentActivity.userID
+        )
     }
 
     private fun filterAcceptedFriends(

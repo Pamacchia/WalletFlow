@@ -1,4 +1,4 @@
-package com.walletflow.profile
+package com.walletflow.friends
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

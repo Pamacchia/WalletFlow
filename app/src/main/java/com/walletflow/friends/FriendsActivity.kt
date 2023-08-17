@@ -1,4 +1,4 @@
-package com.walletflow.profile
+package com.walletflow.friends
 
 import android.os.Bundle
 import androidx.viewpager.widget.ViewPager

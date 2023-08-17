@@ -21,6 +21,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.utils.SQLiteDBHelper
 import java.text.SimpleDateFormat
@@ -30,6 +31,7 @@ import kotlin.math.abs
 
 class PieChartFragment : Fragment() {
 
+    private lateinit var fragmentActivity : BaseActivity
     lateinit var pieChart: PieChart
     lateinit var filterMonthTv: TextView
     lateinit var filterYearTv: TextView
@@ -48,15 +50,21 @@ class PieChartFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        fragmentActivity = (activity as BaseActivity)
         initViews(view)
         initListeners()
 
         val oneMonthAgoString = getDateStringWithOffset(-1, Calendar.MONTH)
 
-        val userID = getSharedPreferencesValue("userID", "")
-        val queryRef = getTransactionQueryRef(userID)
+        val queryRef = getTransactionQueryRef(fragmentActivity.userID)
 
+        filterRecordsByDate(queryRef, oneMonthAgoString)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val oneMonthAgoString = getDateStringWithOffset(-1, Calendar.MONTH)
+        val queryRef = getTransactionQueryRef(fragmentActivity.userID)
         filterRecordsByDate(queryRef, oneMonthAgoString)
     }
 
@@ -70,6 +78,7 @@ class PieChartFragment : Fragment() {
         emojiSavingTv = view.findViewById(R.id.tvEmojiSaving)
         adviceCategoryTv = view.findViewById(R.id.tvAdviceCategory)
         categoryIv = view.findViewById(R.id.categoryImageView)
+        filterMonthTv.setTypeface(null, Typeface.BOLD)
     }
 
     private fun initListeners() {
@@ -109,7 +118,7 @@ class PieChartFragment : Fragment() {
     }
 
     private fun getTransactionQueryRef(userID: String): Query {
-        val db = FirebaseFirestore.getInstance()
+        val db = fragmentActivity.db
         return db.collection("transactions").whereEqualTo("user", userID)
     }
 

@@ -7,7 +7,7 @@
     android:id="@+id/ll_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".profile.FriendsActivity">
+    tools:context=".friends.FriendsActivity">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPagerFriends"

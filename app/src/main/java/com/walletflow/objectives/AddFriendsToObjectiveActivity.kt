@@ -8,9 +8,9 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.cardview.widget.CardView
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.firestore.QuerySnapshot
 import com.walletflow.BaseActivity
@@ -93,22 +93,22 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
         val cardContainer = findViewById<LinearLayout>(R.id.cardContainer)
 
         for (friend in friendsList) {
-            val cardView = LayoutInflater.from(this).inflate(R.layout.select_friend_layout, null)
+            val cardView = (LayoutInflater.from(this).inflate(R.layout.select_friend_layout, null) as MaterialCardView)
             val friendNameTextView = cardView.findViewById<TextView>(R.id.friendNameTextView)
-            val selectCheckBox = cardView.findViewById<CheckBox>(R.id.selectCheckBox)
 
             friendNameTextView.text = friend.username
-            selectCheckBox.isChecked =
+            cardView.isCheckable = true
+            cardView.isChecked =
                 selectedFriends.contains(friend.username)
 
             cardView.setOnClickListener {
-                val isSelected = selectCheckBox.isChecked
+                val isSelected = cardView.isChecked
                 if (isSelected) {
-                    selectCheckBox.isChecked = false
+                    cardView.isChecked = false
                     selectedFriends.remove(friend.username)
                     Log.w(this.localClassName, selectedFriends.toString())
                 } else {
-                    selectCheckBox.isChecked = true
+                    cardView.isChecked = true
                     selectedFriends.add(friend.username)
                     Log.w(this.localClassName, selectedFriends.toString())
                 }

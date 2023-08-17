@@ -50,6 +50,7 @@ class TransactionsFragment : Fragment() {
         rootView = view.findViewById(R.id.layoutTransactionList)
         filterExpenseTv = view.findViewById(R.id.tvFilterTransactionListExpense)
         filterEarningTv = view.findViewById(R.id.tvFilterTransactionListEarning)
+        filterExpenseTv.setTypeface(null, Typeface.BOLD)
 
         val queryRef = db.collection("transactions").whereEqualTo("user", userID)
 

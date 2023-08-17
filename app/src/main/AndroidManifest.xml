@@ -18,7 +18,7 @@
             android:name=".objectives.AddFriendsToObjectiveActivity"
             android:exported="false" />
         <activity
-            android:name=".profile.FriendsActivity"
+            android:name=".friends.FriendsActivity"
             android:exported="false" />
         <activity
             android:name=".profile.ProfileActivity"

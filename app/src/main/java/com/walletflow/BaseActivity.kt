@@ -8,7 +8,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.dashboard.DashboardActivity
 import com.walletflow.objectives.ObjectivesActivity
-import com.walletflow.profile.FriendsActivity
+import com.walletflow.friends.FriendsActivity
 import com.walletflow.profile.ProfileActivity
 
 
