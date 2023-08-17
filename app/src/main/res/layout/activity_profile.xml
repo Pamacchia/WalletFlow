@@ -58,15 +58,15 @@
             android:background="@drawable/round_button"
             ></Button>
 
-        <Button
-            android:id="@+id/changeTheme"
-            android:layout_gravity="center"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Change Theme"
-            android:background="@drawable/round_button"
-            ></Button>
+<!--        <Button-->
+<!--            android:id="@+id/changeTheme"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_width="250dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            android:text="Change Theme"-->
+<!--            android:background="@drawable/round_button"-->
+<!--            ></Button>-->
 
         <Button
             android:id="@+id/logoutButton"
