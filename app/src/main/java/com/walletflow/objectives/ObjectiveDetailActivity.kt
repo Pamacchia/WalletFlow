@@ -42,7 +42,7 @@ class ObjectiveDetailActivity : BaseActivity() {
         objectiveBudgetTv = findViewById(R.id.tvObjectiveBudget)
 
         titleTv.text = "${objective.name}"
-        val totalSaved = totalRecapInit(currentUser, friends, objective)
+        var totalSaved = totalRecapInit(currentUser, friends, objective)
         loadParticipantInformation(currentUser, friends, totalSaved, objective)
 
         addSavingsBtn.setOnClickListener {
@@ -57,19 +57,15 @@ class ObjectiveDetailActivity : BaseActivity() {
                     .get()
                     .addOnSuccessListener { task ->
                         task.documents.first().reference.update("saved", currentUser.saved)
+                        TransactionManager.updateBalance(db, -amount.toFloat(), userID)
+
+                        totalSaved = totalRecapInit(currentUser, friends, objective)
+                        loadParticipantInformation(currentUser, friends, totalSaved, objective)
+
+                        if (totalSaved == objective.amount) {
+                            completedBtn.isEnabled = true
+                        }
                     }
-
-                TransactionManager.updateBalance(db, -amount.toFloat(), userID)
-
-                totalRecapInit(currentUser, friends, objective)
-                loadParticipantInformation(currentUser, friends, totalSaved, objective)
-
-                runOnUiThread {
-                    if (totalSaved == objective.amount) {
-                        completedBtn.isEnabled = true
-                    }
-                }
-
             } else {
                 Toast.makeText(this, "Invalid amount.", Toast.LENGTH_LONG).show()
             }
