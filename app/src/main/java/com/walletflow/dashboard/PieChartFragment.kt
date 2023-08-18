@@ -175,7 +175,7 @@ class PieChartFragment : Fragment() {
 
     private fun showPieChart(processedRecords: MutableList<Map<String, Any>?>) {
         val pieEntries = generatePieEntries(processedRecords)
-        val colorArray = getColorArray(processedRecords.size)
+        val colorArray = getColorArray(pieEntries.size)
 
         var maxEntry: PieEntry? = null
         var maxAmount = Float.MIN_VALUE
@@ -259,7 +259,7 @@ class PieChartFragment : Fragment() {
         pieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad)
     }
 
-    fun groupAndSumRecords(queryRecords: MutableList<Map<String, Any>?>): Map<String, Double> {
+    private fun groupAndSumRecords(queryRecords: MutableList<Map<String, Any>?>): Map<String, Double> {
         val groupedData = mutableMapOf<String, Double>()
 
         for (record in queryRecords) {

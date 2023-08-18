@@ -53,7 +53,8 @@
                 android:layout_marginRight="5dp"
                 android:enabled="false"
                 android:text="Completed"
-                android:theme="@style/GreenTheme">
+                android:theme="@style/GreenTheme"
+                android:background="@drawable/round_button">
             </Button>
 
             <Button
@@ -63,7 +64,8 @@
                 android:layout_weight="1"
                 android:layout_marginRight="5dp"
                 android:text="delete"
-                android:theme="@style/RedTheme">
+                android:theme="@style/RedTheme"
+                android:background="@drawable/round_button">
             </Button>
 
         </LinearLayout>
@@ -82,6 +84,7 @@
                 android:textAlignment="center"
                 android:inputType="numberDecimal"
                 android:hint="Add savings"
+                android:layout_weight="1"
                 android:background="@drawable/edittext_rectangle">
             </EditText>
 
@@ -91,7 +94,8 @@
                 android:layout_height="wrap_content"
                 android:text="Save"
                 android:layout_marginLeft="10dp"
-                android:theme="@style/BaseTheme">
+                android:theme="@style/BaseTheme"
+                android:background="@drawable/round_button">
 
             </Button>
         </LinearLayout>

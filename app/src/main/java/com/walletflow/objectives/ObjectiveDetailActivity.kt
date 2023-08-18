@@ -15,7 +15,10 @@ import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Objective
 import com.walletflow.data.Participant
+import com.walletflow.data.Transaction
 import com.walletflow.utils.TransactionManager
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import kotlin.math.roundToInt
 
 class ObjectiveDetailActivity : BaseActivity() {
@@ -72,13 +75,58 @@ class ObjectiveDetailActivity : BaseActivity() {
         }
 
         completedBtn.setOnClickListener {
+            db.collection("participants")
+                .whereEqualTo("objectiveId",currentUser!!.objectiveId)
+                .get()
+                .addOnSuccessListener { task ->
+                    val objectiveRef = db.collection("objectives")
+                        .document(currentUser!!.objectiveId)
 
-            db.collection("objectives")
-                .document(currentUser!!.objectiveId)
-                .update("completed", true)
+                    objectiveRef.get().addOnSuccessListener { obj->
+                        obj.toObject(Objective::class.java)
+                        for (document in task.documents){
+                            val participant = document.toObject(Participant::class.java)
+                            val userTransaction = Transaction(
+                                -participant!!.quote,
+                                objective!!.category,
+                                objective!!.name,
+                                "expense",
+                                participant!!.participant,
+                                SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time))
 
-            val intent = Intent(this, ObjectivesActivity::class.java)
-            startActivity(intent)
+                            db.collection("transactions")
+                                .add(userTransaction)
+                                .addOnSuccessListener { documentReference ->
+                                    Log.d(
+                                        this.localClassName,
+                                        "DocumentSnapshot added with ID: " + documentReference.id
+                                    )
+                                    document.reference.delete().addOnSuccessListener {
+                                        Log.d(
+                                            this.localClassName,
+                                            "Deleted participant"
+                                        )
+                                    }. addOnFailureListener{
+                                        Log.w(
+                                            this.localClassName,
+                                            "Error deleting participant"
+                                        )
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(
+                                        this.localClassName,
+                                        "Error adding document",
+                                        e
+                                    )
+                                }
+                        }
+                        objectiveRef.delete().addOnSuccessListener {
+                            finish()
+                        }
+                    }
+
+                }
         }
 
         deleteObjBtn.setOnClickListener {
@@ -113,9 +161,7 @@ class ObjectiveDetailActivity : BaseActivity() {
                             batch.commit()
                                 .addOnSuccessListener {
                                     Log.d(this.localClassName, "Participants deleted successfully!")
-                                    Thread.sleep(150)
-                                    val intent = Intent(this, ObjectivesActivity::class.java)
-                                    startActivity(intent)
+                                    Thread.sleep(150L)
                                     finish()
                                     overridePendingTransition(0, 0)
                                 }
