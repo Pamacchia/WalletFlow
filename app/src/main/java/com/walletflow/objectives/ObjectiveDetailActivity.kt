@@ -161,7 +161,6 @@ class ObjectiveDetailActivity : BaseActivity() {
                             batch.commit()
                                 .addOnSuccessListener {
                                     Log.d(this.localClassName, "Participants deleted successfully!")
-                                    Thread.sleep(150L)
                                     finish()
                                     overridePendingTransition(0, 0)
                                 }
@@ -203,6 +202,10 @@ class ObjectiveDetailActivity : BaseActivity() {
             } else {
                 usernameTv.text = participant.participant
                 savingsTv.text = "Has saved ${participant.saved}$ over ${participant.quote}$"
+            }
+
+            if (participant.saved==participant.quote){
+                usernameTv.append(" \uD83E\uDD47")
             }
 
             rootView.addView(cardView)

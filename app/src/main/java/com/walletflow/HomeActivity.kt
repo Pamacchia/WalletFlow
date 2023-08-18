@@ -89,7 +89,7 @@ class HomeActivity : BaseActivity() {
 
     private fun balanceListener() {
         db.collection("users").whereEqualTo("username", userID)
-            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            .addSnapshotListener (this) { querySnapshot, firebaseFirestoreException ->
             firebaseFirestoreException?.let {
                 Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                 return@addSnapshotListener
@@ -105,7 +105,7 @@ class HomeActivity : BaseActivity() {
 
     private fun objectiveBudgetListener() {
         db.collection("participants").whereEqualTo("participant", userID)
-            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            .addSnapshotListener (this) { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener
@@ -129,8 +129,7 @@ class HomeActivity : BaseActivity() {
         db.collection("transactions")
             .whereEqualTo("user", userID)
             .whereGreaterThanOrEqualTo("date", dateLower)
-//            .whereLessThan("date", dateUpper)
-            .addSnapshotListener{ querySnapshot, firebaseFirestoreException ->
+            .addSnapshotListener (this) { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener
@@ -176,7 +175,7 @@ class HomeActivity : BaseActivity() {
 
         db.collection("frequentTransactions")
             .whereEqualTo("user", userID)
-            .addSnapshotListener{ querySnapshot, firebaseFirestoreException ->
+            .addSnapshotListener (this) { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener

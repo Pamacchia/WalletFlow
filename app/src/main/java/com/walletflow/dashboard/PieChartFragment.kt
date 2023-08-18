@@ -128,7 +128,8 @@ class PieChartFragment : Fragment() {
         var totalExpense = 0.0
         var totalEarning = 0.0
 
-        queryRef.whereGreaterThan("date", date).get().addOnCompleteListener { task ->
+        queryRef.whereGreaterThan("date", date)
+            .get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 task.result.documents.forEach { document ->
                     val amount = document.getDouble("amount").toString().toDouble()

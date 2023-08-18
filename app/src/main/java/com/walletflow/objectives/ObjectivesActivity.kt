@@ -7,11 +7,14 @@ import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
+import android.widget.Toast
+import com.google.android.material.card.MaterialCardView
 import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Objective
 import com.walletflow.data.Participant
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 class ObjectivesActivity : BaseActivity() {
 
@@ -36,11 +39,6 @@ class ObjectivesActivity : BaseActivity() {
         }
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        loadObjectives()
-    }
-
     override fun getLayoutResourceId(): Int {
         return R.layout.activity_objective
     }
@@ -48,15 +46,17 @@ class ObjectivesActivity : BaseActivity() {
     private fun loadObjectives() {
 
         val rootView = findViewById<LinearLayout>(R.id.objectivesLayout)
-        rootView.removeAllViews()
 
         db.collection("participants")
             .whereEqualTo("participant", userID)
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    for (participant in task.result) {
-
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                firebaseFirestoreException?.let {
+                    Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
+                    return@addSnapshotListener
+                }
+                querySnapshot?.let {
+                    rootView.removeAllViews()
+                    it.documents.forEach { participant ->
                         val currentUser = Participant(
                             participant.getString("objectiveId")!!,
                             participant.getString("participant")!!,
@@ -64,13 +64,14 @@ class ObjectivesActivity : BaseActivity() {
                             participant.getDouble("saved")!!
                         )
 
-                        val objectiveQuery =
-                            db.collection("objectives").document(currentUser.objectiveId!!).get()
+                        val objectiveQuery =db.collection("objectives").document(currentUser.objectiveId!!)
+                            .get()
                         val otherParticipantsQuery = db.collection("participants")
-                            .whereEqualTo("objectiveId", currentUser.objectiveId!!).get()
+                            .whereEqualTo("objectiveId", currentUser.objectiveId!!)
+                            .get()
 
                         val cardView = LayoutInflater.from(this)
-                            .inflate(R.layout.objective_cardview, rootView, false) as CardView
+                            .inflate(R.layout.objective_cardview, rootView, false) as MaterialCardView
                         val tvTitle = cardView.findViewById<TextView>(R.id.tvObjectiveCardTitle)
                         val tvParticipants =
                             cardView.findViewById<TextView>(R.id.tvObjectiveCardParticipants)
@@ -102,6 +103,16 @@ class ObjectivesActivity : BaseActivity() {
                                     )
                                     participantList.add(tempParticipant)
                                 }
+                                val calendar = Calendar.getInstance()
+                                val date = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
+                                calendar.add(Calendar.DAY_OF_MONTH, 3)
+                                val date2 = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
+
+                                if (objective.date < date){
+                                    cardView.strokeColor = resources.getColor(R.color.nordRed)
+                                } else if (objective.date < date2){
+                                    cardView.strokeColor = resources.getColor(R.color.nordOrange)
+                                }
 
                                 tvTitle.text = objective.name + " | Exp: " + objective.date
 
@@ -129,9 +140,8 @@ class ObjectivesActivity : BaseActivity() {
                             }
 
                         }
+
                     }
-                } else {
-                    Log.w(this.localClassName, "Error getting documents.", task.exception)
                 }
             }
     }
