@@ -20,6 +20,7 @@ import com.walletflow.utils.TransactionManager
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import kotlin.math.roundToInt
+import kotlin.properties.Delegates
 
 class ObjectiveDetailActivity : BaseActivity() {
 
@@ -29,12 +30,12 @@ class ObjectiveDetailActivity : BaseActivity() {
     lateinit var deleteObjBtn: Button
     lateinit var addSavingsEt: EditText
     lateinit var objectiveBudgetTv: TextView
+    private var totalSaved : Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val objective = intent.getSerializableExtra("objective") as Objective
-        val friends = intent.getSerializableExtra("participants") as ArrayList<Participant>?
         val currentUser = intent.getSerializableExtra("currentUser") as Participant?
 
         titleTv = findViewById(R.id.tvObjectiveTitle)
@@ -45,8 +46,7 @@ class ObjectiveDetailActivity : BaseActivity() {
         objectiveBudgetTv = findViewById(R.id.tvObjectiveBudget)
 
         titleTv.text = "${objective.name}"
-        var totalSaved = totalRecapInit(currentUser, friends, objective)
-        loadParticipantInformation(currentUser, friends, totalSaved, objective)
+        totalRecapInit(currentUser, objective)
 
         addSavingsBtn.setOnClickListener {
             var amount = addSavingsEt.text.toString().toDouble()
@@ -61,13 +61,6 @@ class ObjectiveDetailActivity : BaseActivity() {
                     .addOnSuccessListener { task ->
                         task.documents.first().reference.update("saved", currentUser.saved)
                         TransactionManager.updateBalance(db, -amount.toFloat(), userID)
-
-                        totalSaved = totalRecapInit(currentUser, friends, objective)
-                        loadParticipantInformation(currentUser, friends, totalSaved, objective)
-
-                        if (totalSaved == objective.amount) {
-                            completedBtn.isEnabled = true
-                        }
                     }
             } else {
                 Toast.makeText(this, "Invalid amount.", Toast.LENGTH_LONG).show()
@@ -182,7 +175,7 @@ class ObjectiveDetailActivity : BaseActivity() {
 
     private fun loadParticipantInformation(
         currentUser: Participant?,
-        friends: ArrayList<Participant>?,
+        friends: MutableList<Participant>?,
         totalSaved: Double?,
         objective: Objective
     ) {
@@ -222,32 +215,41 @@ class ObjectiveDetailActivity : BaseActivity() {
 
     private fun totalRecapInit(
         currentUser: Participant?,
-        friends: ArrayList<Participant>?,
         objective: Objective
-    ): Double? {
+    ){
 
-        var totalSaved = 0.0
-
-        friends!!.forEach { friend ->
-            if (friend.participant == currentUser!!.participant) {
-                totalSaved = currentUser!!.saved?.let { totalSaved?.plus(it) }!!
-            } else {
-                totalSaved = friend!!.saved?.let { totalSaved?.plus(it) }!!
+        db.collection("participants")
+            .whereEqualTo("objectiveId", currentUser!!.objectiveId)
+            .addSnapshotListener{
+                    querySnapshot, firebaseFirestoreException ->
+                firebaseFirestoreException?.let {
+                    Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
+                    return@addSnapshotListener
+                }
+                querySnapshot?.let {
+                    totalSaved = 0.0
+                    val friends = it.toObjects(Participant::class.java)
+                    friends!!.forEach { friend ->
+                        if (friend.participant == currentUser!!.participant) {
+                            totalSaved = currentUser!!.saved?.let { totalSaved?.plus(it) }!!
+                        } else {
+                            totalSaved = friend!!.saved?.let { totalSaved?.plus(it) }!!
+                        }
+                    }
+                    objectiveBudgetTv.text = " ${totalSaved}$/${objective.amount}$"
+                    val objectiveProgressBar = findViewById<FrameLayout>(R.id.objectiveProgressBar)
+                    val difference = kotlin.math.abs(objective.amount!! - totalSaved!!)
+                    val invRelativeDifference = difference / objective.amount
+                    val desiredWidthInDp = 325
+                    val minProgressBarWidthInPx = 1
+                    val relativeDifference = 1 - invRelativeDifference
+                    val newWidthInPx =
+                        (minProgressBarWidthInPx + (relativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
+                    val layoutParams = objectiveProgressBar.layoutParams
+                    layoutParams.width = newWidthInPx
+                    objectiveProgressBar.layoutParams = layoutParams
+                    loadParticipantInformation(currentUser, friends ,totalSaved, objective)
+                }
             }
-        }
-
-        objectiveBudgetTv.text = " ${totalSaved}$/${objective.amount}$"
-        val objectiveProgressBar = findViewById<FrameLayout>(R.id.objectiveProgressBar)
-        val difference = kotlin.math.abs(objective.amount!! - totalSaved!!)
-        val invRelativeDifference = difference / objective.amount
-        val desiredWidthInDp = 325
-        val minProgressBarWidthInPx = 1
-        val relativeDifference = 1 - invRelativeDifference
-        val newWidthInPx =
-            (minProgressBarWidthInPx + (relativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
-        val layoutParams = objectiveProgressBar.layoutParams
-        layoutParams.width = newWidthInPx
-        objectiveProgressBar.layoutParams = layoutParams
-        return totalSaved
     }
 }
