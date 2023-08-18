@@ -39,8 +39,6 @@ class OnboardingActivity : AppCompatActivity() {
 
             modifyRecordByUsername("users", userID, updatedFields)
 
-            Thread.sleep(150)
-
             goToHomeActivity()
         }
     }

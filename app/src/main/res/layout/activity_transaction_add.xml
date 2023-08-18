@@ -11,7 +11,7 @@
         android:id="@+id/tvIntroDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="🗓️ Sunday, 13 August"
+        android:text="🗓️ "
         android:textSize="20sp"
         android:layout_marginTop="30dp"
         android:textAlignment="center"

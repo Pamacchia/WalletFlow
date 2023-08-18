@@ -7,11 +7,14 @@ import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Objective
 import com.walletflow.data.Participant
+import com.walletflow.data.User
+import com.walletflow.utils.StringHelper
 
 class ObjectivesActivity : BaseActivity() {
 
@@ -52,11 +55,13 @@ class ObjectivesActivity : BaseActivity() {
 
         db.collection("participants")
             .whereEqualTo("participant", userID)
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    for (participant in task.result) {
-
+            .addSnapshotListener (this) { querySnapshot, firebaseFirestoreException ->
+                firebaseFirestoreException?.let {
+                    Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
+                    return@addSnapshotListener
+                }
+                querySnapshot?.let {
+                    it.documents.forEach { participant ->
                         val currentUser = Participant(
                             participant.getString("objectiveId")!!,
                             participant.getString("participant")!!,
@@ -129,9 +134,8 @@ class ObjectivesActivity : BaseActivity() {
                             }
 
                         }
+
                     }
-                } else {
-                    Log.w(this.localClassName, "Error getting documents.", task.exception)
                 }
             }
     }

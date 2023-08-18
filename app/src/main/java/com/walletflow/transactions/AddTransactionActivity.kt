@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.BaseActivity
@@ -20,6 +21,7 @@ import java.util.Calendar
 class AddTransactionActivity : BaseActivity() {
 
     private val chooseCategoryRequestCode = 1
+    lateinit var introDateTextView : TextView
     lateinit var amountEditText: EditText
     lateinit var noteEditText: EditText
     lateinit var frequentCheck: CheckBox
@@ -32,9 +34,12 @@ class AddTransactionActivity : BaseActivity() {
         noteEditText = findViewById(R.id.etNote)
         frequentCheck = findViewById(R.id.cbFrequent)
         chooseCategoryBtn = findViewById(R.id.btnChooseCategory)
+        introDateTextView = findViewById(R.id.tvIntroDate)
 
         amountEditText.addTextChangedListener(textWatcher)
         chooseCategoryBtn.isEnabled = amountEditText.text.isNotEmpty()
+
+        introDateTextView.append(SimpleDateFormat("EEEE, d MMMM").format(Calendar.getInstance().time))
 
         chooseCategoryBtn.setOnClickListener {
 
@@ -78,7 +83,6 @@ class AddTransactionActivity : BaseActivity() {
                     amount.toFloat() * type,
                     userID
                 )
-                Thread.sleep(150L)
                 finish()
             }
         }

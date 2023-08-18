@@ -112,7 +112,7 @@ class AddObjectiveActivity : BaseActivity() {
         if (requestCode == chooseCategoryRequestCode && resultCode == Activity.RESULT_OK) {
             intentData?.let { data ->
                 addObjective(data.getStringExtra("category"))
-                Thread.sleep(150L)
+//                Thread.sleep(150L)
                 finish()
             }
         }
