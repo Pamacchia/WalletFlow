@@ -7,19 +7,19 @@
         <item>Yearly</item>
     </array>
     <array name="dashboard_colors">
+        <item name="yellow">#FFC107</item>
         <item name="red">#F44336</item>
         <item name="blue">#03A9F4</item>
         <item name="green">#4CAF50</item>
-        <item name="yellow">#FFC107</item>
         <item name="orange">#FF9800</item>
         <item name="black">#FF000000</item>
-        <item name="white">#FFFFFFFF</item>
+        <item name="violet">#9C27B0</item>
         <item name="red2">#F44336</item>
         <item name="blue2">#03A9F4</item>
         <item name="green2">#4CAF50</item>
         <item name="yellow2">#FFC107</item>
         <item name="orange2">#FF9800</item>
         <item name="black2">#FF000000</item>
-        <item name="white2">#FFFFFFFF</item>
+        <item name="violet2">#9C27B0</item>
     </array>
 </resources>

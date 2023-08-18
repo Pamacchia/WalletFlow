@@ -1,8 +1,8 @@
 package com.walletflow.utils
 
 import android.util.Log
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.walletflow.data.Transaction
 
 object TransactionManager {
@@ -10,7 +10,6 @@ object TransactionManager {
     fun addTransactionRecordToDB(
         db: FirebaseFirestore,
         transaction: Transaction,
-        document: QueryDocumentSnapshot,
         userID: String?
     ) {
 
@@ -28,7 +27,7 @@ object TransactionManager {
             .addOnSuccessListener { documentReference ->
                 updateBalance(
                     db,
-                    document.getDouble("amount")!!.toFloat(),
+                    transaction.amount!!.toFloat(),
                     userID
                 )
 
@@ -46,7 +45,7 @@ object TransactionManager {
             }
     }
 
-    fun deleteFrequentTransactionRecordFromDB(document: QueryDocumentSnapshot) {
+    fun deleteFrequentTransactionRecordFromDB(document: DocumentSnapshot) {
         document.reference.delete()
             .addOnSuccessListener {
                 // Document successfully deleted

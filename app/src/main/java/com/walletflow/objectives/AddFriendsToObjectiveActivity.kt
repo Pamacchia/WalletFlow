@@ -109,7 +109,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
                     Log.w(this.localClassName, selectedFriends.toString())
                 } else {
                     cardView.isChecked = true
-                    selectedFriends.add(friend.username)
+                    selectedFriends.add(friend.username!!)
                     Log.w(this.localClassName, selectedFriends.toString())
                 }
             }

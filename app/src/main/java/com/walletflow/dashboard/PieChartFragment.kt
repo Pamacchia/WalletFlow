@@ -190,15 +190,17 @@ class PieChartFragment : Fragment() {
         }
 
         var maxEntryPercentage = 0f
-        if (maxEntry != null) {
+        if (maxEntry!!.label != "None") {
             maxEntryPercentage = (maxAmount / totalSum) * 100
+            val roundedMaxEntryPercentage = String.format("%.2f", maxEntryPercentage)
+
+            adviceCategoryTv.text = "You spent the most on: ${maxEntry?.label}. Amount spent: $maxAmount$. Percentage: $roundedMaxEntryPercentage%"
+
+            setIconCard(maxEntry)
         }
-        val roundedMaxEntryPercentage = String.format("%.2f", maxEntryPercentage)
-
-        adviceCategoryTv.text = "You spent the most on: ${maxEntry?.label}. Amount spent: $maxAmount$. Percentage: $roundedMaxEntryPercentage%"
-
-        setIconCard(maxEntry)
-
+        else{
+            adviceCategoryTv.text = "You have no expenses, yet"
+        }
         val pieDataSet = PieDataSet(pieEntries, "")
         pieDataSet.valueTextSize = 15f
         pieDataSet.colors = colorArray.asList()
