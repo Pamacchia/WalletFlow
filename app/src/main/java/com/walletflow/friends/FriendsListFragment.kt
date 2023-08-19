@@ -36,75 +36,51 @@ class FriendsListFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fragmentActivity = (activity as BaseActivity)
-    }
+        val friendCollection = fragmentActivity.db.collection("friends")
 
-    override fun onResume() {
-        super.onResume()
-        filterAcceptedFriends(
-            fragmentActivity.db.collection("friends"),
-            true,
-            fragmentActivity.userID
-        )
+        friendCollection.whereEqualTo("accepted", true).get().addOnSuccessListener {
+            listener(it.query) {
+                    documentSnapshots ->  filterAcceptedFriends(documentSnapshots)
+            }
+        }
     }
 
     private fun filterAcceptedFriends(
-        queryRef: Query,
-        type: Boolean,
-        userID: String?,
+        documents: List<DocumentSnapshot>,
     ) {
 
         val rootView = requireView().findViewById<LinearLayout>(R.id.layoutFriendsList)
         rootView.removeAllViews()
 
-        queryRef
-            .whereEqualTo("accepted", type)
-            .get().addOnCompleteListener { task ->
+        documents.forEach { document->
+            val inflater = LayoutInflater.from(requireContext())
+            val cardView =
+                inflater.inflate(R.layout.friend_cardview, rootView, false) as CardView
+            val tvUsername = cardView.findViewById<TextView>(R.id.tvFriendUsername)
+            val tvEmail = cardView.findViewById<TextView>(R.id.tvFriendEmail)
 
-                if (task.isSuccessful) {
-                    for (document in task.result) {
+            val sender = document.getString("sender")
+            val receiver = document.getString("receiver")
 
+            if (fragmentActivity.userID == sender ||
+                fragmentActivity.userID == receiver) {
 
-                        val inflater = LayoutInflater.from(requireContext())
-                        val cardView =
-                            inflater.inflate(R.layout.friend_cardview, rootView, false) as CardView
-                        val tvUsername = cardView.findViewById<TextView>(R.id.tvFriendUsername)
-                        val tvEmail = cardView.findViewById<TextView>(R.id.tvFriendEmail)
-
-                        val sender = document.getString("sender")
-                        val receiver = document.getString("receiver")
-
-                        if (userID == sender || userID == receiver) {
-
-                            if (userID == sender) {
-                                tvUsername.text = receiver
-                            } else {
-                                tvUsername.text = sender
-                            }
-
-                            tvEmail.text = "fake@email.com"
-
-                            val deleteButton =
-                                cardView.findViewById<Button>(R.id.btFriendElimination)
-                            deleteButton.setOnClickListener {
-                                document.reference.delete()
-                                    .addOnSuccessListener {
-                                        filterAcceptedFriends(queryRef, true, userID)
-                                        println("Document deleted successfully.")
-                                    }
-                                    .addOnFailureListener { e ->
-                                        println("Error deleting document: $e")
-                                    }
-                            }
-
-                            rootView.addView(cardView)
-                            Log.w(context.toString(), document.data.toString())
-                        }
-                    }
-
+                if (fragmentActivity.userID == sender) {
+                    tvUsername.text = receiver
                 } else {
-                    Log.w(requireContext().toString(), "Error getting transactions")
+                    tvUsername.text = sender
                 }
+
+                val deleteButton =
+                    cardView.findViewById<Button>(R.id.btFriendElimination)
+                deleteButton.setOnClickListener {
+                    document.reference.delete()
+                }
+
+                rootView.addView(cardView)
+                Log.w(context.toString(), document.data.toString())
             }
+        }
     }
 
 }

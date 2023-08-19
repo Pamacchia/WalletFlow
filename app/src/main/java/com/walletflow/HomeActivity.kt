@@ -89,7 +89,7 @@ class HomeActivity : BaseActivity() {
 
     private fun balanceListener() {
         db.collection("users").whereEqualTo("username", userID)
-            .addSnapshotListener (this) { querySnapshot, firebaseFirestoreException ->
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
             firebaseFirestoreException?.let {
                 Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                 return@addSnapshotListener
@@ -105,7 +105,7 @@ class HomeActivity : BaseActivity() {
 
     private fun objectiveBudgetListener() {
         db.collection("participants").whereEqualTo("participant", userID)
-            .addSnapshotListener (this) { querySnapshot, firebaseFirestoreException ->
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener
@@ -129,7 +129,7 @@ class HomeActivity : BaseActivity() {
         db.collection("transactions")
             .whereEqualTo("user", userID)
             .whereGreaterThanOrEqualTo("date", dateLower)
-            .addSnapshotListener (this) { querySnapshot, firebaseFirestoreException ->
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener
@@ -146,12 +146,17 @@ class HomeActivity : BaseActivity() {
                                 thisMonthExpense += kotlin.math.abs(transaction.amount!!)
                         }
 
-                    if (budget==0.0)
+                    if (budget==0.0){
                         budget = balance
+                        showProgressBar(budget, budget + thisMonthExpense)
+                        totalBudget.text=" ${StringHelper.getShrunkForm(budget)}€"
+                    } else {
+                        showProgressBar(budget-thisMonthExpense, budget)
+                        totalBudget.text=" ${StringHelper.getShrunkForm(budget-thisMonthExpense)}€"
+                    }
 
                     expensesTv.text ="${StringHelper.getShrunkForm(thisMonthExpense)}€"
-                    totalBudget.text=" ${StringHelper.getShrunkForm(budget)}€"
-                    showProgressBar(budget, budget + thisMonthExpense)
+
                 }
             }
     }
@@ -175,7 +180,7 @@ class HomeActivity : BaseActivity() {
 
         db.collection("frequentTransactions")
             .whereEqualTo("user", userID)
-            .addSnapshotListener (this) { querySnapshot, firebaseFirestoreException ->
+            .addSnapshotListener{ querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener
