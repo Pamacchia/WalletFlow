@@ -11,12 +11,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.walletflow.BaseActivity
 import com.walletflow.R
@@ -24,13 +22,16 @@ import com.walletflow.data.Transaction
 import com.walletflow.utils.SQLiteDBHelper
 import com.walletflow.utils.TransactionManager
 
-class TransactionsFragment : Fragment() {
+class TransactionsFragment(
+    private val listener : (Query, (List<DocumentSnapshot>)->(Unit)) -> Unit
+) : Fragment() {
 
     private lateinit var activityFragment : BaseActivity
     private lateinit var filterExpenseTv: TextView
     private lateinit var filterEarningTv: TextView
     private lateinit var rootView: LinearLayout
-    private lateinit var listener: ListenerRegistration
+    private lateinit var queryRef : Query
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,70 +43,62 @@ class TransactionsFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activityFragment = activity as BaseActivity
         rootView = view.findViewById(R.id.layoutTransactionList)
         filterExpenseTv = view.findViewById(R.id.tvFilterTransactionListExpense)
         filterEarningTv = view.findViewById(R.id.tvFilterTransactionListEarning)
         filterExpenseTv.setTypeface(null, Typeface.BOLD)
-
-        val queryRef = activityFragment.db
+        activityFragment = activity as BaseActivity
+        queryRef = activityFragment.db
             .collection("transactions")
             .whereEqualTo("user", activityFragment.userID)
+
+        queryRef.whereEqualTo("type", "expense")
+            .get().addOnSuccessListener {
+                listener(it.query) { documents -> filterRecordsByType(documents) }
+            }
 
         filterExpenseTv.setOnClickListener {
             filterExpenseTv.setTypeface(null, Typeface.BOLD)
             filterEarningTv.setTypeface(null, Typeface.NORMAL)
-            filterRecordsByType(queryRef, "expense")
-
+            listener(queryRef.whereEqualTo("type", "expense")) { documents -> filterRecordsByType(documents) }
         }
 
         filterEarningTv.setOnClickListener {
             filterExpenseTv.setTypeface(null, Typeface.NORMAL)
             filterEarningTv.setTypeface(null, Typeface.BOLD)
-            filterRecordsByType(queryRef, "earning")
+            listener(queryRef.whereEqualTo("type", "earning")) { documents -> filterRecordsByType(documents) }
         }
-
-        filterRecordsByType(queryRef, "expense")
     }
 
-    private fun filterRecordsByType(queryRef: Query, type: String) {
-       listener = queryRef.whereEqualTo("type", type)
-            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                firebaseFirestoreException?.let {
-                    Toast.makeText(requireContext(), "Error loading data", Toast.LENGTH_LONG).show()
-                    return@addSnapshotListener
-                }
-                querySnapshot?.let {
-                    rootView.removeAllViews()
-                    it.documents.forEach { transactionDocumentSnapshot ->
+    private fun filterRecordsByType(documents : List<DocumentSnapshot>) {
+        rootView.removeAllViews()
+        documents.forEach { transactionDocumentSnapshot ->
 
-                        val transaction =
-                            transactionDocumentSnapshot.toObject(Transaction::class.java)
-                        val cardView = layoutInflater.inflate(
-                            R.layout.transaction_cardview, rootView,
-                            false
-                        ) as CardView
-                        val tvDate = cardView.findViewById<TextView>(R.id.tvTransactionCardDate)
-                        val tvCategory =
-                            cardView.findViewById<TextView>(R.id.tvTransactionCardCategory)
-                        val tvAmount = cardView.findViewById<TextView>(R.id.tvTransactionCardAmount)
-                        val ivCategory = cardView.findViewById<ImageView>(R.id.transactionIv)
+            val transaction =
+                transactionDocumentSnapshot.toObject(Transaction::class.java)
+            val cardView = layoutInflater.inflate(
+                R.layout.transaction_cardview, rootView,
+                false
+            ) as CardView
+            val tvDate = cardView.findViewById<TextView>(R.id.tvTransactionCardDate)
+            val tvCategory =
+                cardView.findViewById<TextView>(R.id.tvTransactionCardCategory)
+            val tvAmount = cardView.findViewById<TextView>(R.id.tvTransactionCardAmount)
+            val ivCategory = cardView.findViewById<ImageView>(R.id.transactionIv)
 
-                        setIconCard(transaction!!.category, ivCategory)
+            setIconCard(transaction!!.category, ivCategory)
 
-                        tvDate.text = transaction!!.date
-                        tvCategory.text = transaction!!.category
-                        tvAmount.text = "${transaction!!.amount} $" // TODO: Euro
+            tvDate.text = transaction!!.date
+            tvCategory.text = transaction!!.category
+            tvAmount.text = "${transaction!!.amount} $" // TODO: Euro
 
-                        val deleteButton = cardView.findViewById<Button>(R.id.btTransactionDelete)
-                        deleteButton.setOnClickListener {
-                            deleteTransaction(transactionDocumentSnapshot, transaction.amount)
-                        }
-
-                        rootView.addView(cardView)
-                    }
-                }
+            val deleteButton = cardView.findViewById<Button>(R.id.btTransactionDelete)
+            deleteButton.setOnClickListener {
+                deleteTransaction(transactionDocumentSnapshot, transaction.amount)
             }
+
+            rootView.addView(cardView)
+        }
     }
 
     private fun deleteTransaction(document: DocumentSnapshot, amount: Double?) {
@@ -124,10 +117,5 @@ class TransactionsFragment : Fragment() {
         val drawable = Drawable.createFromStream(inputStream, null)
         frequentTransactionIv.setImageDrawable(drawable)
         inputStream!!.close()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        listener.remove()
     }
 }

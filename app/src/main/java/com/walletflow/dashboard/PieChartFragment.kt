@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.google.android.material.card.MaterialCardView
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.BaseActivity
@@ -29,9 +30,12 @@ import java.util.Calendar
 import kotlin.math.abs
 
 
-class PieChartFragment : Fragment() {
+class PieChartFragment(
+    private val listener : (Query, (List<DocumentSnapshot>)->(Unit)) -> Unit
+) : Fragment() {
 
     private lateinit var fragmentActivity : BaseActivity
+    private lateinit var queryRef : Query
     lateinit var pieChart: PieChart
     lateinit var filterMonthTv: TextView
     lateinit var filterYearTv: TextView
@@ -41,6 +45,7 @@ class PieChartFragment : Fragment() {
     lateinit var emojiSavingTv : TextView
     lateinit var adviceCategoryTv : TextView
     lateinit var categoryIv : ImageView
+    lateinit var date : String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -51,21 +56,16 @@ class PieChartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fragmentActivity = (activity as BaseActivity)
+        queryRef = fragmentActivity.db.collection("transactions")
+            .whereEqualTo("user", fragmentActivity.userID)
         initViews(view)
         initListeners()
 
-        val oneMonthAgoString = getDateStringWithOffset(-1, Calendar.MONTH)
+        date = getDateStringWithOffset(-1, Calendar.MONTH)
 
-        val queryRef = getTransactionQueryRef(fragmentActivity.userID)
-
-        filterRecordsByDate(queryRef, oneMonthAgoString)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val oneMonthAgoString = getDateStringWithOffset(-1, Calendar.MONTH)
-        val queryRef = getTransactionQueryRef(fragmentActivity.userID)
-        filterRecordsByDate(queryRef, oneMonthAgoString)
+        queryRef.whereGreaterThan("date", date).get().addOnSuccessListener {
+            listener(it.query) { documents -> filterRecordsByDate(documents) }
+        }
     }
 
     private fun initViews(view: View) {
@@ -84,12 +84,16 @@ class PieChartFragment : Fragment() {
     private fun initListeners() {
         filterMonthTv.setOnClickListener {
             updateFilterViews(true)
-            updateChartAndSummary(getDateStringWithOffset(-1, Calendar.MONTH))
+            date = getDateStringWithOffset(-1, Calendar.MONTH)
+            listener(queryRef.whereGreaterThan("date", date))
+            { documents -> filterRecordsByDate(documents) }
         }
 
         filterYearTv.setOnClickListener {
             updateFilterViews(false)
-            updateChartAndSummary(getDateStringWithOffset(-1, Calendar.YEAR))
+            date = getDateStringWithOffset(-1, Calendar.YEAR)
+            listener(queryRef.whereGreaterThan("date", date))
+                    { documents -> filterRecordsByDate(documents) }
         }
     }
 
@@ -98,71 +102,46 @@ class PieChartFragment : Fragment() {
         filterMonthTv.setTypeface(null, if (isMonthFilter) Typeface.BOLD else Typeface.NORMAL)
     }
 
-    private fun updateChartAndSummary(date: String) {
-        val userID = getSharedPreferencesValue("userID", "")
-        val queryRef = getTransactionQueryRef(userID)
-
-        filterRecordsByDate(queryRef, date)
-    }
-
     private fun getDateStringWithOffset(offset: Int, field: Int): String {
         val calendar = Calendar.getInstance()
         calendar.add(field, offset)
         return SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
     }
 
-    private fun getSharedPreferencesValue(key: String, defaultValue: String): String {
-        val sharedPreferences =
-            requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        return sharedPreferences.getString(key, defaultValue) ?: ""
-    }
 
-    private fun getTransactionQueryRef(userID: String): Query {
-        val db = fragmentActivity.db
-        return db.collection("transactions").whereEqualTo("user", userID)
-    }
-
-
-    private fun filterRecordsByDate(queryRef: Query, date: String) {
+    private fun filterRecordsByDate(documents : List<DocumentSnapshot>) {
         var processedRecords: MutableList<Map<String, Any>?> = mutableListOf()
         var totalExpense = 0.0
         var totalEarning = 0.0
 
-        queryRef.whereGreaterThan("date", date)
-            .get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                task.result.documents.forEach { document ->
-                    val amount = document.getDouble("amount").toString().toDouble()
-                    val type = document.getString("type")
+        documents.forEach { document ->
+                val amount = document.getDouble("amount").toString().toDouble()
+                val type = document.getString("type")
 
-                    if (type == "expense") {
-                        processedRecords.add(document.data)
-                        totalExpense += amount
-                    } else {
-                        totalEarning += amount
-                    }
+                if (type == "expense") {
+                    processedRecords.add(document.data)
+                    totalExpense += amount
+                } else {
+                    totalEarning += amount
                 }
-
-                val percentage = calculateSavingsPercentage(totalEarning, totalExpense)
-                val formattedPercentage = String.format("%.2f%%", percentage)
-                val summaryText = "You earned $totalEarning and you spent ${abs(totalExpense)}$, " +
-                        "meaning you saved $formattedPercentage of your earnings since $date."
-
-                if(percentage > 10) {
-                    dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.nordGreen)
-                    emojiSavingTv.text = "\uD83E\uDD11"
-                } else if (percentage < 0) {
-                    dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.nordRed)
-                    emojiSavingTv.text = "\uD83E\uDD2C"
-                }
-
-                savedRecapTv.text = summaryText
-                totalSpentTv.text = "Total sum of expenses: ${abs(totalExpense)}$" // todo: euro
-                showPieChart(processedRecords)
-            } else {
-                Log.w(requireContext().toString(), "Error getting transactions")
             }
-        }
+
+            val percentage = calculateSavingsPercentage(totalEarning, totalExpense)
+            val formattedPercentage = String.format("%.2f%%", percentage)
+            val summaryText = "You earned $totalEarning and you spent ${abs(totalExpense)}$, " +
+                    "meaning you saved $formattedPercentage of your earnings since $date."
+
+            if(percentage > 10) {
+                dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.nordGreen)
+                emojiSavingTv.text = "\uD83E\uDD11"
+            } else if (percentage < 0) {
+                dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.nordRed)
+                emojiSavingTv.text = "\uD83E\uDD2C"
+            }
+
+            savedRecapTv.text = summaryText
+            totalSpentTv.text = "Total sum of expenses: ${abs(totalExpense)}$" // todo: euro
+            showPieChart(processedRecords)
     }
 
     private fun calculateSavingsPercentage(totalEarning: Double, totalExpense: Double): Double {
