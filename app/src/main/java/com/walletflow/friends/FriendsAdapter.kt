@@ -4,10 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
-class FriendsAdapter(fragmentManager: FragmentManager) :
+class FriendsAdapter(fragmentManager: FragmentManager, private val fragmentList : MutableList<Fragment>) :
     FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-
-    private val fragmentList = listOf(FriendsListFragment(), FriendsRequestFragment())
 
     override fun getCount(): Int {
         return fragmentList.size

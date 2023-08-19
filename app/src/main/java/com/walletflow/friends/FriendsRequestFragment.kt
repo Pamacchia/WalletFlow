@@ -16,16 +16,21 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.walletflow.BaseActivity
 import com.walletflow.R
 
 //TODO: Reload when deleting/accepting/canceling/rejecting
 //TODO: Filter requests send/receive
 
-class FriendsRequestFragment : Fragment() {
+class FriendsRequestFragment(
+    private val listener : (Query, (List<DocumentSnapshot>)->(Unit)) -> Unit
+) : Fragment() {
 
+    lateinit var fragmentActivity : BaseActivity
     lateinit var btnAddFriend: Button
     lateinit var etAddFriend: EditText
 
@@ -42,32 +47,33 @@ class FriendsRequestFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        fragmentActivity = activity as BaseActivity
         btnAddFriend = view.findViewById(R.id.btnAddFriend)
         etAddFriend = view.findViewById(R.id.etAddFriend)
 
-        val sharedPreferences =
-            requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        val userID = sharedPreferences.getString("userID", "")
-        val db = FirebaseFirestore.getInstance()
-        val friendCollection = db.collection("friends")
+        val friendCollection = fragmentActivity.db.collection("friends")
 
-        filterRequestedFriends(friendCollection, false, userID)
+        friendCollection.whereEqualTo("accepted", false).get().addOnSuccessListener {
+            listener(it.query) {
+                    documentSnapshots ->  filterRequestedFriends(documentSnapshots)
+            }
+        }
 
         btnAddFriend.setOnClickListener {
 
             val friendRequest: MutableMap<String, Any?> = HashMap()
-            friendRequest["sender"] = userID
+            friendRequest["sender"] = fragmentActivity.userID
             friendRequest["receiver"] = etAddFriend.text.toString()
             friendRequest["accepted"] = false
 
-            if (userID == etAddFriend.text.toString().lowercase()) {
+            if (fragmentActivity.userID == etAddFriend.text.toString().lowercase()) {
                 Toast.makeText(
                     context,
                     "We are happy for you, but please don't.",
                     Toast.LENGTH_LONG
                 ).show()
             } else {
-                checkFriends(db, friendRequest, friendCollection)
+                checkFriends(fragmentActivity.db, friendRequest, friendCollection)
             }
 
         }
@@ -75,121 +81,83 @@ class FriendsRequestFragment : Fragment() {
     }
 
     private fun filterRequestedFriends(
-        queryRef: Query,
-        type: Boolean,
-        userID: String?
+        documents : List<DocumentSnapshot>
     ) {
 
         val rootView = requireView().findViewById<LinearLayout>(R.id.layoutFriendRequests)
         rootView.removeAllViews()
 
-        queryRef
-            .whereEqualTo("accepted", type)
-            .get().addOnCompleteListener { task ->
+        documents.forEach { document ->
+                val inflater = LayoutInflater.from(requireContext())
+                val cardView = inflater.inflate(
+                    R.layout.friend_request_cardview,
+                    rootView,
+                    false
+                ) as CardView
+                val tvUsername =
+                    cardView.findViewById<TextView>(R.id.tvFriendRequestUsername)
 
-                if (task.isSuccessful) {
-                    for (document in task.result) {
+                val sender = document.getString("sender")
+                val receiver = document.getString("receiver")
 
-                        val inflater = LayoutInflater.from(requireContext())
-                        val cardView = inflater.inflate(
-                            R.layout.friend_request_cardview,
-                            rootView,
-                            false
-                        ) as CardView
-                        val tvUsername =
-                            cardView.findViewById<TextView>(R.id.tvFriendRequestUsername)
-                        val tvDate = cardView.findViewById<TextView>(R.id.tvFriendRequestDate)
+                val contentLayoutView =
+                    cardView.findViewById<LinearLayout>(R.id.contentLayoutFriendRequestCard)
 
-                        val sender = document.getString("sender")
-                        val receiver = document.getString("receiver")
+                val factor: Float = this.resources.displayMetrics.density
 
-                        val contentLayoutView =
-                            cardView.findViewById<LinearLayout>(R.id.contentLayoutFriendRequestCard)
-
-                        tvDate.text = "01/01/1990"
-
-                        val factor: Float = this.resources.displayMetrics.density
-
-                        val layoutParams = LinearLayout.LayoutParams(
-                            60 * factor.toInt(), // width in pixels
-                            60 * factor.toInt()  // height in pixels
-                        )
-                        layoutParams.gravity = Gravity.CENTER
-                        layoutParams.leftMargin = 10 * factor.toInt()
+                val layoutParams = LinearLayout.LayoutParams(
+                    60 * factor.toInt(), // width in pixels
+                    60 * factor.toInt()  // height in pixels
+                )
+                layoutParams.gravity = Gravity.CENTER
+                layoutParams.leftMargin = 10 * factor.toInt()
 
 
-                        if (userID == sender) {
-                            tvUsername.text = receiver
+                if (fragmentActivity.userID == sender) {
+                    tvUsername.text = receiver
 
-                            val cancelButton = Button(cardView.context)
-                            cancelButton.background =
-                                resources.getDrawable(R.drawable.baseline_delete_24)
-                            contentLayoutView.addView(cancelButton)
+                    val cancelButton = Button(cardView.context)
+                    cancelButton.background =
+                        resources.getDrawable(R.drawable.baseline_delete_24)
+                    contentLayoutView.addView(cancelButton)
 
-                            layoutParams.leftMargin = 80 * factor.toInt()
-                            cancelButton.layoutParams = layoutParams
+                    layoutParams.leftMargin = 80 * factor.toInt()
+                    cancelButton.layoutParams = layoutParams
 
-                            cancelButton.setOnClickListener {
-                                document.reference.delete()
-                                    .addOnSuccessListener {
-                                        filterRequestedFriends(queryRef, false, userID)
-                                        println("Document deleted successfully.")
-                                    }
-                                    .addOnFailureListener { e ->
-                                        println("Error deleting document: $e")
-                                    }
-                            }
-                            rootView.addView(cardView)
-                        } else if(userID == receiver){
-                            tvUsername.text = sender
+                    cancelButton.setOnClickListener {
+                        document.reference.delete()
+                    }
+                    rootView.addView(cardView)
+                } else if(fragmentActivity.userID == receiver){
+                    tvUsername.text = sender
 
-                            val acceptButton = Button(cardView.context)
-                            acceptButton.background =
-                                resources.getDrawable(R.drawable.baseline_thumb_up_24)
-                            layoutParams.rightMargin = 10 * factor.toInt()
-                            acceptButton.layoutParams = layoutParams
-                            contentLayoutView.addView(acceptButton)
+                    val acceptButton = Button(cardView.context)
+                    acceptButton.background =
+                        resources.getDrawable(R.drawable.baseline_thumb_up_24)
+                    layoutParams.rightMargin = 10 * factor.toInt()
+                    acceptButton.layoutParams = layoutParams
+                    contentLayoutView.addView(acceptButton)
 
-                            val rejectButton = Button(cardView.context)
-                            rejectButton.background =
-                                resources.getDrawable(R.drawable.baseline_thumb_down_24)
-                            rejectButton.layoutParams = layoutParams
-                            contentLayoutView.addView(rejectButton)
+                    val rejectButton = Button(cardView.context)
+                    rejectButton.background =
+                        resources.getDrawable(R.drawable.baseline_thumb_down_24)
+                    rejectButton.layoutParams = layoutParams
+                    contentLayoutView.addView(rejectButton)
 
-                            rejectButton.setOnClickListener {
-                                document.reference.delete()
-                                    .addOnSuccessListener {
-                                        filterRequestedFriends(queryRef, false, userID)
-                                        println("Document deleted successfully.")
-                                    }
-                                    .addOnFailureListener { e ->
-                                        println("Error deleting document: $e")
-                                    }
-                            }
-
-                            acceptButton.setOnClickListener {
-
-                                val updatedFields = mapOf(
-                                    "accepted" to true
-                                )
-
-                                document.reference
-                                    .update(updatedFields)
-                                    .addOnSuccessListener {
-                                        filterRequestedFriends(queryRef, false, userID)
-                                        println("Document updated successfully.")
-                                    }
-                                    .addOnFailureListener { e ->
-                                        println("Error updating document: $e")
-                                    }
-                            }
-                            rootView.addView(cardView)
-                        }
-                        Log.w(context.toString(), document.data.toString())
+                    rejectButton.setOnClickListener {
+                        document.reference.delete()
                     }
 
-                } else {
-                    Log.w(requireContext().toString(), "Error getting transactions")
+                    acceptButton.setOnClickListener {
+
+                        val updatedFields = mapOf(
+                            "accepted" to true
+                        )
+
+                        document.reference
+                            .update(updatedFields)
+                    }
+                    rootView.addView(cardView)
                 }
             }
     }
@@ -255,11 +223,6 @@ class FriendsRequestFragment : Fragment() {
         db.collection("friends")
             .add(friendRequest)
             .addOnSuccessListener { documentReference ->
-                filterRequestedFriends(
-                    db.collection("friends"),
-                    false,
-                    friendRequest["sender"].toString()
-                )
                 Log.d(
                     "FriendRequest",
                     "DocumentSnapshot added with ID: " + documentReference.id

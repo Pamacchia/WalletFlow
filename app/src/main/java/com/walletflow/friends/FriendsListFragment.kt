@@ -11,12 +11,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.BaseActivity
 import com.walletflow.R
 
-class FriendsListFragment : Fragment() {
+class FriendsListFragment(
+    private val listener : (Query, (List<DocumentSnapshot>)->(Unit)) -> Unit
+) : Fragment() {
 
     private lateinit var fragmentActivity : BaseActivity
 
