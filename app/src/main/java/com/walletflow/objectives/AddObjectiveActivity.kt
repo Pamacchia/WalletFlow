@@ -10,6 +10,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.core.view.forEach
+import androidx.core.widget.addTextChangedListener
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -35,6 +38,24 @@ class AddObjectiveActivity : BaseActivity() {
     private lateinit var etAmount: EditText
     private lateinit var etSelectDate: EditText
     private lateinit var selectedDate: Date
+    private lateinit var friendQuotesLayout : LinearLayout
+
+    private val textWatcher2 = object : TextWatcher{
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//            ("Not yet implemented")
+        }
+
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            btnSubmitObjective.isEnabled = etName.text.isNotEmpty()
+                    && etAmount.text.isNotEmpty()
+                    &&etSelectDate.text.isNotEmpty() && addObjective()
+        }
+
+        override fun afterTextChanged(p0: Editable?) {
+//            ("Not yet implemented")
+        }
+
+    }
 
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
@@ -65,9 +86,9 @@ class AddObjectiveActivity : BaseActivity() {
         etAmount.setText(0.0.toString())
 
         btnSubmitObjective.isEnabled = false
-        etName.addTextChangedListener(textWatcher)
+        etName.addTextChangedListener(textWatcher2)
         etAmount.addTextChangedListener(textWatcher)
-        etSelectDate.addTextChangedListener(textWatcher)
+        etSelectDate.addTextChangedListener(textWatcher2)
 
         val group = intent.getStringArrayListExtra("group")
 
@@ -77,7 +98,7 @@ class AddObjectiveActivity : BaseActivity() {
             }
         }
 
-        val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
+        friendQuotesLayout = findViewById(R.id.friendQuotesLayout)
 
         if (group != null) {
             for (friend in group!!) {
@@ -89,6 +110,7 @@ class AddObjectiveActivity : BaseActivity() {
                 val factor: Float = this.resources.displayMetrics.density
                 friendUsernameTextView.text = friend
                 friendQuoteEditText.setText(0.0.toString())
+                friendQuoteEditText.addTextChangedListener(textWatcher2)
                 friendQuotesLayout.addView(friendQuoteView)
                 (friendQuoteView.layoutParams as LinearLayout.LayoutParams).setMargins(0, (factor*15).toInt(), 0, 0) // Add 10dp top margin
 
@@ -111,12 +133,20 @@ class AddObjectiveActivity : BaseActivity() {
 
         if (requestCode == chooseCategoryRequestCode && resultCode == Activity.RESULT_OK) {
             intentData?.let { data ->
-                addObjective(data.getStringExtra("category"))
+                val obj = Objective(
+                    etName.text.toString(),
+                    etAmount.text.toString().toDouble(),
+                    SimpleDateFormat("yyyy-MM-dd").format(selectedDate),
+                    userID,
+                    false,
+                    data.getStringExtra("category")
+                )
+                saveObjective(obj, db)
                 finish()
             }
         }
     }
-    private fun addObjective(category : String?) {
+    private fun addObjective() : Boolean {
         val group = intent.getStringArrayListExtra("group")
         val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
         var sumOfQuotes = 0.0
@@ -131,22 +161,10 @@ class AddObjectiveActivity : BaseActivity() {
         }
 
         // Compare the sum of quote values with the original amount
-        if (sumOfQuotes == etAmount.text.toString().toDouble() || group == null) {
+        return sumOfQuotes == etAmount.text.toString().toDouble() || group == null
 
-            val obj = Objective(
-                etName.text.toString(),
-                etAmount.text.toString().toDouble(),
-                SimpleDateFormat("yyyy-MM-dd").format(selectedDate),
-                userID,
-                false,
-                category
-            )
-
-            saveObjective(obj, db)
-        } else {
-            Toast.makeText(this, "Quote values do not match the amount.", Toast.LENGTH_SHORT)
-                .show()
-        }
+//            Toast.makeText(this, "Quote values do not match the amount.", Toast.LENGTH_SHORT)
+//                .show()
     }
 
     private fun showDatePicker() {
