@@ -4,26 +4,28 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.HomeActivity
 import com.walletflow.R
-import com.walletflow.utils.Hashing
+import com.walletflow.data.User
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var registrationBtn: Button
     private lateinit var loginBtn: Button
-    private lateinit var usernameField: EditText
+    private lateinit var emailField: EditText
     private lateinit var passwordField: EditText
+    private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome_login)
+        mAuth = FirebaseAuth.getInstance()
 
         initViews()
         setListeners()
@@ -32,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
     private fun initViews() {
         registrationBtn = findViewById(R.id.btn_register)
         loginBtn = findViewById(R.id.btn_login)
-        usernameField = findViewById(R.id.login_user_name)
+        emailField = findViewById(R.id.login_email)
         passwordField = findViewById(R.id.login_password)
     }
 
@@ -42,36 +44,31 @@ class LoginActivity : AppCompatActivity() {
         }
 
         loginBtn.setOnClickListener {
-            val username = usernameField.text.toString()
+            val email = emailField.text.toString()
             val password = passwordField.text.toString()
-
-            validateCredentials(username, password)
+            FirebaseFirestore.getInstance().collection("users")
+                .whereEqualTo("email", email).get()
+                .addOnSuccessListener { task ->
+                    if (task.documents.isNotEmpty()){
+                        val user = task.documents.first().toObject(User::class.java)
+                        validateCredentials(user!!.username, email, password)
+                    } else{
+                        Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show()
+                    }
+                }
         }
     }
 
-    private fun validateCredentials(username: String, password: String) {
-        val db = FirebaseFirestore.getInstance()
-        db.collection("users")
-            .whereEqualTo("username", username)
-            .whereEqualTo("password", Hashing.hashPassword(password))
-            .get()
-            .addOnCompleteListener { task ->
+    private fun validateCredentials(username : String?, email: String, password: String) {
+        mAuth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    handleLoginResult(task.result.isEmpty, username)
+                    saveUserID(username!!)
+                    goToHomeActivity()
                 } else {
-                    handleDatabaseError(task.exception)
+                    Toast.makeText(this, "Wrong credentials", Toast.LENGTH_SHORT).show()
                 }
             }
-    }
-
-    private fun handleLoginResult(isEmpty: Boolean, username: String) {
-        if (isEmpty) {
-            showToast("Wrong credentials")
-            passwordField.text.clear()
-        } else {
-            saveUserID(username)
-            goToHomeActivity()
-        }
     }
 
     private fun saveUserID(username: String) {
@@ -80,15 +77,8 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
-
-    private fun handleDatabaseError(exception: Exception?) {
-        Log.w(this.localClassName, "Error getting documents.", exception)
-    }
-
     private fun goToHomeActivity() {
+        finish()
         startActivity(Intent(this, HomeActivity::class.java))
     }
 

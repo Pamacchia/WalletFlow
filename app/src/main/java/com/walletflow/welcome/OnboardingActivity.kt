@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.HomeActivity
 import com.walletflow.R
@@ -16,10 +18,12 @@ class OnboardingActivity : AppCompatActivity() {
 
     private lateinit var btnStart: Button
     private lateinit var etBalance: EditText
+    private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome_onboarding)
+        mAuth = FirebaseAuth.getInstance()
 
         initViews()
         setStartClickListener()
@@ -35,14 +39,19 @@ class OnboardingActivity : AppCompatActivity() {
             val username = intent.getStringExtra("username")
             val email = intent.getStringExtra("email")
             val password = intent.getStringExtra("password")
-
             val onboardingBalance = etBalance.text.toString().toFloat()
 
-            val db = FirebaseFirestore.getInstance()
-            addUser(db, username!! , email!!, password!!, onboardingBalance)
-            saveUserID(username)
-
-            goToHomeActivity()
+            mAuth.createUserWithEmailAndPassword(email!!, password!!)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        val db = FirebaseFirestore.getInstance()
+                        addUser(db, username!! , email!!, password!!, onboardingBalance)
+                        saveUserID(username)
+                        goToHomeActivity()
+                    } else {
+                        Toast.makeText(this, "Some error occurred", Toast.LENGTH_SHORT).show()
+                    }
+                }
         }
     }
 
@@ -50,7 +59,6 @@ class OnboardingActivity : AppCompatActivity() {
         val user = mapOf(
             "username" to username,
             "email" to email,
-            "password" to Hashing.hashPassword(password),
             "balance" to balance
         )
         db.collection("users").add(user)
