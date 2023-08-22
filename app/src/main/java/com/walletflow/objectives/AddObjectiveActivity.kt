@@ -9,10 +9,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
-import androidx.cardview.widget.CardView
-import androidx.core.view.forEach
-import androidx.core.widget.addTextChangedListener
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -25,7 +21,6 @@ import com.walletflow.data.Participant
 import com.walletflow.transactions.ChooseCategoryActivity
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
-import java.util.ArrayList
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -94,14 +89,14 @@ class AddObjectiveActivity : BaseActivity() {
 
         etAmount.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus && group != null) {
-                updateQuoteValues(group!!.size)
+                updateQuoteValues(group.size)
             }
         }
 
         friendQuotesLayout = findViewById(R.id.friendQuotesLayout)
 
         if (group != null) {
-            for (friend in group!!) {
+            for (friend in group) {
                 val friendQuoteView =
                     layoutInflater.inflate(R.layout.friend_quote_layout, null) as LinearLayout
                 val friendUsernameTextView =
@@ -168,7 +163,6 @@ class AddObjectiveActivity : BaseActivity() {
     }
 
     private fun showDatePicker() {
-        val calendar = Calendar.getInstance()
 
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setCalendarConstraints(

@@ -16,7 +16,7 @@ class AddCategoryActivity : CategoryActivity() {
 
     lateinit var addCategoryBtn: Button
     lateinit var iconNameEt: EditText
-    lateinit var transactionType : String
+    private lateinit var transactionType : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +48,7 @@ class AddCategoryActivity : CategoryActivity() {
         return R.layout.activity_transaction_category_add
     }
 
-    val textWatcher = object : TextWatcher {
+    private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
         }
 

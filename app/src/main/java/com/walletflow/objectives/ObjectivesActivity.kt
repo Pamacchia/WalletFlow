@@ -18,8 +18,8 @@ import java.util.Calendar
 
 class ObjectivesActivity : BaseActivity() {
 
-    lateinit var createNewObjective: Button
-    lateinit var createNewGroupObjective: Button
+    private lateinit var createNewObjective: Button
+    private lateinit var createNewGroupObjective: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,10 +64,10 @@ class ObjectivesActivity : BaseActivity() {
                             participant.getDouble("saved")!!
                         )
 
-                        val objectiveQuery =db.collection("objectives").document(currentUser.objectiveId!!)
+                        val objectiveQueries =db.collection("objectives").document(currentUser.objectiveId)
                             .get()
                         val otherParticipantsQuery = db.collection("participants")
-                            .whereEqualTo("objectiveId", currentUser.objectiveId!!)
+                            .whereEqualTo("objectiveId", currentUser.objectiveId)
                             .get()
 
                         val cardView = LayoutInflater.from(this)
@@ -78,7 +78,7 @@ class ObjectivesActivity : BaseActivity() {
                         val tvSavings =
                             cardView.findViewById<TextView>(R.id.tvObjectiveCardProgress)
 
-                        objectiveQuery.addOnCompleteListener { objectiveQuery ->
+                        objectiveQueries.addOnCompleteListener { objectiveQuery ->
 
                             otherParticipantsQuery.addOnSuccessListener { resultQueryList ->
 

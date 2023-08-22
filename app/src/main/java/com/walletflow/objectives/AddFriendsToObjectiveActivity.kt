@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -19,7 +18,7 @@ import com.walletflow.data.User
 
 class AddFriendsToObjectiveActivity : BaseActivity() {
 
-    var selectedFriends: ArrayList<String> = arrayListOf()
+    private var selectedFriends: ArrayList<String> = arrayListOf()
     private lateinit var fab: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +31,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
 
         Tasks.whenAllSuccess<QuerySnapshot>(senderQuery, receiverQuery)
             .addOnSuccessListener { requestQueryList ->
-                var userQueryList: ArrayList<Task<QuerySnapshot>> =
+                val userQueryList: ArrayList<Task<QuerySnapshot>> =
                     userQueryList(requestQueryList[0], false)
                 userQueryList.addAll(userQueryList(requestQueryList[1], true))
                 getFriends(userQueryList)
@@ -45,7 +44,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
     private fun returnGroup() {
         val intent = Intent(this, AddObjectiveActivity::class.java)
 
-        if (selectedFriends.isNullOrEmpty()) {
+        if (selectedFriends.isEmpty()) {
             Toast.makeText(this, "You need to select at least a friend!", Toast.LENGTH_LONG).show()
         } else {
             selectedFriends.add(0,userID)

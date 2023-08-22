@@ -1,6 +1,5 @@
 package com.walletflow.friends
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -30,9 +29,9 @@ class FriendsRequestFragment(
     private val listener : (Query, (List<DocumentSnapshot>)->(Unit)) -> Unit
 ) : Fragment() {
 
-    lateinit var fragmentActivity : BaseActivity
-    lateinit var btnAddFriend: Button
-    lateinit var etAddFriend: EditText
+    private lateinit var fragmentActivity : BaseActivity
+    private lateinit var btnAddFriend: Button
+    private lateinit var etAddFriend: EditText
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -111,7 +110,6 @@ class FriendsRequestFragment(
                 )
                 layoutParams.gravity = Gravity.CENTER
                 layoutParams.leftMargin = 10 * factor.toInt()
-
 
                 if (fragmentActivity.userID == sender) {
                     tvUsername.text = receiver

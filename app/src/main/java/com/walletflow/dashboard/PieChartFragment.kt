@@ -1,11 +1,9 @@
 package com.walletflow.dashboard
 
-import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +18,6 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.google.android.material.card.MaterialCardView
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.BaseActivity
 import com.walletflow.R
@@ -36,16 +33,16 @@ class PieChartFragment(
 
     private lateinit var fragmentActivity : BaseActivity
     private lateinit var queryRef : Query
-    lateinit var pieChart: PieChart
-    lateinit var filterMonthTv: TextView
-    lateinit var filterYearTv: TextView
-    lateinit var totalSpentTv: TextView
-    lateinit var savedRecapTv: TextView
-    lateinit var dashboardAdviceSavingsCard: MaterialCardView
-    lateinit var emojiSavingTv : TextView
-    lateinit var adviceCategoryTv : TextView
-    lateinit var categoryIv : ImageView
-    lateinit var date : String
+    private lateinit var pieChart: PieChart
+    private lateinit var filterMonthTv: TextView
+    private lateinit var filterYearTv: TextView
+    private lateinit var totalSpentTv: TextView
+    private lateinit var savedRecapTv: TextView
+    private lateinit var dashboardAdviceSavingsCard: MaterialCardView
+    private lateinit var emojiSavingTv : TextView
+    private lateinit var adviceCategoryTv : TextView
+    private lateinit var categoryIv : ImageView
+    private lateinit var date : String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -108,9 +105,8 @@ class PieChartFragment(
         return SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
     }
 
-
     private fun filterRecordsByDate(documents : List<DocumentSnapshot>) {
-        var processedRecords: MutableList<Map<String, Any>?> = mutableListOf()
+        val processedRecords: MutableList<Map<String, Any>?> = mutableListOf()
         var totalExpense = 0.0
         var totalEarning = 0.0
 
@@ -140,7 +136,7 @@ class PieChartFragment(
             }
 
             savedRecapTv.text = summaryText
-            totalSpentTv.text = "Total sum of expenses: ${abs(totalExpense)}$" // todo: euro
+            totalSpentTv.text = "Total sum of expenses: ${abs(totalExpense)}€"
             showPieChart(processedRecords)
     }
 
@@ -169,12 +165,12 @@ class PieChartFragment(
             }
         }
 
-        var maxEntryPercentage = 0f
+        val maxEntryPercentage : Float
         if (maxEntry!!.label != "None") {
             maxEntryPercentage = (maxAmount / totalSum) * 100
             val roundedMaxEntryPercentage = String.format("%.2f", maxEntryPercentage)
 
-            adviceCategoryTv.text = "You spent the most on: ${maxEntry?.label}. Amount spent: $maxAmount$. Percentage: $roundedMaxEntryPercentage%"
+            adviceCategoryTv.text = "You spent the most on: ${maxEntry.label}. Amount spent: $maxAmount$. Percentage: $roundedMaxEntryPercentage%"
 
             setIconCard(maxEntry)
         }
@@ -194,10 +190,10 @@ class PieChartFragment(
     }
 
     private fun setIconCard(maxEntry: PieEntry?) {
-        val local_db = SQLiteDBHelper(requireContext(), null)
-        val file_path = local_db.getCategoryImage(maxEntry!!.label)
+        val localDB = SQLiteDBHelper(requireContext(), null)
+        val filePath = localDB.getCategoryImage(maxEntry!!.label)
 
-        val inputStream = context?.assets?.open("icons/${file_path}")
+        val inputStream = context?.assets?.open("icons/${filePath}")
         val drawable = Drawable.createFromStream(inputStream, null)
         categoryIv.setImageDrawable(drawable)
         inputStream!!.close()

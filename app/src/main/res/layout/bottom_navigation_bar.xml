@@ -9,5 +9,6 @@
     app:menu="@menu/bottom_nav_menu"
     app:itemIconTint="#737373"
     app:itemIconSize="70dp"
+    android:hapticFeedbackEnabled="true"
     app:itemRippleColor="#3CF3C94C"
     app:labelVisibilityMode="unlabeled"/>

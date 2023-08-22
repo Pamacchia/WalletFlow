@@ -5,17 +5,16 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.utils.Hashing
 
 class PersonalDataActivity : BaseActivity() {
 
-    lateinit var newPasswordEt : EditText
-    lateinit var oldPasswordEt : EditText
-    lateinit var confirmPasswordEt : EditText
-    lateinit var submitBtn : Button
+    private lateinit var newPasswordEt : EditText
+    private lateinit var oldPasswordEt : EditText
+    private lateinit var confirmPasswordEt : EditText
+    private lateinit var submitBtn : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

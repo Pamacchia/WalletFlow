@@ -3,23 +3,18 @@ package com.walletflow.transactions
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
-import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.R
 import com.walletflow.data.Icon
-import com.walletflow.utils.TransactionManager
-import java.text.SimpleDateFormat
-import java.util.Calendar
 
 private const val DEFAULT = 1
 
 class ChooseCategoryActivity : CategoryActivity() {
 
-    lateinit var submitBtn: Button
-    lateinit var btnAdd : Button
-    lateinit var transactionType : String
+    private lateinit var submitBtn: Button
+    private lateinit var btnAdd : Button
+    private lateinit var transactionType : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

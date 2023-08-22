@@ -1,6 +1,5 @@
 package com.walletflow.objectives
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,16 +19,15 @@ import com.walletflow.utils.TransactionManager
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import kotlin.math.roundToInt
-import kotlin.properties.Delegates
 
 class ObjectiveDetailActivity : BaseActivity() {
 
-    lateinit var titleTv: TextView
-    lateinit var completedBtn: Button
-    lateinit var addSavingsBtn: Button
-    lateinit var deleteObjBtn: Button
-    lateinit var addSavingsEt: EditText
-    lateinit var objectiveBudgetTv: TextView
+    private lateinit var titleTv: TextView
+    private lateinit var completedBtn: Button
+    private lateinit var addSavingsBtn: Button
+    private lateinit var deleteObjBtn: Button
+    private lateinit var addSavingsEt: EditText
+    private lateinit var objectiveBudgetTv: TextView
     private var totalSaved : Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,14 +43,14 @@ class ObjectiveDetailActivity : BaseActivity() {
         addSavingsEt = findViewById(R.id.etAddSavings)
         objectiveBudgetTv = findViewById(R.id.tvObjectiveBudget)
 
-        titleTv.text = "${objective.name}"
+        titleTv.text = objective.name
         totalRecapInit(currentUser, objective)
 
         addSavingsBtn.setOnClickListener {
             var amount = addSavingsEt.text.toString().toDouble()
             if (amount <= (currentUser!!.quote - currentUser.saved) && amount > 0) {
                 amount = ((amount * 100).roundToInt() / 100.0)
-                currentUser.saved = currentUser.saved?.plus(amount)!!
+                currentUser.saved = currentUser.saved.plus(amount)
 
                 db.collection("participants")
                     .whereEqualTo("objectiveId", currentUser.objectiveId)
@@ -73,7 +71,7 @@ class ObjectiveDetailActivity : BaseActivity() {
                 .get()
                 .addOnSuccessListener { task ->
                     val objectiveRef = db.collection("objectives")
-                        .document(currentUser!!.objectiveId)
+                        .document(currentUser.objectiveId)
 
                     objectiveRef.get().addOnSuccessListener { obj->
                         obj.toObject(Objective::class.java)
@@ -81,10 +79,10 @@ class ObjectiveDetailActivity : BaseActivity() {
                             val participant = document.toObject(Participant::class.java)
                             val userTransaction = Transaction(
                                 -participant!!.quote,
-                                objective!!.category,
-                                objective!!.name,
+                                objective.category,
+                                objective.name,
                                 "expense",
-                                participant!!.participant,
+                                participant.participant,
                                 SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time))
 
                             db.collection("transactions")
@@ -132,7 +130,7 @@ class ObjectiveDetailActivity : BaseActivity() {
 
                     // Delete participants with the same objectiveId
                     db.collection("participants")
-                        .whereEqualTo("objectiveId", currentUser!!.objectiveId)
+                        .whereEqualTo("objectiveId", currentUser.objectiveId)
                         .get()
                         .addOnSuccessListener { querySnapshot ->
                             val batch = db.batch()
@@ -229,11 +227,11 @@ class ObjectiveDetailActivity : BaseActivity() {
                 querySnapshot?.let {
                     totalSaved = 0.0
                     val friends = it.toObjects(Participant::class.java)
-                    friends!!.forEach { friend ->
-                        if (friend.participant == currentUser!!.participant) {
-                            totalSaved = currentUser!!.saved?.let { totalSaved?.plus(it) }!!
+                    friends.forEach { friend ->
+                        totalSaved = if (friend.participant == currentUser.participant) {
+                            currentUser.saved.let { x -> totalSaved?.plus(x) }!!
                         } else {
-                            totalSaved = friend!!.saved?.let { totalSaved?.plus(it) }!!
+                            friend!!.saved.let { x -> totalSaved?.plus(x) }!!
                         }
                     }
                     objectiveBudgetTv.text = " ${totalSaved}$/${objective.amount}$"

@@ -21,10 +21,10 @@ import java.util.Calendar
 class AddTransactionActivity : BaseActivity() {
 
     private val chooseCategoryRequestCode = 1
-    lateinit var introDateTextView : TextView
+    private lateinit var introDateTextView : TextView
     lateinit var amountEditText: EditText
-    lateinit var noteEditText: EditText
-    lateinit var frequentCheck: CheckBox
+    private lateinit var noteEditText: EditText
+    private lateinit var frequentCheck: CheckBox
     lateinit var chooseCategoryBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -154,7 +154,7 @@ class AddTransactionActivity : BaseActivity() {
         return R.layout.activity_transaction_add
     }
 
-    val textWatcher = object : TextWatcher {
+    private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
             // Implementation for afterTextChanged
         }

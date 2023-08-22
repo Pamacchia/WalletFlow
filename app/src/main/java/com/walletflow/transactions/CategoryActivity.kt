@@ -1,14 +1,10 @@
 package com.walletflow.transactions
 
-import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.core.view.marginTop
 import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Icon
@@ -60,7 +56,7 @@ abstract class CategoryActivity : BaseActivity() {
 
         val factor: Float = this.resources.displayMetrics.density
 
-        for (icon in iconList!!) {
+        for (icon in iconList) {
 
             val imageView = ImageView(this)
 
@@ -113,7 +109,7 @@ abstract class CategoryActivity : BaseActivity() {
         (v as ImageView).alpha = 0.5F
         selected = v.tag.toString()
     }
-    fun selectAllImageViews(view: View, images : MutableList<ImageView>): MutableList<ImageView> {
+    private fun selectAllImageViews(view: View, images : MutableList<ImageView>): MutableList<ImageView> {
 
         if (view is ImageView) {
             images.add(view)

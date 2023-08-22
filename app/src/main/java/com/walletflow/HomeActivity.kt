@@ -134,7 +134,7 @@ class HomeActivity : BaseActivity() {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener
                 }
-                querySnapshot?.let { it ->
+                querySnapshot?.let {
                     var budget = 0.0
                     var thisMonthExpense = 0.0
                     val transactions = it.toObjects(Transaction::class.java)
@@ -162,7 +162,7 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun showProgressBar(budget : Double, thisMonthBudget: Double) {
-        var difference = thisMonthBudget - budget
+        val difference = thisMonthBudget - budget
         val relativeDifference = difference / thisMonthBudget
         val desiredWidthInDp = 310
         val minProgressBarWidthInPx = 1
@@ -185,7 +185,7 @@ class HomeActivity : BaseActivity() {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener
                 }
-                querySnapshot?.let { it ->
+                querySnapshot?.let {
                     rootView.removeAllViews()
                     it.documents.forEach{ frequentTransactionDocumentSnapshot ->
                         val frequentTransaction = frequentTransactionDocumentSnapshot.toObject(Transaction::class.java)
@@ -200,8 +200,8 @@ class HomeActivity : BaseActivity() {
                         val ivCategory = cardView.findViewById<ImageView>(R.id.frequentTransactionIv)
 
                         tvNote.text = frequentTransaction!!.note
-                        tvType.text = frequentTransaction!!.type
-                        tvAmount.text = frequentTransaction!!.amount.toString() + "€"
+                        tvType.text = frequentTransaction.type
+                        tvAmount.text = frequentTransaction.amount.toString() + "€"
 
                         setIconCard(frequentTransaction.category, ivCategory)
 
@@ -258,9 +258,9 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun setIconCard(categoryName : String?, frequentTransactionIv : ImageView) {
-        val local_db = SQLiteDBHelper(this, null)
-        val file_path = local_db.getCategoryImage(categoryName!!)
-        val inputStream = this.assets?.open("icons/${file_path}")
+        val localDB = SQLiteDBHelper(this, null)
+        val filePath = localDB.getCategoryImage(categoryName!!)
+        val inputStream = this.assets?.open("icons/${filePath}")
         val drawable = Drawable.createFromStream(inputStream, null)
         frequentTransactionIv.setImageDrawable(drawable)
         inputStream!!.close()

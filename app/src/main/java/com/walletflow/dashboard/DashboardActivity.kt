@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import com.github.mikephil.charting.charts.PieChart
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
 import com.walletflow.BaseActivity
 import com.walletflow.R
 
@@ -20,10 +18,10 @@ class DashboardActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         transactionFragment = TransactionsFragment { queryRef, operation ->
-            firebaseUserTransactionSnapshotListenere(queryRef, operation)
+            firebaseUserTransactionSnapshotListener(queryRef, operation)
         }
         pieChartFragment = PieChartFragment{ queryRef, operation ->
-            firebaseUserTransactionSnapshotListenere(queryRef, operation)
+            firebaseUserTransactionSnapshotListener(queryRef, operation)
         }
         val viewPager: ViewPager = findViewById(R.id.viewPager)
         val fragmentLit : MutableList<Fragment> = mutableListOf(transactionFragment,pieChartFragment)
@@ -33,14 +31,14 @@ class DashboardActivity : BaseActivity() {
 
     }
 
-    private fun firebaseUserTransactionSnapshotListenere(queryRef : Query, operation : (List<DocumentSnapshot>)->(Unit)){
+    private fun firebaseUserTransactionSnapshotListener(queryRef : Query, operation : (List<DocumentSnapshot>)->(Unit)){
         queryRef
             .addSnapshotListener (this) { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener
                 }
-                querySnapshot?.let { it ->
+                querySnapshot?.let {
                     operation(it.documents)
                 }
             }

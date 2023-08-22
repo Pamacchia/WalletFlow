@@ -88,9 +88,9 @@ class TransactionsFragment(
 
             setIconCard(transaction!!.category, ivCategory)
 
-            tvDate.text = transaction!!.date
-            tvCategory.text = transaction!!.category
-            tvAmount.text = "${transaction!!.amount} $" // TODO: Euro
+            tvDate.text = transaction.date
+            tvCategory.text = transaction.category
+            tvAmount.text = "${transaction.amount} €"
 
             val deleteButton = cardView.findViewById<Button>(R.id.btTransactionDelete)
             deleteButton.setOnClickListener {
@@ -111,9 +111,9 @@ class TransactionsFragment(
     }
 
     private fun setIconCard(categoryName : String?, frequentTransactionIv : ImageView) {
-        val local_db = SQLiteDBHelper(requireContext(), null)
-        val file_path = local_db.getCategoryImage(categoryName!!)
-        val inputStream = requireContext().assets?.open("icons/${file_path}")
+        val localDB = SQLiteDBHelper(requireContext(), null)
+        val filePath = localDB.getCategoryImage(categoryName!!)
+        val inputStream = requireContext().assets?.open("icons/${filePath}")
         val drawable = Drawable.createFromStream(inputStream, null)
         frequentTransactionIv.setImageDrawable(drawable)
         inputStream!!.close()

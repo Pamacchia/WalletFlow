@@ -19,6 +19,7 @@
             android:exported="false" />
         <activity
             android:name=".friends.FriendsActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false" />
         <activity
             android:name=".profile.ProfileActivity"
@@ -31,9 +32,11 @@
             android:exported="false" />
         <activity
             android:name=".objectives.ObjectiveDetailActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false" />
         <activity
             android:name=".objectives.AddObjectiveActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false" />
         <activity
             android:name=".objectives.ObjectivesActivity"
@@ -43,6 +46,7 @@
             android:exported="false" />
         <activity
             android:name=".transactions.AddCategoryActivity"
+            android:windowSoftInputMode="adjustPan"
             android:exported="false" />
         <activity
             android:name=".transactions.ChooseCategoryActivity"

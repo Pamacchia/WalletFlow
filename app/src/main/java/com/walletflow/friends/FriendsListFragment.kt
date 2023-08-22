@@ -1,6 +1,5 @@
 package com.walletflow.friends
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +11,6 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.BaseActivity
 import com.walletflow.R
@@ -57,7 +55,6 @@ class FriendsListFragment(
             val cardView =
                 inflater.inflate(R.layout.friend_cardview, rootView, false) as CardView
             val tvUsername = cardView.findViewById<TextView>(R.id.tvFriendUsername)
-            val tvEmail = cardView.findViewById<TextView>(R.id.tvFriendEmail)
 
             val sender = document.getString("sender")
             val receiver = document.getString("receiver")

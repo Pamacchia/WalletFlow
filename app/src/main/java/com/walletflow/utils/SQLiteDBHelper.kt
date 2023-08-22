@@ -11,13 +11,13 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
 
     companion object {
-        private val DATABASE_NAME = "ICONS.sqlite"
-        private val DATABASE_VERSION = 1
+        private const val DATABASE_NAME = "ICONS.sqlite"
+        private const val DATABASE_VERSION = 1
         const val ISADDED = "isAdded"
         const val ICON_NAME = "icon_name"
         const val FILE_PATH = "file_path"
         const val TYPE = "type"
-        val CATEGORY_TABLE = "category_table"
+        const val CATEGORY_TABLE = "category_table"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -69,7 +69,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase, p1: Int, p2: Int) {
-        db.execSQL("DROP TABLE IF EXISTS " + CATEGORY_TABLE)
+        db.execSQL("DROP TABLE IF EXISTS $CATEGORY_TABLE")
         onCreate(db)
     }
 
@@ -81,7 +81,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         values.put(ICON_NAME, name)
         values.put(ISADDED, 1)
 
-        db.update(CATEGORY_TABLE, values, "file_path=?", arrayOf<String>("$selected.png"))
+        db.update(CATEGORY_TABLE, values, "file_path=?", arrayOf("$selected.png"))
         db.close()
     }
 
@@ -96,8 +96,11 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         if(cursor!!.moveToFirst()){
             val index = cursor.getColumnIndexOrThrow(FILE_PATH)
+            cursor.close()
             return cursor.getString(index)
         }
+
+        cursor.close()
 
         return null
     }

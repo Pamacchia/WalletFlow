@@ -2,7 +2,6 @@ package com.walletflow.welcome
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -147,14 +146,4 @@ class RegistrationActivity : AppCompatActivity() {
         startActivity(Intent(this, OnboardingActivity::class.java))
     }
 
-    private inline fun Context.getSharedPreferencesEditor(
-        name: String,
-        mode: Int = Context.MODE_PRIVATE,
-        action: SharedPreferences.Editor.() -> Unit
-    ) {
-        val sharedPreferences = getSharedPreferences(name, mode)
-        val editor = sharedPreferences.edit()
-        action(editor)
-        editor.apply()
-    }
 }
