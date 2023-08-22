@@ -71,8 +71,6 @@ class RegistrationActivity : AppCompatActivity() {
                         showToast("Already existing username!")
                     } else {
                         addIfEmailIsNew(db, username, email, password)
-                        saveUserID(username)
-                        goToOnboardingActivity()
                     }
                 } else {
                     handleDatabaseError(task.exception)
@@ -90,20 +88,13 @@ class RegistrationActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    private fun saveUserID(username: String) {
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        sharedPreferences.edit {
-            putString("userID", username)
-        }
-    }
-
     private fun addIfEmailIsNew(db: FirebaseFirestore, username: String, email: String, password: String) {
         db.collection("users")
             .whereEqualTo("email", email)
             .get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
-                    addUser(db, username, email, password)
+                    goToOnboardingActivity()
                 } else {
                     showToast("Already existing email!")
                 }
@@ -111,16 +102,6 @@ class RegistrationActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 handleDatabaseError(exception)
             }
-    }
-
-    private fun addUser(db: FirebaseFirestore, username: String, email: String, password: String) {
-        val user = mapOf(
-            "username" to username,
-            "email" to email,
-            "password" to Hashing.hashPassword(password),
-            "balance" to 0f
-        )
-        db.collection("users").add(user)
     }
 
     private fun isPasswordValid(password: String): Boolean {
@@ -143,7 +124,11 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun goToOnboardingActivity() {
-        startActivity(Intent(this, OnboardingActivity::class.java))
+        val intent = Intent(this, OnboardingActivity::class.java)
+        intent.putExtra("username", usernameField.text.toString())
+        intent.putExtra("email", emailField.text.toString())
+        intent.putExtra("password", passwordField.text.toString())
+        startActivity(intent)
     }
 
 }

@@ -105,11 +105,11 @@ class FriendsRequestFragment(
                 val factor: Float = this.resources.displayMetrics.density
 
                 val layoutParams = LinearLayout.LayoutParams(
-                    60 * factor.toInt(), // width in pixels
-                    60 * factor.toInt()  // height in pixels
+                    40 * factor.toInt(), // width in pixels
+                    40 * factor.toInt()  // height in pixels
                 )
                 layoutParams.gravity = Gravity.CENTER
-                layoutParams.leftMargin = 10 * factor.toInt()
+                layoutParams.leftMargin = 12 * factor.toInt()
 
                 if (fragmentActivity.userID == sender) {
                     tvUsername.text = receiver
@@ -119,7 +119,7 @@ class FriendsRequestFragment(
                         resources.getDrawable(R.drawable.baseline_delete_24)
                     contentLayoutView.addView(cancelButton)
 
-                    layoutParams.leftMargin = 80 * factor.toInt()
+                    layoutParams.leftMargin = 70 * factor.toInt()
                     cancelButton.layoutParams = layoutParams
 
                     cancelButton.setOnClickListener {
@@ -132,7 +132,7 @@ class FriendsRequestFragment(
                     val acceptButton = Button(cardView.context)
                     acceptButton.background =
                         resources.getDrawable(R.drawable.baseline_thumb_up_24)
-                    layoutParams.rightMargin = 10 * factor.toInt()
+                    layoutParams.rightMargin = 5 * factor.toInt()
                     acceptButton.layoutParams = layoutParams
                     contentLayoutView.addView(acceptButton)
 

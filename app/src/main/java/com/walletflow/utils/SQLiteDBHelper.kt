@@ -96,8 +96,9 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         if(cursor!!.moveToFirst()){
             val index = cursor.getColumnIndexOrThrow(FILE_PATH)
+            val output = cursor.getString(index)
             cursor.close()
-            return cursor.getString(index)
+            return output
         }
 
         cursor.close()
