@@ -15,6 +15,7 @@ import com.walletflow.R
 import com.walletflow.data.Objective
 import com.walletflow.data.Participant
 import com.walletflow.data.Transaction
+import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -170,11 +171,11 @@ class ObjectiveDetailActivity : BaseActivity() {
 
             if (participant.participant == currentUser!!.participant) {
                 usernameTv.text = currentUser.participant
-                savingsTv.text = "Has saved ${currentUser.saved}$ over ${currentUser.quote}$"
+                savingsTv.text = "Has saved ${StringHelper.getShrunkForm(currentUser.saved)}€ over ${StringHelper.getShrunkForm(currentUser.quote)}€"
 
             } else {
                 usernameTv.text = participant.participant
-                savingsTv.text = "Has saved ${participant.saved}$ over ${participant.quote}$"
+                savingsTv.text = "Has saved ${StringHelper.getShrunkForm(participant.saved)}€ over ${StringHelper.getShrunkForm(participant.quote)}€"
             }
 
             if (participant.saved == participant.quote) {
@@ -213,7 +214,7 @@ class ObjectiveDetailActivity : BaseActivity() {
                             friend!!.saved.let { x -> totalSaved?.plus(x) }!!
                         }
                     }
-                    objectiveBudgetTv.text = " ${totalSaved}$/${objective.amount}$"
+                    objectiveBudgetTv.text = " ${StringHelper.getShrunkForm(totalSaved!!)}€/${StringHelper.getShrunkForm(objective.amount!!)}€"
                     val objectiveProgressBar = findViewById<FrameLayout>(R.id.objectiveProgressBar)
                     val difference = kotlin.math.abs(objective.amount!! - totalSaved!!)
                     val invRelativeDifference = difference / objective.amount

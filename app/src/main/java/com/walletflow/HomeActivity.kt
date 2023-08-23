@@ -204,7 +204,7 @@ class HomeActivity : BaseActivity() {
 
                         tvNote.text = frequentTransaction!!.note
                         tvType.text = frequentTransaction.type
-                        tvAmount.text = frequentTransaction.amount.toString() + "€"
+                        tvAmount.text = StringHelper.getShrunkForm(frequentTransaction.amount!!) + "€"
 
                         setIconCard(frequentTransaction.category, ivCategory)
 

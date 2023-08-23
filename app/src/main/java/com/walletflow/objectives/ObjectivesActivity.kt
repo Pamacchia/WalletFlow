@@ -13,6 +13,7 @@ import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Objective
 import com.walletflow.data.Participant
+import com.walletflow.utils.StringHelper
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -123,7 +124,7 @@ class ObjectivesActivity : BaseActivity() {
                                 }
 
                                 tvSavings.text =
-                                    "You saved ${currentUser.saved} out of ${currentUser.quote}"
+                                    "You saved ${StringHelper.getShrunkForm(currentUser.saved)}€ out of ${StringHelper.getShrunkForm(currentUser.quote)}€"
                                 rootView.addView(cardView)
 
 

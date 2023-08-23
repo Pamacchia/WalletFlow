@@ -42,7 +42,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:text="You saved 40.50$ out of 50.00$" />
+            android:text="You saved 40.50€ out of 50.00€" />
 
     </LinearLayout>
 

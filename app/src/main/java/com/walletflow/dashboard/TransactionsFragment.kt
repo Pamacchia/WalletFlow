@@ -20,6 +20,7 @@ import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Transaction
 import com.walletflow.utils.SQLiteDBHelper
+import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
 
 class TransactionsFragment(
@@ -91,7 +92,7 @@ class TransactionsFragment(
 
             tvDate.text = transaction.date
             tvCategory.text = transaction.category
-            tvAmount.text = "${transaction.amount} €"
+            tvAmount.text = "${StringHelper.getShrunkForm(transaction.amount!!)} €"
 
             val deleteButton = cardView.findViewById<Button>(R.id.btTransactionDelete)
             deleteButton.setOnClickListener {
