@@ -7,7 +7,10 @@ import android.widget.EditText
 import android.widget.Toast
 import com.walletflow.BaseActivity
 import com.walletflow.R
-import com.walletflow.utils.Hashing
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+
 
 class PersonalDataActivity : BaseActivity() {
 
@@ -20,7 +23,10 @@ class PersonalDataActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         initViews()
-        setSubmitClickListener()
+
+        submitBtn.setOnClickListener {
+            changePassword()
+        }
     }
 
     private fun initViews() {
@@ -30,73 +36,36 @@ class PersonalDataActivity : BaseActivity() {
         submitBtn = findViewById(R.id.submitChangeData)
     }
 
-    private fun setSubmitClickListener() {
+    private fun changePassword() {
 
-        db.collection("users")
-            .whereEqualTo("username", userID)
-            .get()
-            .addOnSuccessListener {
-                val oldPw = it.documents.first().getString("password").toString()
-                submitBtn.setOnClickListener {
-                    when {
-                        fieldsAreEmpty(oldPasswordEt.text.toString(), newPasswordEt.text.toString(), confirmPasswordEt.text.toString()) -> showToast("Please specify all the fields")
-                        Hashing.hashPassword(oldPasswordEt.text.toString()) != oldPw -> showToast("The old password isn't correct!")
-                        !isPasswordValid(newPasswordEt.text.toString()) -> showToast("Please create a new valid password")
-                        newPasswordEt.text.toString() != confirmPasswordEt.text.toString() -> showToast("The passwords don't match!")
-                        else -> {
-                            handleChangePassword(newPasswordEt.text.toString())
-                            val intent = Intent(this, ProfileActivity::class.java)
-                            startActivity(intent)
+        val user: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+
+        val currentPassword = oldPasswordEt.text.toString()
+        val newPassword = newPasswordEt.text.toString()
+
+        when {
+            fieldsAreEmpty(oldPasswordEt.text.toString(), newPasswordEt.text.toString(), confirmPasswordEt.text.toString()) -> showToast("Please specify all the fields")
+            !isPasswordValid(newPasswordEt.text.toString()) -> showToast("Please create a new valid password")
+            newPasswordEt.text.toString() != confirmPasswordEt.text.toString() -> showToast("The passwords don't match!")
+            else -> {
+                user?.reauthenticate(EmailAuthProvider.getCredential(user?.email!!, currentPassword))
+                    ?.addOnCompleteListener { reauthTask ->
+                        if (reauthTask.isSuccessful) {
+                            user.updatePassword(newPassword)
+                                .addOnCompleteListener { updateTask ->
+                                    if (updateTask.isSuccessful) {
+                                        val intent = Intent(this, ProfileActivity::class.java)
+                                        startActivity(intent)
+                                    } else {
+                                        showToast("Something went wrong with the password update")
+                                    }
+                                }
+                        } else {
+                            showToast("The old password isn't correct!")
                         }
                     }
-                }
             }
-
-    }
-
-
-    private fun handleChangePassword(newPassword: String) {
-        val updatedFields = mapOf(
-            "password" to Hashing.hashPassword(newPassword)
-        )
-
-        modifyRecordByUsername("users", userID, updatedFields)
-    }
-
-    private fun modifyRecordByUsername(
-        collectionName: String,
-        username: String?,
-        updatedFields: Map<String, Any>
-    ) {
-
-        val query = db.collection(collectionName).whereEqualTo("username", username)
-
-        query
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    updateDocumentFields(collectionName, document.id, updatedFields)
-                }
-            }
-            .addOnFailureListener { e ->
-                println("Error getting documents: $e")
-            }
-    }
-
-    private fun updateDocumentFields(
-        collectionName: String,
-        documentId: String,
-        updatedFields: Map<String, Any>
-    ) {
-        val documentRef = db.collection(collectionName).document(documentId)
-        documentRef
-            .update(updatedFields)
-            .addOnSuccessListener {
-                println("Document updated successfully.")
-            }
-            .addOnFailureListener { e ->
-                println("Error updating document: $e")
-            }
+        }
     }
 
     private fun isPasswordValid(password: String): Boolean {

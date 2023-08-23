@@ -43,6 +43,7 @@
             android:layout_width="250dp"
             android:layout_height="48dp"
             android:hint="Old password"
+            android:inputType="textPassword"
             android:layout_marginTop="25dp"
             android:textAlignment="center"
             android:background="@drawable/edittext_rectangle" />
@@ -52,6 +53,7 @@
             android:layout_width="250dp"
             android:layout_height="48dp"
             android:hint="New password"
+            android:inputType="textPassword"
             android:layout_marginTop="15dp"
             android:textAlignment="center"
             android:background="@drawable/edittext_rectangle" />
@@ -61,6 +63,7 @@
             android:layout_width="250dp"
             android:layout_height="48dp"
             android:layout_marginTop="15dp"
+            android:inputType="textPassword"
             android:hint="Confirm new password"
             android:textAlignment="center"
             android:background="@drawable/edittext_rectangle" />
