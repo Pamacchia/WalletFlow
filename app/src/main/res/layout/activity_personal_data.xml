@@ -13,26 +13,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:text="📝"
             android:gravity="center"
+            android:text="📝"
             android:textColor="@color/black"
-            android:textSize="50dp">
-        </TextView>
+            android:textSize="50dp"></TextView>
 
         <TextView
             android:id="@+id/profileName"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:text="Change your personal data"
             android:gravity="center"
+            android:text="Change your personal data"
             android:textColor="@color/black"
             android:textSize="20sp">
 
@@ -42,46 +41,43 @@
             android:id="@+id/etOldPassword"
             android:layout_width="250dp"
             android:layout_height="48dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/edittext_rectangle"
             android:hint="Old password"
             android:inputType="textPassword"
-            android:layout_marginTop="25dp"
-            android:textAlignment="center"
-            android:background="@drawable/edittext_rectangle" />
+            android:textAlignment="center" />
 
         <EditText
             android:id="@+id/etNewPassword"
             android:layout_width="250dp"
             android:layout_height="48dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/edittext_rectangle"
             android:hint="New password"
             android:inputType="textPassword"
-            android:layout_marginTop="15dp"
-            android:textAlignment="center"
-            android:background="@drawable/edittext_rectangle" />
+            android:textAlignment="center" />
 
         <EditText
             android:id="@+id/etConfirmNewPassword"
             android:layout_width="250dp"
             android:layout_height="48dp"
             android:layout_marginTop="15dp"
-            android:inputType="textPassword"
+            android:background="@drawable/edittext_rectangle"
             android:hint="Confirm new password"
-            android:textAlignment="center"
-            android:background="@drawable/edittext_rectangle" />
+            android:inputType="textPassword"
+            android:textAlignment="center" />
 
 
         <Button
             android:id="@+id/submitChangeData"
-            android:layout_gravity="center"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="25dp"
-            android:text="submit"
             android:background="@drawable/round_button"
-            ></Button>
+            android:text="submit"></Button>
 
     </LinearLayout>
-
-    <!--    </LinearLayout>-->
 
     <include layout="@layout/bottom_navigation_bar" />
 

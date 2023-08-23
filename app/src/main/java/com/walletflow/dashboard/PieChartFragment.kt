@@ -28,21 +28,21 @@ import kotlin.math.abs
 
 
 class PieChartFragment(
-    private val listener : (Query, (List<DocumentSnapshot>)->(Unit)) -> Unit
+    private val listener: (Query, (List<DocumentSnapshot>) -> (Unit)) -> Unit
 ) : Fragment() {
 
-    private lateinit var fragmentActivity : BaseActivity
-    private lateinit var queryRef : Query
+    private lateinit var fragmentActivity: BaseActivity
+    private lateinit var queryRef: Query
     private lateinit var pieChart: PieChart
     private lateinit var filterMonthTv: TextView
     private lateinit var filterYearTv: TextView
     private lateinit var totalSpentTv: TextView
     private lateinit var savedRecapTv: TextView
     private lateinit var dashboardAdviceSavingsCard: MaterialCardView
-    private lateinit var emojiSavingTv : TextView
-    private lateinit var adviceCategoryTv : TextView
-    private lateinit var categoryIv : ImageView
-    private lateinit var date : String
+    private lateinit var emojiSavingTv: TextView
+    private lateinit var adviceCategoryTv: TextView
+    private lateinit var categoryIv: ImageView
+    private lateinit var date: String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -82,15 +82,21 @@ class PieChartFragment(
         filterMonthTv.setOnClickListener {
             updateFilterViews(true)
             date = getDateStringWithOffset(-1, Calendar.MONTH)
-            listener(queryRef.whereGreaterThan("date", date))
-            { documents -> filterRecordsByDate(documents) }
+            listener(queryRef.whereGreaterThan("date", date)) { documents ->
+                filterRecordsByDate(
+                    documents
+                )
+            }
         }
 
         filterYearTv.setOnClickListener {
             updateFilterViews(false)
             date = getDateStringWithOffset(-1, Calendar.YEAR)
-            listener(queryRef.whereGreaterThan("date", date))
-                    { documents -> filterRecordsByDate(documents) }
+            listener(queryRef.whereGreaterThan("date", date)) { documents ->
+                filterRecordsByDate(
+                    documents
+                )
+            }
         }
     }
 
@@ -105,39 +111,39 @@ class PieChartFragment(
         return SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
     }
 
-    private fun filterRecordsByDate(documents : List<DocumentSnapshot>) {
+    private fun filterRecordsByDate(documents: List<DocumentSnapshot>) {
         val processedRecords: MutableList<Map<String, Any>?> = mutableListOf()
         var totalExpense = 0.0
         var totalEarning = 0.0
 
         documents.forEach { document ->
-                val amount = document.getDouble("amount").toString().toDouble()
-                val type = document.getString("type")
+            val amount = document.getDouble("amount").toString().toDouble()
+            val type = document.getString("type")
 
-                if (type == "expense") {
-                    processedRecords.add(document.data)
-                    totalExpense += amount
-                } else {
-                    totalEarning += amount
-                }
+            if (type == "expense") {
+                processedRecords.add(document.data)
+                totalExpense += amount
+            } else {
+                totalEarning += amount
             }
+        }
 
-            val percentage = calculateSavingsPercentage(totalEarning, totalExpense)
-            val formattedPercentage = String.format("%.2f%%", percentage)
-            val summaryText = "You earned $totalEarning and you spent ${abs(totalExpense)}$, " +
-                    "meaning you saved $formattedPercentage of your earnings since $date."
+        val percentage = calculateSavingsPercentage(totalEarning, totalExpense)
+        val formattedPercentage = String.format("%.2f%%", percentage)
+        val summaryText =
+            "You earned $totalEarning and you spent ${abs(totalExpense)}$, " + "meaning you saved $formattedPercentage of your earnings since $date."
 
-            if(percentage > 10) {
-                dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.nordGreen)
-                emojiSavingTv.text = "\uD83E\uDD11"
-            } else if (percentage < 0) {
-                dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.nordRed)
-                emojiSavingTv.text = "\uD83E\uDD2C"
-            }
+        if (percentage > 10) {
+            dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.nordGreen)
+            emojiSavingTv.text = "\uD83E\uDD11"
+        } else if (percentage < 0) {
+            dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.nordRed)
+            emojiSavingTv.text = "\uD83E\uDD2C"
+        }
 
-            savedRecapTv.text = summaryText
-            totalSpentTv.text = "Total sum of expenses: ${abs(totalExpense)}€"
-            showPieChart(processedRecords)
+        savedRecapTv.text = summaryText
+        totalSpentTv.text = "Total sum of expenses: ${abs(totalExpense)}€"
+        showPieChart(processedRecords)
     }
 
     private fun calculateSavingsPercentage(totalEarning: Double, totalExpense: Double): Double {
@@ -165,16 +171,16 @@ class PieChartFragment(
             }
         }
 
-        val maxEntryPercentage : Float
+        val maxEntryPercentage: Float
         if (maxEntry!!.label != "None") {
             maxEntryPercentage = (maxAmount / totalSum) * 100
             val roundedMaxEntryPercentage = String.format("%.2f", maxEntryPercentage)
 
-            adviceCategoryTv.text = "You spent the most on: ${maxEntry.label}. Amount spent: $maxAmount$. Percentage: $roundedMaxEntryPercentage%"
+            adviceCategoryTv.text =
+                "You spent the most on: ${maxEntry.label}. Amount spent: $maxAmount$. Percentage: $roundedMaxEntryPercentage%"
 
             setIconCard(maxEntry)
-        }
-        else{
+        } else {
             adviceCategoryTv.text = "You have no expenses, yet"
         }
         val pieDataSet = PieDataSet(pieEntries, "")
@@ -237,7 +243,7 @@ class PieChartFragment(
         pieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad)
         val holeRadius = 35f
         pieChart.holeRadius = holeRadius
-        pieChart.transparentCircleRadius = holeRadius-8f
+        pieChart.transparentCircleRadius = holeRadius - 8f
     }
 
     private fun groupAndSumRecords(queryRecords: MutableList<Map<String, Any>?>): Map<String, Double> {

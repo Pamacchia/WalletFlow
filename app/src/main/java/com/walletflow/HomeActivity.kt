@@ -44,7 +44,7 @@ class HomeActivity : BaseActivity() {
     private lateinit var objectiveMoneyTv: TextView
     private lateinit var totalBudget: TextView
     private lateinit var greetingUser: TextView
-    private lateinit var progressBarContainer : FrameLayout
+    private lateinit var progressBarContainer: FrameLayout
 
     private var balance: Double = 0.0
 
@@ -90,17 +90,17 @@ class HomeActivity : BaseActivity() {
     private fun balanceListener() {
         db.collection("users").whereEqualTo("username", userID)
             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-            firebaseFirestoreException?.let {
-                Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
-                return@addSnapshotListener
+                firebaseFirestoreException?.let {
+                    Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
+                    return@addSnapshotListener
+                }
+                querySnapshot?.let {
+                    val user = it.toObjects(User::class.java).first()
+                    balance = user.balance
+                    balanceTv.text = StringHelper.getShrunkForm(balance) + "" + "€"
+                    updateTotalBudget()
+                }
             }
-            querySnapshot?.let {
-                val user = it.toObjects(User::class.java).first()
-                balance = user.balance
-                balanceTv.text = StringHelper.getShrunkForm(balance) + "" + "€"
-                updateTotalBudget()
-            }
-        }
     }
 
     private fun objectiveBudgetListener() {
@@ -116,7 +116,8 @@ class HomeActivity : BaseActivity() {
                     for (userParticipantToObjective in userParticipantToObjectives) {
                         objectiveSavedMoney += userParticipantToObjective.saved
                     }
-                    objectiveMoneyTv.text = StringHelper.getShrunkForm(objectiveSavedMoney) + "" + "€"
+                    objectiveMoneyTv.text =
+                        StringHelper.getShrunkForm(objectiveSavedMoney) + "" + "€"
                 }
             }
     }
@@ -126,8 +127,7 @@ class HomeActivity : BaseActivity() {
         val dateUpper = SimpleDateFormat("yyyy-MM").format(calendar.time)
         calendar.add(Calendar.MONTH, -1)
         val dateLower = SimpleDateFormat("yyyy-MM").format(calendar.time)
-        db.collection("transactions")
-            .whereEqualTo("user", userID)
+        db.collection("transactions").whereEqualTo("user", userID)
             .whereGreaterThanOrEqualTo("date", dateLower)
             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
@@ -138,30 +138,30 @@ class HomeActivity : BaseActivity() {
                     var budget = 0.0
                     var thisMonthExpense = 0.0
                     val transactions = it.toObjects(Transaction::class.java)
-                    transactions
-                        .forEach{ transaction ->
-                            if (transaction.type=="earning" && transaction.date.toString()<dateUpper)
-                                budget += transaction.amount!!
-                            else if(transaction.type == "expense")
-                                thisMonthExpense += kotlin.math.abs(transaction.amount!!)
+                    transactions.forEach { transaction ->
+                            if (transaction.type == "earning" && transaction.date.toString() < dateUpper) budget += transaction.amount!!
+                            else if (transaction.type == "expense") thisMonthExpense += kotlin.math.abs(
+                                transaction.amount!!
+                            )
                         }
 
-                    if (budget==0.0){
+                    if (budget == 0.0) {
                         budget = balance
                         showProgressBar(budget, budget + thisMonthExpense)
-                        totalBudget.text=" ${StringHelper.getShrunkForm(budget)}€"
+                        totalBudget.text = " ${StringHelper.getShrunkForm(budget)}€"
                     } else {
-                        showProgressBar(budget-thisMonthExpense, budget)
-                        totalBudget.text=" ${StringHelper.getShrunkForm(budget-thisMonthExpense)}€"
+                        showProgressBar(budget - thisMonthExpense, budget)
+                        totalBudget.text =
+                            " ${StringHelper.getShrunkForm(budget - thisMonthExpense)}€"
                     }
 
-                    expensesTv.text ="${StringHelper.getShrunkForm(thisMonthExpense)}€"
+                    expensesTv.text = "${StringHelper.getShrunkForm(thisMonthExpense)}€"
 
                 }
             }
     }
 
-    private fun showProgressBar(budget : Double, thisMonthBudget: Double) {
+    private fun showProgressBar(budget: Double, thisMonthBudget: Double) {
         val difference = thisMonthBudget - budget
         val relativeDifference = difference / thisMonthBudget
         val desiredWidthInDp = 310
@@ -178,26 +178,29 @@ class HomeActivity : BaseActivity() {
     private fun loadFrequentTransactions() {
         val rootView = findViewById<LinearLayout>(R.id.layoutFrequentTransactions)
 
-        db.collection("frequentTransactions")
-            .whereEqualTo("user", userID)
-            .addSnapshotListener{ querySnapshot, firebaseFirestoreException ->
+        db.collection("frequentTransactions").whereEqualTo("user", userID)
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener
                 }
                 querySnapshot?.let {
                     rootView.removeAllViews()
-                    it.documents.forEach{ frequentTransactionDocumentSnapshot ->
-                        val frequentTransaction = frequentTransactionDocumentSnapshot.toObject(Transaction::class.java)
+                    it.documents.forEach { frequentTransactionDocumentSnapshot ->
+                        val frequentTransaction =
+                            frequentTransactionDocumentSnapshot.toObject(Transaction::class.java)
                         val inflater = LayoutInflater.from(this)
-                        val cardView = inflater.inflate(R.layout.frequent_transaction_cardview,
-                            rootView,
-                            false
+                        val cardView = inflater.inflate(
+                            R.layout.frequent_transaction_cardview, rootView, false
                         ) as CardView
-                        val tvNote = cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardNote)
-                        val tvType = cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardType)
-                        val tvAmount = cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardAmount)
-                        val ivCategory = cardView.findViewById<ImageView>(R.id.frequentTransactionIv)
+                        val tvNote =
+                            cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardNote)
+                        val tvType =
+                            cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardType)
+                        val tvAmount =
+                            cardView.findViewById<TextView>(R.id.tvFrequentTransactionCardAmount)
+                        val ivCategory =
+                            cardView.findViewById<ImageView>(R.id.frequentTransactionIv)
 
                         tvNote.text = frequentTransaction!!.note
                         tvType.text = frequentTransaction.type
@@ -207,13 +210,25 @@ class HomeActivity : BaseActivity() {
 
                         val addButton = cardView.findViewById<Button>(R.id.btFrequentTransactionAdd)
                         addButton.setOnClickListener {
-                            createAlertForFrequentTransaction(frequentTransactionDocumentSnapshot, db, userID, true, "Confirm adding operation")
+                            createAlertForFrequentTransaction(
+                                frequentTransactionDocumentSnapshot,
+                                db,
+                                userID,
+                                true,
+                                "Confirm adding operation"
+                            )
                         }
 
                         val deleteButton =
                             cardView.findViewById<Button>(R.id.btFrequentTransactionDelete)
                         deleteButton.setOnClickListener {
-                            createAlertForFrequentTransaction(frequentTransactionDocumentSnapshot, db, userID, false, "Confirm deleting operation")
+                            createAlertForFrequentTransaction(
+                                frequentTransactionDocumentSnapshot,
+                                db,
+                                userID,
+                                false,
+                                "Confirm deleting operation"
+                            )
                         }
 
                         rootView.addView(cardView)
@@ -246,7 +261,9 @@ class HomeActivity : BaseActivity() {
             if (add) {
                 TransactionManager.addTransactionRecordToDB(db, transaction, userID)
             } else {
-                TransactionManager.deleteFrequentTransactionRecordFromDB(frequentTransactionDocumentSnapshot)
+                TransactionManager.deleteFrequentTransactionRecordFromDB(
+                    frequentTransactionDocumentSnapshot
+                )
             }
         }
         alert.setNegativeButton(
@@ -257,7 +274,7 @@ class HomeActivity : BaseActivity() {
         alert.show()
     }
 
-    private fun setIconCard(categoryName : String?, frequentTransactionIv : ImageView) {
+    private fun setIconCard(categoryName: String?, frequentTransactionIv: ImageView) {
         val localDB = SQLiteDBHelper(this, null)
         val filePath = localDB.getCategoryImage(categoryName!!)
         val inputStream = this.assets?.open("icons/${filePath}")

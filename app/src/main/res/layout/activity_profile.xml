@@ -13,8 +13,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -22,16 +22,15 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:background="@drawable/baseline_account_circle"
-            android:backgroundTint="@color/vividYellow">
-        </TextView>
+            android:backgroundTint="@color/vividYellow"></TextView>
 
         <TextView
             android:id="@+id/profileName"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:text="JaneDoe32"
-            android:gravity="center"
             android:layout_marginTop="50dp"
+            android:gravity="center"
+            android:text="JaneDoe32"
             android:textSize="20sp"
             android:textStyle="bold">
 
@@ -41,46 +40,32 @@
             android:id="@+id/profileEmail"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:text="janedoe32@gmail.com"
             android:layout_marginTop="5dp"
             android:gravity="center"
+            android:text="janedoe32@gmail.com"
             android:textSize="15sp">
 
         </TextView>
 
         <Button
             android:id="@+id/profileDataButton"
-            android:layout_gravity="center"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="Profile data"
+            android:layout_gravity="center"
             android:layout_marginTop="50dp"
             android:background="@drawable/round_button"
-            ></Button>
-
-<!--        <Button-->
-<!--            android:id="@+id/changeTheme"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:layout_width="250dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="20dp"-->
-<!--            android:text="Change Theme"-->
-<!--            android:background="@drawable/round_button"-->
-<!--            ></Button>-->
+            android:text="Profile data"></Button>
 
         <Button
             android:id="@+id/logoutButton"
-            android:layout_gravity="center"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:text="Logout"
             android:background="@drawable/round_button"
-            ></Button>
+            android:text="Logout"></Button>
 
     </LinearLayout>
-
-    <!--    </LinearLayout>-->
 
     <include layout="@layout/bottom_navigation_bar" />
 

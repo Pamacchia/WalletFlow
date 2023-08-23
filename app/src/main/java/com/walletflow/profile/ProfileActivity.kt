@@ -22,10 +22,7 @@ class ProfileActivity : BaseActivity() {
 
         tvUsername.text = userID
 
-        db.collection("users")
-            .whereEqualTo("username", userID)
-            .get()
-            .addOnSuccessListener {
+        db.collection("users").whereEqualTo("username", userID).get().addOnSuccessListener {
                 tvEmail.text = it.documents.first().getString("email")
             }
 

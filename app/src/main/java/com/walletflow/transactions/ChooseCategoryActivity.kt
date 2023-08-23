@@ -13,8 +13,8 @@ private const val DEFAULT = 1
 class ChooseCategoryActivity : CategoryActivity() {
 
     private lateinit var submitBtn: Button
-    private lateinit var btnAdd : Button
-    private lateinit var transactionType : String
+    private lateinit var btnAdd: Button
+    private lateinit var transactionType: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +47,7 @@ class ChooseCategoryActivity : CategoryActivity() {
         finish()
     }
 
-    override fun loadIcons(iconList : MutableList<Icon>){
+    override fun loadIcons(iconList: MutableList<Icon>) {
         super.loadIcons(iconList)
         btnAdd.setOnClickListener {
             selected = null
@@ -55,11 +55,11 @@ class ChooseCategoryActivity : CategoryActivity() {
             intent.putExtra("typeName", transactionType)
             startActivity(intent)
         }
-        submitBtn.isEnabled=false
+        submitBtn.isEnabled = false
     }
 
-    override fun showSelected(v : View){
+    override fun showSelected(v: View) {
         super.showSelected(v)
-        submitBtn.isEnabled=true
+        submitBtn.isEnabled = true
     }
 }

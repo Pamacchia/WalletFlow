@@ -6,10 +6,10 @@
     android:layout_height="60dp"
     android:layout_marginVertical="10dp"
     android:backgroundTint="#ffffffff"
-    card_view:strokeColor="#AFAFAF"
-    card_view:strokeWidth="1dp"
+    card_view:cardCornerRadius="20dp"
     card_view:cardElevation="20dp"
-    card_view:cardCornerRadius="20dp">
+    card_view:strokeColor="#AFAFAF"
+    card_view:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,8 +22,7 @@
             android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="20dp"
-            android:src="@drawable/baseline_push_pin_24">
-        </ImageView>
+            android:src="@drawable/baseline_push_pin_24"></ImageView>
 
         <LinearLayout
             android:layout_width="210dp"
@@ -34,10 +33,10 @@
                 android:id="@+id/tvTransactionCardDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="24/05/2023"
-                android:layout_marginTop="5dp"
                 android:layout_marginLeft="20dp"
-                android:layout_weight="1"/>
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:text="24/05/2023" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -48,21 +47,21 @@
                     android:id="@+id/tvTransactionCardAmount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="50.45$"
-                    android:layout_weight="1"
+                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_weight="1"
+                    android:text="50.45$"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvTransactionCardCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Food"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginRight="10dp"/>
+                    android:text="Food" />
 
 
             </LinearLayout>
@@ -73,10 +72,10 @@
             android:id="@+id/btTransactionDelete"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_gravity="center"
             android:layout_marginLeft="20dp"
             android:background="@drawable/baseline_delete_24"
-            android:theme="@style/RedTheme"
-            android:layout_gravity="center">
+            android:theme="@style/RedTheme">
 
         </Button>
 

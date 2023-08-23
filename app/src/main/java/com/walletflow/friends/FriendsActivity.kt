@@ -19,19 +19,22 @@ class FriendsActivity : BaseActivity() {
         friendsRequestFragment = FriendsRequestFragment { queryRef, operation ->
             firebaseUserFriendsSnapshotListener(queryRef, operation)
         }
-        friendsListFragment = FriendsListFragment{ queryRef, operation ->
+        friendsListFragment = FriendsListFragment { queryRef, operation ->
             firebaseUserFriendsSnapshotListener(queryRef, operation)
         }
         val viewPager: ViewPager = findViewById(R.id.viewPagerFriends)
-        val fragmentList : MutableList<Fragment> = mutableListOf(friendsListFragment,friendsRequestFragment)
+        val fragmentList: MutableList<Fragment> =
+            mutableListOf(friendsListFragment, friendsRequestFragment)
 
         val adapter = FriendsAdapter(supportFragmentManager, fragmentList)
         viewPager.adapter = adapter
     }
 
-    private fun firebaseUserFriendsSnapshotListener(queryRef : Query, operation : (List<DocumentSnapshot>)->(Unit)){
-        queryRef
-            .addSnapshotListener (this) { querySnapshot, firebaseFirestoreException ->
+    private fun firebaseUserFriendsSnapshotListener(
+        queryRef: Query,
+        operation: (List<DocumentSnapshot>) -> (Unit)
+    ) {
+        queryRef.addSnapshotListener(this) { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener

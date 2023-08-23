@@ -28,7 +28,7 @@ class ObjectiveDetailActivity : BaseActivity() {
     private lateinit var deleteObjBtn: Button
     private lateinit var addSavingsEt: EditText
     private lateinit var objectiveBudgetTv: TextView
-    private var totalSaved : Double? = null
+    private var totalSaved: Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,10 +52,8 @@ class ObjectiveDetailActivity : BaseActivity() {
                 amount = ((amount * 100).roundToInt() / 100.0)
                 currentUser.saved = currentUser.saved.plus(amount)
 
-                db.collection("participants")
-                    .whereEqualTo("objectiveId", currentUser.objectiveId)
-                    .whereEqualTo("participant", currentUser.participant)
-                    .get()
+                db.collection("participants").whereEqualTo("objectiveId", currentUser.objectiveId)
+                    .whereEqualTo("participant", currentUser.participant).get()
                     .addOnSuccessListener { task ->
                         task.documents.first().reference.update("saved", currentUser.saved)
                         TransactionManager.updateBalance(db, -amount.toFloat(), userID)
@@ -66,16 +64,13 @@ class ObjectiveDetailActivity : BaseActivity() {
         }
 
         completedBtn.setOnClickListener {
-            db.collection("participants")
-                .whereEqualTo("objectiveId",currentUser!!.objectiveId)
-                .get()
-                .addOnSuccessListener { task ->
-                    val objectiveRef = db.collection("objectives")
-                        .document(currentUser.objectiveId)
+            db.collection("participants").whereEqualTo("objectiveId", currentUser!!.objectiveId)
+                .get().addOnSuccessListener { task ->
+                    val objectiveRef = db.collection("objectives").document(currentUser.objectiveId)
 
-                    objectiveRef.get().addOnSuccessListener { obj->
+                    objectiveRef.get().addOnSuccessListener { obj ->
                         obj.toObject(Objective::class.java)
-                        for (document in task.documents){
+                        for (document in task.documents) {
                             val participant = document.toObject(Participant::class.java)
                             val userTransaction = Transaction(
                                 -participant!!.quote,
@@ -83,10 +78,10 @@ class ObjectiveDetailActivity : BaseActivity() {
                                 objective.name,
                                 "expense",
                                 participant.participant,
-                                SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time))
+                                SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
+                            )
 
-                            db.collection("transactions")
-                                .add(userTransaction)
+                            db.collection("transactions").add(userTransaction)
                                 .addOnSuccessListener { documentReference ->
                                     Log.d(
                                         this.localClassName,
@@ -94,21 +89,16 @@ class ObjectiveDetailActivity : BaseActivity() {
                                     )
                                     document.reference.delete().addOnSuccessListener {
                                         Log.d(
-                                            this.localClassName,
-                                            "Deleted participant"
+                                            this.localClassName, "Deleted participant"
                                         )
-                                    }. addOnFailureListener{
+                                    }.addOnFailureListener {
                                         Log.w(
-                                            this.localClassName,
-                                            "Error deleting participant"
+                                            this.localClassName, "Error deleting participant"
                                         )
                                     }
-                                }
-                                .addOnFailureListener { e ->
+                                }.addOnFailureListener { e ->
                                     Log.w(
-                                        this.localClassName,
-                                        "Error adding document",
-                                        e
+                                        this.localClassName, "Error adding document", e
                                     )
                                 }
                         }
@@ -122,15 +112,12 @@ class ObjectiveDetailActivity : BaseActivity() {
 
         deleteObjBtn.setOnClickListener {
 
-            db.collection("objectives")
-                .document(currentUser!!.objectiveId)
-                .delete()
+            db.collection("objectives").document(currentUser!!.objectiveId).delete()
                 .addOnSuccessListener {
                     Log.d(this.localClassName, "DocumentSnapshot successfully deleted!")
 
                     db.collection("participants")
-                        .whereEqualTo("objectiveId", currentUser.objectiveId)
-                        .get()
+                        .whereEqualTo("objectiveId", currentUser.objectiveId).get()
                         .addOnSuccessListener { querySnapshot ->
                             val batch = db.batch()
                             for (document in querySnapshot) {
@@ -148,22 +135,18 @@ class ObjectiveDetailActivity : BaseActivity() {
                                 batch.delete(participantRef)
                             }
 
-                            batch.commit()
-                                .addOnSuccessListener {
+                            batch.commit().addOnSuccessListener {
                                     Log.d(this.localClassName, "Participants deleted successfully!")
                                     finish()
                                     overridePendingTransition(0, 0)
-                                }
-                                .addOnFailureListener { e ->
+                                }.addOnFailureListener { e ->
                                     Log.w(this.localClassName, "Error deleting participants", e)
                                 }
 
-                        }
-                        .addOnFailureListener { e ->
+                        }.addOnFailureListener { e ->
                             Log.w(this.localClassName, "Error querying participants", e)
                         }
-                }
-                .addOnFailureListener { e ->
+                }.addOnFailureListener { e ->
                     Log.w(this.localClassName, "Error deleting document", e)
                 }
         }
@@ -194,7 +177,7 @@ class ObjectiveDetailActivity : BaseActivity() {
                 savingsTv.text = "Has saved ${participant.saved}$ over ${participant.quote}$"
             }
 
-            if (participant.saved==participant.quote){
+            if (participant.saved == participant.quote) {
                 usernameTv.append(" \uD83E\uDD47")
             }
 
@@ -211,14 +194,11 @@ class ObjectiveDetailActivity : BaseActivity() {
     }
 
     private fun totalRecapInit(
-        currentUser: Participant?,
-        objective: Objective
-    ){
+        currentUser: Participant?, objective: Objective
+    ) {
 
-        db.collection("participants")
-            .whereEqualTo("objectiveId", currentUser!!.objectiveId)
-            .addSnapshotListener{
-                    querySnapshot, firebaseFirestoreException ->
+        db.collection("participants").whereEqualTo("objectiveId", currentUser!!.objectiveId)
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener
@@ -245,7 +225,7 @@ class ObjectiveDetailActivity : BaseActivity() {
                     val layoutParams = objectiveProgressBar.layoutParams
                     layoutParams.width = newWidthInPx
                     objectiveProgressBar.layoutParams = layoutParams
-                    loadParticipantInformation(currentUser, friends ,totalSaved, objective)
+                    loadParticipantInformation(currentUser, friends, totalSaved, objective)
                 }
             }
     }

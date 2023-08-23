@@ -46,22 +46,20 @@ class LoginActivity : AppCompatActivity() {
         loginBtn.setOnClickListener {
             val email = emailField.text.toString()
             val password = passwordField.text.toString()
-            FirebaseFirestore.getInstance().collection("users")
-                .whereEqualTo("email", email).get()
+            FirebaseFirestore.getInstance().collection("users").whereEqualTo("email", email).get()
                 .addOnSuccessListener { task ->
-                    if (task.documents.isNotEmpty()){
+                    if (task.documents.isNotEmpty()) {
                         val user = task.documents.first().toObject(User::class.java)
                         validateCredentials(user!!.username, email, password)
-                    } else{
+                    } else {
                         Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show()
                     }
                 }
         }
     }
 
-    private fun validateCredentials(username : String?, email: String, password: String) {
-        mAuth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
+    private fun validateCredentials(username: String?, email: String, password: String) {
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     saveUserID(username!!)
                     goToHomeActivity()
@@ -83,9 +81,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private inline fun Context.getSharedPreferencesEditor(
-        name: String,
-        mode: Int = Context.MODE_PRIVATE,
-        action: SharedPreferences.Editor.() -> Unit
+        name: String, mode: Int = Context.MODE_PRIVATE, action: SharedPreferences.Editor.() -> Unit
     ) {
         val sharedPreferences = getSharedPreferences(name, mode)
         val editor = sharedPreferences.edit()

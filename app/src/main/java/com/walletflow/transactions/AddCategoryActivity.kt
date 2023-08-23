@@ -16,7 +16,7 @@ class AddCategoryActivity : CategoryActivity() {
 
     lateinit var addCategoryBtn: Button
     lateinit var iconNameEt: EditText
-    private lateinit var transactionType : String
+    private lateinit var transactionType: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +35,7 @@ class AddCategoryActivity : CategoryActivity() {
 
         addCategoryBtn.setOnClickListener {
 
-            if(selected==null){
+            if (selected == null) {
                 Toast.makeText(this, "Select one icon", Toast.LENGTH_SHORT).show()
             } else {
                 db.addCategory(selected, iconNameEt.text.toString())

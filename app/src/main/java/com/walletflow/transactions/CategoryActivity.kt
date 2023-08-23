@@ -14,8 +14,8 @@ import java.io.IOException
 
 abstract class CategoryActivity : BaseActivity() {
 
-    var selected : String? = null
-    fun getIconList(activityType : Int, type : String) : MutableList<Icon> {
+    var selected: String? = null
+    fun getIconList(activityType: Int, type: String): MutableList<Icon> {
         val db = SQLiteDBHelper(this, null)
         val cursor = db.getCategories(activityType, type)
 
@@ -40,13 +40,13 @@ abstract class CategoryActivity : BaseActivity() {
         return iconList
     }
 
-    open fun loadIcons(iconList : MutableList<Icon>){
+    open fun loadIcons(iconList: MutableList<Icon>) {
 
         val rootView = findViewById<LinearLayout>(R.id.iconsLinearLayout)
         rootView.removeAllViews()
         var count = 0
 
-        lateinit var linearLayout : LinearLayout
+        lateinit var linearLayout: LinearLayout
 
         linearLayout = LinearLayout(this)
         linearLayout.id = View.generateViewId()
@@ -70,8 +70,9 @@ abstract class CategoryActivity : BaseActivity() {
                 e.printStackTrace()
             }
 
-            imageView.layoutParams = LinearLayout.LayoutParams((factor*90).toInt(), (factor*90).toInt(), 1F)
-            imageView.tag= icon.iconName
+            imageView.layoutParams =
+                LinearLayout.LayoutParams((factor * 90).toInt(), (factor * 90).toInt(), 1F)
+            imageView.tag = icon.iconName
             imageView.setOnClickListener {
                 showSelected(imageView)
             }
@@ -82,13 +83,18 @@ abstract class CategoryActivity : BaseActivity() {
                 linearLayout.id = View.generateViewId()
                 rootView.addView(linearLayout)
                 linearLayout.orientation = LinearLayout.HORIZONTAL
-                (linearLayout.layoutParams as LinearLayout.LayoutParams).setMargins(0, (factor*25).toInt(), 0, 0)
+                (linearLayout.layoutParams as LinearLayout.LayoutParams).setMargins(
+                    0,
+                    (factor * 25).toInt(),
+                    0,
+                    0
+                )
             }
 
         }
     }
 
-    open fun showSelected(v : View){
+    open fun showSelected(v: View) {
         val images = mutableListOf<ImageView>()
         val imageViews = selectAllImageViews(window.decorView.rootView, images)
 
@@ -99,7 +105,11 @@ abstract class CategoryActivity : BaseActivity() {
         (v as ImageView).alpha = 0.5F
         selected = v.tag.toString()
     }
-    private fun selectAllImageViews(view: View, images : MutableList<ImageView>): MutableList<ImageView> {
+
+    private fun selectAllImageViews(
+        view: View,
+        images: MutableList<ImageView>
+    ): MutableList<ImageView> {
 
         if (view is ImageView) {
             images.add(view)

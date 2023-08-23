@@ -21,7 +21,7 @@ import java.util.Calendar
 class AddTransactionActivity : BaseActivity() {
 
     private val chooseCategoryRequestCode = 1
-    private lateinit var introDateTextView : TextView
+    private lateinit var introDateTextView: TextView
     lateinit var amountEditText: EditText
     private lateinit var noteEditText: EditText
     private lateinit var frequentCheck: CheckBox
@@ -49,8 +49,12 @@ class AddTransactionActivity : BaseActivity() {
 
             if (amount.isEmpty()) {
                 Toast.makeText(this, "Please specify the amount", Toast.LENGTH_LONG).show()
-            } else if(note.isEmpty() && frequent) {
-                Toast.makeText(this, "Please add a note for frequent transactions", Toast.LENGTH_LONG).show()
+            } else if (note.isEmpty() && frequent) {
+                Toast.makeText(
+                    this,
+                    "Please add a note for frequent transactions",
+                    Toast.LENGTH_LONG
+                ).show()
             } else {
                 val intent = Intent(this, ChooseCategoryActivity::class.java)
                 intent.putExtra("typeName", this.intent.getStringExtra("type_name"))
@@ -74,14 +78,17 @@ class AddTransactionActivity : BaseActivity() {
             intentData?.let { data ->
 
                 addTransaction(
-                    db, amount.toFloat() * type,
-                    note, frequent, userID, typeName, data.getStringExtra("category")
+                    db,
+                    amount.toFloat() * type,
+                    note,
+                    frequent,
+                    userID,
+                    typeName,
+                    data.getStringExtra("category")
                 )
 
                 TransactionManager.updateBalance(
-                    db,
-                    amount.toFloat() * type,
-                    userID
+                    db, amount.toFloat() * type, userID
                 )
                 finish()
             }
@@ -106,19 +113,13 @@ class AddTransactionActivity : BaseActivity() {
         transaction["date"] =
             SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
 
-        db.collection("transactions")
-            .add(transaction)
-            .addOnSuccessListener { documentReference ->
+        db.collection("transactions").add(transaction).addOnSuccessListener { documentReference ->
                 Log.d(
-                    this.localClassName,
-                    "DocumentSnapshot added with ID: " + documentReference.id
+                    this.localClassName, "DocumentSnapshot added with ID: " + documentReference.id
                 )
-            }
-            .addOnFailureListener { e ->
+            }.addOnFailureListener { e ->
                 Log.w(
-                    this.localClassName,
-                    "Error adding document",
-                    e
+                    this.localClassName, "Error adding document", e
                 )
             }
 
@@ -132,19 +133,15 @@ class AddTransactionActivity : BaseActivity() {
             frequentTransaction["note"] = note
             frequentTransaction["category"] = category
 
-            db.collection("frequentTransactions")
-                .add(frequentTransaction)
+            db.collection("frequentTransactions").add(frequentTransaction)
                 .addOnSuccessListener { documentReference ->
                     Log.d(
                         this.localClassName,
                         "DocumentSnapshot added with ID: " + documentReference.id
                     )
-                }
-                .addOnFailureListener { e ->
+                }.addOnFailureListener { e ->
                     Log.w(
-                        this.localClassName,
-                        "Error adding document",
-                        e
+                        this.localClassName, "Error adding document", e
                     )
                 }
         }

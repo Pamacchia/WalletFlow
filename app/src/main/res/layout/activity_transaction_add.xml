@@ -11,11 +11,11 @@
         android:id="@+id/tvIntroDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="🗓️ "
-        android:textSize="20sp"
         android:layout_marginTop="30dp"
+        android:text="🗓️ "
         android:textAlignment="center"
         android:textColor="@color/black"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,19 +31,19 @@
             android:id="@+id/etAmount"
             android:layout_width="250dp"
             android:layout_height="48dp"
+            android:background="@drawable/edittext_rectangle"
             android:hint="Amount"
             android:inputType="numberDecimal"
-            android:textAlignment="center"
-            android:background="@drawable/edittext_rectangle" />
+            android:textAlignment="center" />
 
         <EditText
             android:id="@+id/etNote"
             android:layout_width="250dp"
             android:layout_height="48dp"
-            android:hint="Note"
             android:layout_marginTop="25dp"
-            android:textAlignment="center"
-            android:background="@drawable/edittext_rectangle" />
+            android:background="@drawable/edittext_rectangle"
+            android:hint="Note"
+            android:textAlignment="center" />
 
         <CheckBox
             android:id="@+id/cbFrequent"
@@ -58,11 +58,11 @@
             android:id="@+id/btnChooseCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CHOOSE CATEGORY"
             android:layout_marginTop="25dp"
-            android:clickable="false"
             android:background="@drawable/round_button"
-            android:theme="@style/BaseTheme"/>
+            android:clickable="false"
+            android:text="CHOOSE CATEGORY"
+            android:theme="@style/BaseTheme" />
 
     </LinearLayout>
 

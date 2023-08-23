@@ -1,49 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     android:gravity="center"
-    android:orientation="vertical"
-    android:fillViewport="true">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:gravity="center_horizontal"
+        android:orientation="vertical"
         tools:context=".dashboard.PieChartFragment">
 
         <LinearLayout
             android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="10dp"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tvFilterDashboardMonth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textAlignment="center"
                 android:text="Month"
-                android:textSize="17sp"
-                android:textColor="@color/black">
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="17sp">
 
             </TextView>
 
             <TextView
                 android:id="@+id/tvFilterDashboardYear"
                 android:layout_width="wrap_content"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Year"
                 android:textAlignment="center"
-                android:textSize="17sp"
                 android:textColor="@color/black"
-                android:text="Year">
+                android:textSize="17sp">
 
             </TextView>
 
@@ -53,95 +52,80 @@
             android:id="@+id/tvTotalSpent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="20sp"
+            android:layout_marginTop="20dp"
             android:text="Total sum of expenses: "
-            android:layout_marginTop="20dp">
-        </TextView>
+            android:textAlignment="center"
+            android:textSize="20sp"></TextView>
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/pieChartCategories"
             android:layout_width="320dp"
             android:layout_height="320dp"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="15dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <com.google.android.material.card.MaterialCardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <com.google.android.material.card.MaterialCardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/cardDashboardAdviceSaved"
                 android:layout_width="320dp"
                 android:layout_height="70dp"
                 android:layout_marginVertical="10dp"
                 android:backgroundTint="#ffffffff"
-                card_view:strokeColor="@color/vividYellow"
-                card_view:strokeWidth="3dp"
+                card_view:cardCornerRadius="20dp"
                 card_view:cardElevation="20dp"
-                card_view:cardCornerRadius="20dp">
+                card_view:strokeColor="@color/vividYellow"
+                card_view:strokeWidth="3dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tvEmojiSaving"
                         android:layout_width="80dp"
                         android:layout_height="50dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:textSize="30sp"
-                        android:textColor="@color/black"
                         android:text="🫥"
-                        android:layout_marginLeft="10dp">
-                    </TextView>
+                        android:textColor="@color/black"
+                        android:textSize="30sp"></TextView>
 
                     <TextView
                         android:id="@+id/tvAdviceSaving"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
+                        android:layout_marginHorizontal="10dp"
                         android:layout_weight="1"
-                        android:text="Are you a good saver? This is the difference between what you spent and what you earned"
-                        android:layout_marginHorizontal="10dp"/>
+                        android:gravity="center"
+                        android:text="Are you a good saver? This is the difference between what you spent and what you earned" />
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <com.google.android.material.card.MaterialCardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:layout_width="320dp"
                 android:layout_height="70dp"
                 android:layout_marginVertical="10dp"
                 android:backgroundTint="#ffffffff"
-                card_view:strokeColor="@color/nordBlue"
-                card_view:strokeWidth="3dp"
+                card_view:cardCornerRadius="20dp"
                 card_view:cardElevation="20dp"
-                card_view:cardCornerRadius="20dp">
+                card_view:strokeColor="@color/nordBlue"
+                card_view:strokeWidth="3dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-
-<!--                    <TextView-->
-<!--                        android:layout_width="80dp"-->
-<!--                        android:layout_height="50dp"-->
-<!--                        android:layout_weight="1"-->
-<!--                        android:gravity="center"-->
-<!--                        android:textSize="30sp"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        android:text="🏷"-->
-<!--                        android:layout_marginLeft="10dp">-->
-<!--                    </TextView>-->
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/categoryImageView"
@@ -156,10 +140,10 @@
                         android:id="@+id/tvAdviceCategory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
+                        android:layout_marginHorizontal="10dp"
                         android:layout_weight="1"
-                        android:text="Which is the category in which you spent the most? Here it is"
-                        android:layout_marginHorizontal="10dp"/>
+                        android:gravity="center"
+                        android:text="Which is the category in which you spent the most? Here it is" />
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>

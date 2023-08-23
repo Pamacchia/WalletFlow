@@ -1,6 +1,5 @@
 package com.walletflow.welcome
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,10 +7,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.R
-import com.walletflow.utils.Hashing
 
 class RegistrationActivity : AppCompatActivity() {
 
@@ -49,7 +46,13 @@ class RegistrationActivity : AppCompatActivity() {
             val passwordCheck = passwordConfirmField.text.toString()
 
             when {
-                fieldsAreEmpty(username, email, password, passwordCheck) -> showToast("Please specify all the fields")
+                fieldsAreEmpty(
+                    username,
+                    email,
+                    password,
+                    passwordCheck
+                ) -> showToast("Please specify all the fields")
+
                 !isPasswordValid(password) -> showToast("Please create a valid password")
                 password != passwordCheck -> showToast("The passwords don't match!")
                 !isEmailValid(email) -> showToast("Please insert a valid email")
@@ -88,7 +91,12 @@ class RegistrationActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    private fun addIfEmailIsNew(db: FirebaseFirestore, username: String, email: String, password: String) {
+    private fun addIfEmailIsNew(
+        db: FirebaseFirestore,
+        username: String,
+        email: String,
+        password: String
+    ) {
         db.collection("users")
             .whereEqualTo("email", email)
             .get()

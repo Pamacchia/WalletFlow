@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
@@ -9,8 +8,8 @@
     <TextView
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:background="@drawable/baseline_account_circle"
         android:layout_marginLeft="10dp"
+        android:background="@drawable/baseline_account_circle"
         android:backgroundTint="@color/vividYellow">
 
     </TextView>
@@ -19,15 +18,15 @@
         android:id="@+id/friendUsernameTextView"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:textSize="18sp" />
 
     <EditText
         android:id="@+id/friendQuoteEditText"
         android:layout_width="100dp"
         android:layout_height="48dp"
-        android:inputType="numberDecimal"
-        android:textAlignment="center"
+        android:background="@drawable/edittext_rectangle"
         android:hint="Quote"
-        android:background="@drawable/edittext_rectangle"/>
+        android:inputType="numberDecimal"
+        android:textAlignment="center" />
 </LinearLayout>

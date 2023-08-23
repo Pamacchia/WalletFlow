@@ -5,19 +5,19 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.walletflow.BaseActivity
-import com.walletflow.R
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.walletflow.BaseActivity
+import com.walletflow.R
 
 
 class PersonalDataActivity : BaseActivity() {
 
-    private lateinit var newPasswordEt : EditText
-    private lateinit var oldPasswordEt : EditText
-    private lateinit var confirmPasswordEt : EditText
-    private lateinit var submitBtn : Button
+    private lateinit var newPasswordEt: EditText
+    private lateinit var oldPasswordEt: EditText
+    private lateinit var confirmPasswordEt: EditText
+    private lateinit var submitBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,11 +44,21 @@ class PersonalDataActivity : BaseActivity() {
         val newPassword = newPasswordEt.text.toString()
 
         when {
-            fieldsAreEmpty(oldPasswordEt.text.toString(), newPasswordEt.text.toString(), confirmPasswordEt.text.toString()) -> showToast("Please specify all the fields")
+            fieldsAreEmpty(
+                oldPasswordEt.text.toString(),
+                newPasswordEt.text.toString(),
+                confirmPasswordEt.text.toString()
+            ) -> showToast("Please specify all the fields")
+
             !isPasswordValid(newPasswordEt.text.toString()) -> showToast("Please create a new valid password")
             newPasswordEt.text.toString() != confirmPasswordEt.text.toString() -> showToast("The passwords don't match!")
             else -> {
-                user?.reauthenticate(EmailAuthProvider.getCredential(user?.email!!, currentPassword))
+                user?.reauthenticate(
+                    EmailAuthProvider.getCredential(
+                        user.email!!,
+                        currentPassword
+                    )
+                )
                     ?.addOnCompleteListener { reauthTask ->
                         if (reauthTask.isSuccessful) {
                             user.updatePassword(newPassword)

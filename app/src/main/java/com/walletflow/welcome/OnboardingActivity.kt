@@ -12,7 +12,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.HomeActivity
 import com.walletflow.R
-import com.walletflow.utils.Hashing
 
 class OnboardingActivity : AppCompatActivity() {
 
@@ -45,7 +44,7 @@ class OnboardingActivity : AppCompatActivity() {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         val db = FirebaseFirestore.getInstance()
-                        addUser(db, username!! , email!!, password!!, onboardingBalance)
+                        addUser(db, username!!, email, password, onboardingBalance)
                         saveUserID(username)
                         goToHomeActivity()
                     } else {
@@ -55,7 +54,13 @@ class OnboardingActivity : AppCompatActivity() {
         }
     }
 
-    private fun addUser(db: FirebaseFirestore, username: String, email: String, password: String, balance : Float) {
+    private fun addUser(
+        db: FirebaseFirestore,
+        username: String,
+        email: String,
+        password: String,
+        balance: Float
+    ) {
         val user = mapOf(
             "username" to username,
             "email" to email,

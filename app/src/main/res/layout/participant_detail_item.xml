@@ -6,50 +6,50 @@
     android:layout_height="60dp"
     android:layout_marginVertical="10dp"
     android:backgroundTint="#ffffffff"
-    card_view:strokeColor="#AFAFAF"
-    card_view:strokeWidth="1dp"
+    card_view:cardCornerRadius="20dp"
     card_view:cardElevation="20dp"
-    card_view:cardCornerRadius="20dp">
+    card_view:strokeColor="#AFAFAF"
+    card_view:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/baseline_account_circle"
             android:layout_marginLeft="10dp"
+            android:background="@drawable/baseline_account_circle"
             android:backgroundTint="@color/vividYellow">
 
         </TextView>
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvUsername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Username"
-                android:layout_marginTop="5dp"
                 android:layout_marginLeft="20dp"
-                android:textStyle="bold"
-                android:textSize="18sp"/>
+                android:layout_marginTop="5dp"
+                android:text="Username"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvSavings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Has saved 30$ over 40$"
-                android:textSize="13sp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginLeft="20dp"/>
+                android:text="Has saved 30$ over 40$"
+                android:textSize="13sp" />
 
         </LinearLayout>
 

@@ -8,9 +8,7 @@ import com.walletflow.data.Transaction
 object TransactionManager {
 
     fun addTransactionRecordToDB(
-        db: FirebaseFirestore,
-        transaction: Transaction,
-        userID: String?
+        db: FirebaseFirestore, transaction: Transaction, userID: String?
     ) {
 
         val transactionMap = mapOf(
@@ -22,25 +20,19 @@ object TransactionManager {
             "date" to transaction.date,
         )
 
-        db.collection("transactions")
-            .add(transactionMap)
+        db.collection("transactions").add(transactionMap)
             .addOnSuccessListener { documentReference ->
                 updateBalance(
-                    db,
-                    transaction.amount!!.toFloat(),
-                    userID
+                    db, transaction.amount!!.toFloat(), userID
                 )
 
                 Log.d(
                     "HomeFrequentTransactionSuccess",
                     "DocumentSnapshot added with ID: " + documentReference.id
                 )
-            }
-            .addOnFailureListener { e ->
+            }.addOnFailureListener { e ->
                 Log.w(
-                    "HomeFrequentTransactionError",
-                    "Error adding document",
-                    e
+                    "HomeFrequentTransactionError", "Error adding document", e
                 )
             }
     }
@@ -53,28 +45,22 @@ object TransactionManager {
 
         val query = db.collection("users").whereEqualTo("username", userID)
 
-        query
-            .get()
-            .addOnSuccessListener { documents ->
+        query.get().addOnSuccessListener { documents ->
                 for (document in documents) {
 
                     val updatedBalance = document.getDouble("balance")?.plus(amount.toDouble())
 
-                    document.reference
-                        .update(
+                    document.reference.update(
                             mapOf(
                                 "balance" to updatedBalance
                             )
-                        )
-                        .addOnSuccessListener {
+                        ).addOnSuccessListener {
                             println("Document updated successfully.")
-                        }
-                        .addOnFailureListener { e ->
+                        }.addOnFailureListener { e ->
                             println("Error updating document: $e")
                         }
                 }
-            }
-            .addOnFailureListener { e ->
+            }.addOnFailureListener { e ->
                 println("Error getting documents: $e")
             }
     }

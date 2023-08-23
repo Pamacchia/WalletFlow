@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.bottomnavigation.BottomNavigationView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.bottomnavigation.BottomNavigationView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottom_navigation"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:menu="@menu/bottom_nav_menu"
-    app:itemIconTint="#737373"
-    app:itemIconSize="70dp"
     android:hapticFeedbackEnabled="true"
+    app:itemIconSize="70dp"
+    app:itemIconTint="#737373"
     app:itemRippleColor="#3CF3C94C"
-    app:labelVisibilityMode="unlabeled"/>
+    app:labelVisibilityMode="unlabeled"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:menu="@menu/bottom_nav_menu" />

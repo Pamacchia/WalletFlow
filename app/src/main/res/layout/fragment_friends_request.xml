@@ -11,9 +11,9 @@
         android:id="@+id/tvObjectivesTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         android:text="📮"
-        android:layout_marginTop="20dp"
         android:textColor="@color/black"
         android:textSize="40dp"
         android:textStyle="bold" />
@@ -21,10 +21,10 @@
     <TextView
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:textAlignment="center"
         android:layout_gravity="center_horizontal"
-        android:text="Your friendship requests"
         android:layout_marginTop="10dp"
+        android:text="Your friendship requests"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="20sp"></TextView>
 
@@ -37,36 +37,36 @@
             android:id="@+id/etAddFriend"
             android:layout_width="220dp"
             android:layout_height="48dp"
-            android:hint="Friend's username"
+            android:background="@drawable/edittext_rectangle"
             android:gravity="center"
-            android:textSize="18dp"
-            android:background="@drawable/edittext_rectangle"/>
+            android:hint="Friend's username"
+            android:textSize="18dp" />
 
         <Button
             android:id="@+id/btnAddFriend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ADD"
             android:layout_marginLeft="20dp"
+            android:background="@drawable/round_button"
             android:clickable="false"
-            android:background="@drawable/round_button"/>
+            android:text="ADD" />
 
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:layout_marginTop="20dp"
         android:fillViewport="true"
-        android:layout_marginTop="20dp">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/layoutFriendRequests"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
         </LinearLayout>
 

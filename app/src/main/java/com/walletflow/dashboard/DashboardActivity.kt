@@ -11,8 +11,8 @@ import com.walletflow.R
 
 class DashboardActivity : BaseActivity() {
 
-    private lateinit var pieChartFragment : PieChartFragment
-    private lateinit var transactionFragment : TransactionsFragment
+    private lateinit var pieChartFragment: PieChartFragment
+    private lateinit var transactionFragment: TransactionsFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,20 +20,23 @@ class DashboardActivity : BaseActivity() {
         transactionFragment = TransactionsFragment { queryRef, operation ->
             firebaseUserTransactionSnapshotListener(queryRef, operation)
         }
-        pieChartFragment = PieChartFragment{ queryRef, operation ->
+        pieChartFragment = PieChartFragment { queryRef, operation ->
             firebaseUserTransactionSnapshotListener(queryRef, operation)
         }
         val viewPager: ViewPager = findViewById(R.id.viewPager)
-        val fragmentLit : MutableList<Fragment> = mutableListOf(transactionFragment,pieChartFragment)
+        val fragmentLit: MutableList<Fragment> =
+            mutableListOf(transactionFragment, pieChartFragment)
 
         val adapter = DashboardAdapter(supportFragmentManager, fragmentLit)
         viewPager.adapter = adapter
 
     }
 
-    private fun firebaseUserTransactionSnapshotListener(queryRef : Query, operation : (List<DocumentSnapshot>)->(Unit)){
-        queryRef
-            .addSnapshotListener (this) { querySnapshot, firebaseFirestoreException ->
+    private fun firebaseUserTransactionSnapshotListener(
+        queryRef: Query,
+        operation: (List<DocumentSnapshot>) -> (Unit)
+    ) {
+        queryRef.addSnapshotListener(this) { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
                     return@addSnapshotListener

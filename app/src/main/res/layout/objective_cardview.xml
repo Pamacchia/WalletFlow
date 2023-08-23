@@ -6,10 +6,10 @@
     android:layout_height="120dp"
     android:layout_marginVertical="10dp"
     android:backgroundTint="#ffffffff"
-    card_view:strokeColor="@color/nordBlue"
-    card_view:strokeWidth="3dp"
+    card_view:cardCornerRadius="20dp"
     card_view:cardElevation="20dp"
-    card_view:cardCornerRadius="20dp">
+    card_view:strokeColor="@color/nordBlue"
+    card_view:strokeWidth="3dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,29 +20,29 @@
             android:id="@+id/tvObjectiveCardTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1. Movie Night"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
+            android:text="1. Movie Night"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvObjectiveCardParticipants"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You and 4 friends"
-            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"/>
+            android:layout_weight="1"
+            android:text="You and 4 friends" />
 
         <TextView
             android:id="@+id/tvObjectiveCardProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="You saved 40.50$ out of 50.00$"
+            android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"/>
+            android:layout_weight="1"
+            android:text="You saved 40.50$ out of 50.00$" />
 
     </LinearLayout>
 

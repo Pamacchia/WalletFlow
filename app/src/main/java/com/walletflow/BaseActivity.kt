@@ -7,17 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.dashboard.DashboardActivity
-import com.walletflow.objectives.ObjectivesActivity
 import com.walletflow.friends.FriendsActivity
+import com.walletflow.objectives.ObjectivesActivity
 import com.walletflow.profile.ProfileActivity
 
 
-abstract class BaseActivity : AppCompatActivity(){
+abstract class BaseActivity : AppCompatActivity() {
 
-    private lateinit var bottomNavBar : BottomNavigationView
+    private lateinit var bottomNavBar: BottomNavigationView
 
     val db = FirebaseFirestore.getInstance()
-    lateinit var userID : String
+    lateinit var userID: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

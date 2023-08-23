@@ -21,7 +21,6 @@ import com.walletflow.data.Participant
 import com.walletflow.transactions.ChooseCategoryActivity
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -33,16 +32,16 @@ class AddObjectiveActivity : BaseActivity() {
     private lateinit var etAmount: EditText
     private lateinit var etSelectDate: EditText
     private lateinit var selectedDate: Date
-    private lateinit var friendQuotesLayout : LinearLayout
+    private lateinit var friendQuotesLayout: LinearLayout
 
-    private val textWatcher2 = object : TextWatcher{
+    private val textWatcher2 = object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
         }
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             btnSubmitObjective.isEnabled = etName.text.isNotEmpty()
                     && etAmount.text.isNotEmpty()
-                    &&etSelectDate.text.isNotEmpty() && addObjective()
+                    && etSelectDate.text.isNotEmpty() && addObjective()
         }
 
         override fun afterTextChanged(p0: Editable?) {
@@ -52,7 +51,7 @@ class AddObjectiveActivity : BaseActivity() {
 
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-            if(intent.getStringArrayListExtra("group") != null){
+            if (intent.getStringArrayListExtra("group") != null) {
                 updateQuoteValues(intent.getStringArrayListExtra("group")!!.size)
             }
         }
@@ -63,7 +62,7 @@ class AddObjectiveActivity : BaseActivity() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             btnSubmitObjective.isEnabled = etName.text.isNotEmpty()
                     && etAmount.text.isNotEmpty()
-                    &&etSelectDate.text.isNotEmpty()
+                    && etSelectDate.text.isNotEmpty()
         }
     }
 
@@ -98,13 +97,19 @@ class AddObjectiveActivity : BaseActivity() {
                     layoutInflater.inflate(R.layout.friend_quote_layout, null) as LinearLayout
                 val friendUsernameTextView =
                     friendQuoteView.findViewById<TextView>(R.id.friendUsernameTextView)
-                val friendQuoteEditText = friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
+                val friendQuoteEditText =
+                    friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
                 val factor: Float = this.resources.displayMetrics.density
                 friendUsernameTextView.text = friend
                 friendQuoteEditText.setText(0.0.toString())
                 friendQuoteEditText.addTextChangedListener(textWatcher2)
                 friendQuotesLayout.addView(friendQuoteView)
-                (friendQuoteView.layoutParams as LinearLayout.LayoutParams).setMargins(0, (factor*15).toInt(), 0, 0)
+                (friendQuoteView.layoutParams as LinearLayout.LayoutParams).setMargins(
+                    0,
+                    (factor * 15).toInt(),
+                    0,
+                    0
+                )
 
             }
         }
@@ -138,7 +143,8 @@ class AddObjectiveActivity : BaseActivity() {
             }
         }
     }
-    private fun addObjective() : Boolean {
+
+    private fun addObjective(): Boolean {
         val group = intent.getStringArrayListExtra("group")
         val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
         var sumOfQuotes = 0.0

@@ -23,17 +23,15 @@ import com.walletflow.BaseActivity
 import com.walletflow.R
 
 class FriendsRequestFragment(
-    private val listener : (Query, (List<DocumentSnapshot>)->(Unit)) -> Unit
+    private val listener: (Query, (List<DocumentSnapshot>) -> (Unit)) -> Unit
 ) : Fragment() {
 
-    private lateinit var fragmentActivity : BaseActivity
+    private lateinit var fragmentActivity: BaseActivity
     private lateinit var btnAddFriend: Button
     private lateinit var etAddFriend: EditText
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_friends_request, container, false)
     }
@@ -49,8 +47,8 @@ class FriendsRequestFragment(
         val friendCollection = fragmentActivity.db.collection("friends")
 
         friendCollection.whereEqualTo("accepted", false).get().addOnSuccessListener {
-            listener(it.query) {
-                    documentSnapshots ->  filterRequestedFriends(documentSnapshots)
+            listener(it.query) { documentSnapshots ->
+                filterRequestedFriends(documentSnapshots)
             }
         }
 
@@ -63,9 +61,7 @@ class FriendsRequestFragment(
 
             if (fragmentActivity.userID == etAddFriend.text.toString().lowercase()) {
                 Toast.makeText(
-                    context,
-                    "We are happy for you, but please don't.",
-                    Toast.LENGTH_LONG
+                    context, "We are happy for you, but please don't.", Toast.LENGTH_LONG
                 ).show()
             } else {
                 checkFriends(fragmentActivity.db, friendRequest, friendCollection)
@@ -76,84 +72,76 @@ class FriendsRequestFragment(
     }
 
     private fun filterRequestedFriends(
-        documents : List<DocumentSnapshot>
+        documents: List<DocumentSnapshot>
     ) {
 
         val rootView = requireView().findViewById<LinearLayout>(R.id.layoutFriendRequests)
         rootView.removeAllViews()
 
         documents.forEach { document ->
-                val inflater = LayoutInflater.from(requireContext())
-                val cardView = inflater.inflate(
-                    R.layout.friend_request_cardview,
-                    rootView,
-                    false
-                ) as CardView
-                val tvUsername =
-                    cardView.findViewById<TextView>(R.id.tvFriendRequestUsername)
+            val inflater = LayoutInflater.from(requireContext())
+            val cardView = inflater.inflate(
+                R.layout.friend_request_cardview, rootView, false
+            ) as CardView
+            val tvUsername = cardView.findViewById<TextView>(R.id.tvFriendRequestUsername)
 
-                val sender = document.getString("sender")
-                val receiver = document.getString("receiver")
+            val sender = document.getString("sender")
+            val receiver = document.getString("receiver")
 
-                val contentLayoutView =
-                    cardView.findViewById<LinearLayout>(R.id.contentLayoutFriendRequestCard)
+            val contentLayoutView =
+                cardView.findViewById<LinearLayout>(R.id.contentLayoutFriendRequestCard)
 
-                val factor: Float = this.resources.displayMetrics.density
+            val factor: Float = this.resources.displayMetrics.density
 
-                val layoutParams = LinearLayout.LayoutParams(
-                    40 * factor.toInt(),
-                    40 * factor.toInt()
-                )
-                layoutParams.gravity = Gravity.CENTER
-                layoutParams.leftMargin = 12 * factor.toInt()
+            val layoutParams = LinearLayout.LayoutParams(
+                40 * factor.toInt(), 40 * factor.toInt()
+            )
+            layoutParams.gravity = Gravity.CENTER
+            layoutParams.leftMargin = 12 * factor.toInt()
 
-                if (fragmentActivity.userID == sender) {
-                    tvUsername.text = receiver
+            if (fragmentActivity.userID == sender) {
+                tvUsername.text = receiver
 
-                    val cancelButton = Button(cardView.context)
-                    cancelButton.background =
-                        resources.getDrawable(R.drawable.baseline_delete_24)
-                    contentLayoutView.addView(cancelButton)
+                val cancelButton = Button(cardView.context)
+                cancelButton.background = resources.getDrawable(R.drawable.baseline_delete_24)
+                contentLayoutView.addView(cancelButton)
 
-                    layoutParams.leftMargin = 70 * factor.toInt()
-                    cancelButton.layoutParams = layoutParams
+                layoutParams.leftMargin = 70 * factor.toInt()
+                cancelButton.layoutParams = layoutParams
 
-                    cancelButton.setOnClickListener {
-                        document.reference.delete()
-                    }
-                    rootView.addView(cardView)
-                } else if(fragmentActivity.userID == receiver){
-                    tvUsername.text = sender
-
-                    val acceptButton = Button(cardView.context)
-                    acceptButton.background =
-                        resources.getDrawable(R.drawable.baseline_thumb_up_24)
-                    layoutParams.rightMargin = 5 * factor.toInt()
-                    acceptButton.layoutParams = layoutParams
-                    contentLayoutView.addView(acceptButton)
-
-                    val rejectButton = Button(cardView.context)
-                    rejectButton.background =
-                        resources.getDrawable(R.drawable.baseline_thumb_down_24)
-                    rejectButton.layoutParams = layoutParams
-                    contentLayoutView.addView(rejectButton)
-
-                    rejectButton.setOnClickListener {
-                        document.reference.delete()
-                    }
-
-                    acceptButton.setOnClickListener {
-
-                        val updatedFields = mapOf(
-                            "accepted" to true
-                        )
-
-                        document.reference
-                            .update(updatedFields)
-                    }
-                    rootView.addView(cardView)
+                cancelButton.setOnClickListener {
+                    document.reference.delete()
                 }
+                rootView.addView(cardView)
+            } else if (fragmentActivity.userID == receiver) {
+                tvUsername.text = sender
+
+                val acceptButton = Button(cardView.context)
+                acceptButton.background = resources.getDrawable(R.drawable.baseline_thumb_up_24)
+                layoutParams.rightMargin = 5 * factor.toInt()
+                acceptButton.layoutParams = layoutParams
+                contentLayoutView.addView(acceptButton)
+
+                val rejectButton = Button(cardView.context)
+                rejectButton.background = resources.getDrawable(R.drawable.baseline_thumb_down_24)
+                rejectButton.layoutParams = layoutParams
+                contentLayoutView.addView(rejectButton)
+
+                rejectButton.setOnClickListener {
+                    document.reference.delete()
+                }
+
+                acceptButton.setOnClickListener {
+
+                    val updatedFields = mapOf(
+                        "accepted" to true
+                    )
+
+                    document.reference.update(updatedFields)
+                }
+                rootView.addView(cardView)
             }
+        }
     }
 
     private fun checkFriends(
@@ -161,18 +149,17 @@ class FriendsRequestFragment(
         friendRequest: MutableMap<String, Any?>,
         friendRequestsCollection: CollectionReference
     ) {
-        db.collection("users")
-            .whereEqualTo("username", friendRequest["receiver"])
-            .get().addOnSuccessListener { task ->
+        db.collection("users").whereEqualTo("username", friendRequest["receiver"]).get()
+            .addOnSuccessListener { task ->
                 if (!task.isEmpty) {
 
-                    val query1 = friendRequestsCollection
-                        .whereEqualTo("sender", friendRequest["sender"])
-                        .whereEqualTo("receiver", friendRequest["receiver"])
+                    val query1 =
+                        friendRequestsCollection.whereEqualTo("sender", friendRequest["sender"])
+                            .whereEqualTo("receiver", friendRequest["receiver"])
 
-                    val query2 = friendRequestsCollection
-                        .whereEqualTo("sender", friendRequest["receiver"])
-                        .whereEqualTo("receiver", friendRequest["sender"])
+                    val query2 =
+                        friendRequestsCollection.whereEqualTo("sender", friendRequest["receiver"])
+                            .whereEqualTo("receiver", friendRequest["sender"])
 
                     val combinedQuery =
                         Tasks.whenAllSuccess<QuerySnapshot>(query1.get(), query2.get())
@@ -201,31 +188,22 @@ class FriendsRequestFragment(
 
                 } else {
                     Toast.makeText(
-                        context,
-                        "This user doesn't exist.",
-                        Toast.LENGTH_LONG
+                        context, "This user doesn't exist.", Toast.LENGTH_LONG
                     ).show()
                 }
             }
     }
 
     private fun addFriend(
-        db: FirebaseFirestore,
-        friendRequest: MutableMap<String, Any?>
+        db: FirebaseFirestore, friendRequest: MutableMap<String, Any?>
     ) {
-        db.collection("friends")
-            .add(friendRequest)
-            .addOnSuccessListener { documentReference ->
+        db.collection("friends").add(friendRequest).addOnSuccessListener { documentReference ->
                 Log.d(
-                    "FriendRequest",
-                    "DocumentSnapshot added with ID: " + documentReference.id
+                    "FriendRequest", "DocumentSnapshot added with ID: " + documentReference.id
                 )
-            }
-            .addOnFailureListener { e ->
+            }.addOnFailureListener { e ->
                 Log.w(
-                    "FriendRequest",
-                    "Error adding document",
-                    e
+                    "FriendRequest", "Error adding document", e
                 )
             }
     }

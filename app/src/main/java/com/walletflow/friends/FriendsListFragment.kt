@@ -16,15 +16,13 @@ import com.walletflow.BaseActivity
 import com.walletflow.R
 
 class FriendsListFragment(
-    private val listener : (Query, (List<DocumentSnapshot>)->(Unit)) -> Unit
+    private val listener: (Query, (List<DocumentSnapshot>) -> (Unit)) -> Unit
 ) : Fragment() {
 
-    private lateinit var fragmentActivity : BaseActivity
+    private lateinit var fragmentActivity: BaseActivity
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_friends_list, container, false)
     }
@@ -36,8 +34,8 @@ class FriendsListFragment(
         val friendCollection = fragmentActivity.db.collection("friends")
 
         friendCollection.whereEqualTo("accepted", true).get().addOnSuccessListener {
-            listener(it.query) {
-                    documentSnapshots ->  filterAcceptedFriends(documentSnapshots)
+            listener(it.query) { documentSnapshots ->
+                filterAcceptedFriends(documentSnapshots)
             }
         }
     }
@@ -49,17 +47,15 @@ class FriendsListFragment(
         val rootView = requireView().findViewById<LinearLayout>(R.id.layoutFriendsList)
         rootView.removeAllViews()
 
-        documents.forEach { document->
+        documents.forEach { document ->
             val inflater = LayoutInflater.from(requireContext())
-            val cardView =
-                inflater.inflate(R.layout.friend_cardview, rootView, false) as CardView
+            val cardView = inflater.inflate(R.layout.friend_cardview, rootView, false) as CardView
             val tvUsername = cardView.findViewById<TextView>(R.id.tvFriendUsername)
 
             val sender = document.getString("sender")
             val receiver = document.getString("receiver")
 
-            if (fragmentActivity.userID == sender ||
-                fragmentActivity.userID == receiver) {
+            if (fragmentActivity.userID == sender || fragmentActivity.userID == receiver) {
 
                 if (fragmentActivity.userID == sender) {
                     tvUsername.text = receiver
@@ -67,8 +63,7 @@ class FriendsListFragment(
                     tvUsername.text = sender
                 }
 
-                val deleteButton =
-                    cardView.findViewById<Button>(R.id.btFriendElimination)
+                val deleteButton = cardView.findViewById<Button>(R.id.btFriendElimination)
                 deleteButton.setOnClickListener {
                     document.reference.delete()
                 }

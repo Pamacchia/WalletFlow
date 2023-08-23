@@ -47,7 +47,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
         if (selectedFriends.isEmpty()) {
             Toast.makeText(this, "You need to select at least a friend!", Toast.LENGTH_LONG).show()
         } else {
-            selectedFriends.add(0,userID)
+            selectedFriends.add(0, userID)
             intent.putStringArrayListExtra("group", selectedFriends)
             finish()
             startActivity(intent)
@@ -55,8 +55,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
     }
 
     private fun userQueryList(
-        requestQuery: QuerySnapshot,
-        receiver: Boolean
+        requestQuery: QuerySnapshot, receiver: Boolean
     ): ArrayList<Task<QuerySnapshot>> {
         val userQueryList = arrayListOf<Task<QuerySnapshot>>()
         requestQuery.forEach { documentSnapshot ->
@@ -69,8 +68,7 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
     }
 
     private fun getFriends(userQueryList: ArrayList<Task<QuerySnapshot>>) {
-        Tasks.whenAllSuccess<QuerySnapshot>(userQueryList)
-            .addOnSuccessListener { queryList ->
+        Tasks.whenAllSuccess<QuerySnapshot>(userQueryList).addOnSuccessListener { queryList ->
                 val friendsList = arrayListOf<User>()
                 queryList.forEach { result ->
 
@@ -92,13 +90,13 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
         val cardContainer = findViewById<LinearLayout>(R.id.cardContainer)
 
         for (friend in friendsList) {
-            val cardView = (LayoutInflater.from(this).inflate(R.layout.select_friend_layout, null) as MaterialCardView)
+            val cardView = (LayoutInflater.from(this)
+                .inflate(R.layout.select_friend_layout, null) as MaterialCardView)
             val friendNameTextView = cardView.findViewById<TextView>(R.id.friendNameTextView)
 
             friendNameTextView.text = friend.username
             cardView.isCheckable = true
-            cardView.isChecked =
-                selectedFriends.contains(friend.username)
+            cardView.isChecked = selectedFriends.contains(friend.username)
 
             cardView.setOnClickListener {
                 val isSelected = cardView.isChecked
@@ -118,7 +116,12 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
             val factor: Float = this.resources.displayMetrics.density
             cardView.layoutParams.width = 320 * factor.toInt()
             cardView.layoutParams.height = 80 * factor.toInt()
-            (cardView.layoutParams as LinearLayout.LayoutParams).setMargins(0, (factor*15).toInt(), 0, 0)
+            (cardView.layoutParams as LinearLayout.LayoutParams).setMargins(
+                0,
+                (factor * 15).toInt(),
+                0,
+                0
+            )
 
 
         }

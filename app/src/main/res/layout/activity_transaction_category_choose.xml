@@ -6,9 +6,7 @@
     android:id="@+id/ll_main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context=".transactions.ChooseCategoryActivity">
-
 
     <LinearLayout
         android:id="@+id/mainLinearLayout"
@@ -39,35 +37,36 @@
             android:id="@+id/buttonLinearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="5dp"
             android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnSubmitCategory"
                 android:layout_width="150dp"
                 android:layout_height="60dp"
-                android:text="SUBMIT"
                 android:layout_marginRight="5dp"
-                android:theme="@style/BaseTheme"
                 android:background="@drawable/round_button"
-                android:enabled="false"/>
+                android:enabled="false"
+                android:text="SUBMIT"
+                android:theme="@style/BaseTheme" />
+
             <Button
                 android:id="@+id/btnAddNewCategory"
                 android:layout_width="150dp"
                 android:layout_height="60dp"
-                android:text="Add new category"
                 android:layout_marginLeft="5dp"
-                android:theme="@style/BaseTheme"
-                android:background="@drawable/round_button"/>
+                android:background="@drawable/round_button"
+                android:text="Add new category"
+                android:theme="@style/BaseTheme" />
         </LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="vertical"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:scrollbars="vertical">
 
             <LinearLayout
                 android:id="@+id/iconsLinearLayout"

@@ -47,8 +47,7 @@ class ObjectivesActivity : BaseActivity() {
 
         val rootView = findViewById<LinearLayout>(R.id.objectivesLayout)
 
-        db.collection("participants")
-            .whereEqualTo("participant", userID)
+        db.collection("participants").whereEqualTo("participant", userID)
             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
@@ -64,14 +63,16 @@ class ObjectivesActivity : BaseActivity() {
                             participant.getDouble("saved")!!
                         )
 
-                        val objectiveQueries =db.collection("objectives").document(currentUser.objectiveId)
-                            .get()
+                        val objectiveQueries =
+                            db.collection("objectives").document(currentUser.objectiveId).get()
                         val otherParticipantsQuery = db.collection("participants")
-                            .whereEqualTo("objectiveId", currentUser.objectiveId)
-                            .get()
+                            .whereEqualTo("objectiveId", currentUser.objectiveId).get()
 
-                        val cardView = LayoutInflater.from(this)
-                            .inflate(R.layout.objective_cardview, rootView, false) as MaterialCardView
+                        val cardView = LayoutInflater.from(this).inflate(
+                                R.layout.objective_cardview,
+                                rootView,
+                                false
+                            ) as MaterialCardView
                         val tvTitle = cardView.findViewById<TextView>(R.id.tvObjectiveCardTitle)
                         val tvParticipants =
                             cardView.findViewById<TextView>(R.id.tvObjectiveCardParticipants)
@@ -91,8 +92,7 @@ class ObjectivesActivity : BaseActivity() {
                                     objectiveQuery.result.getString("category")
                                 )
 
-                                val participantList =
-                                    ArrayList<Participant>()
+                                val participantList = ArrayList<Participant>()
 
                                 for (otherParticipant in resultQueryList) {
                                     val tempParticipant = Participant(
@@ -108,9 +108,9 @@ class ObjectivesActivity : BaseActivity() {
                                 calendar.add(Calendar.DAY_OF_MONTH, 3)
                                 val date2 = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
 
-                                if (objective.date < date){
+                                if (objective.date < date) {
                                     cardView.strokeColor = resources.getColor(R.color.nordRed)
-                                } else if (objective.date < date2){
+                                } else if (objective.date < date2) {
                                     cardView.strokeColor = resources.getColor(R.color.nordOrange)
                                 }
 
