@@ -31,7 +31,8 @@
         android:hint="Username"
         android:textAlignment="center"
         android:layout_marginTop="40dp"
-        android:background="@drawable/edittext_rectangle" />
+        android:background="@drawable/edittext_rectangle"
+        android:digits="abcdefghijklmnopqrstuvwxyz0123456789._"/>
 
     <EditText
         android:id="@+id/registraiton_email"

@@ -128,7 +128,6 @@ class ObjectiveDetailActivity : BaseActivity() {
                 .addOnSuccessListener {
                     Log.d(this.localClassName, "DocumentSnapshot successfully deleted!")
 
-                    // Delete participants with the same objectiveId
                     db.collection("participants")
                         .whereEqualTo("objectiveId", currentUser.objectiveId)
                         .get()

@@ -7,7 +7,6 @@
     android:gravity="center_horizontal"
     tools:context=".friends.FriendsListFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/tvObjectivesTitle"
         android:layout_width="match_parent"

@@ -92,7 +92,7 @@ class ObjectivesActivity : BaseActivity() {
                                 )
 
                                 val participantList =
-                                    ArrayList<Participant>() // ArrayList to store Participant instances
+                                    ArrayList<Participant>()
 
                                 for (otherParticipant in resultQueryList) {
                                     val tempParticipant = Participant(

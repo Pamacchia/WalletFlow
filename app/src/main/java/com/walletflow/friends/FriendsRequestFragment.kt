@@ -22,9 +22,6 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.walletflow.BaseActivity
 import com.walletflow.R
 
-//TODO: Reload when deleting/accepting/canceling/rejecting
-//TODO: Filter requests send/receive
-
 class FriendsRequestFragment(
     private val listener : (Query, (List<DocumentSnapshot>)->(Unit)) -> Unit
 ) : Fragment() {
@@ -38,7 +35,6 @@ class FriendsRequestFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_friends_request, container, false)
     }
 
@@ -105,8 +101,8 @@ class FriendsRequestFragment(
                 val factor: Float = this.resources.displayMetrics.density
 
                 val layoutParams = LinearLayout.LayoutParams(
-                    40 * factor.toInt(), // width in pixels
-                    40 * factor.toInt()  // height in pixels
+                    40 * factor.toInt(),
+                    40 * factor.toInt()
                 )
                 layoutParams.gravity = Gravity.CENTER
                 layoutParams.leftMargin = 12 * factor.toInt()
@@ -186,7 +182,6 @@ class FriendsRequestFragment(
 
                         for (querySnapshot in querySnapshots) {
                             if (!querySnapshot.isEmpty) {
-                                // There is at least one document that matches the conditions
                                 Toast.makeText(
                                     context,
                                     "You are already friend with this user or you already sent a request.",

@@ -37,7 +37,6 @@ class AddObjectiveActivity : BaseActivity() {
 
     private val textWatcher2 = object : TextWatcher{
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-//            ("Not yet implemented")
         }
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -47,7 +46,6 @@ class AddObjectiveActivity : BaseActivity() {
         }
 
         override fun afterTextChanged(p0: Editable?) {
-//            ("Not yet implemented")
         }
 
     }
@@ -60,7 +58,6 @@ class AddObjectiveActivity : BaseActivity() {
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            // Implementation for beforeTextChanged
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -107,7 +104,7 @@ class AddObjectiveActivity : BaseActivity() {
                 friendQuoteEditText.setText(0.0.toString())
                 friendQuoteEditText.addTextChangedListener(textWatcher2)
                 friendQuotesLayout.addView(friendQuoteView)
-                (friendQuoteView.layoutParams as LinearLayout.LayoutParams).setMargins(0, (factor*15).toInt(), 0, 0) // Add 10dp top margin
+                (friendQuoteView.layoutParams as LinearLayout.LayoutParams).setMargins(0, (factor*15).toInt(), 0, 0)
 
             }
         }
@@ -155,11 +152,8 @@ class AddObjectiveActivity : BaseActivity() {
             }
         }
 
-        // Compare the sum of quote values with the original amount
         return sumOfQuotes == etAmount.text.toString().toDouble() || group == null
 
-//            Toast.makeText(this, "Quote values do not match the amount.", Toast.LENGTH_SHORT)
-//                .show()
     }
 
     private fun showDatePicker() {

@@ -47,16 +47,6 @@ object TransactionManager {
 
     fun deleteFrequentTransactionRecordFromDB(document: DocumentSnapshot) {
         document.reference.delete()
-            .addOnSuccessListener {
-                // Document successfully deleted
-                // Handle success or UI updates here
-                println("Document deleted successfully.")
-            }
-            .addOnFailureListener { e ->
-                // An error occurred while deleting the document
-                // Handle the error here
-                println("Error deleting document: $e")
-            }
     }
 
     fun updateBalance(db: FirebaseFirestore, amount: Float, userID: String?) {

@@ -7,19 +7,22 @@
         <item>Yearly</item>
     </array>
     <array name="dashboard_colors">
-        <item name="yellow">#FFC107</item>
-        <item name="red">#F44336</item>
-        <item name="blue">#03A9F4</item>
-        <item name="green">#4CAF50</item>
-        <item name="orange">#FF9800</item>
-        <item name="black">#FF000000</item>
-        <item name="violet">#9C27B0</item>
-        <item name="red2">#F44336</item>
-        <item name="blue2">#03A9F4</item>
-        <item name="green2">#4CAF50</item>
-        <item name="yellow2">#FFC107</item>
-        <item name="orange2">#FF9800</item>
-        <item name="black2">#FF000000</item>
-        <item name="violet2">#9C27B0</item>
+        <item name="color1">#81A1C1</item>
+        <item name="color2">#BF616A</item>
+        <item name="color3">#A3BE8C</item>
+        <item name="color4">#D08770</item>
+        <item name="color5">#EBCB8B</item>
+        <item name="color6">#88C0D0</item>
+        <item name="color7">#B48EAD</item>
+        <item name="color8">#5E81AC</item>
+        <item name="color9">#D8A48F</item>
+        <item name="color10">#A3BE8C</item>
+        <item name="color11">#E5E9F0</item>
+        <item name="color12">#8FBCBB</item>
+        <item name="color13">#B48EAD</item>
+        <item name="color14">#ECEFF4</item>
+        <item name="color15">#A3BE8C</item>
     </array>
+
+
 </resources>

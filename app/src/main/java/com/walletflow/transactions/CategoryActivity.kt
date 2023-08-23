@@ -61,18 +61,10 @@ abstract class CategoryActivity : BaseActivity() {
             val imageView = ImageView(this)
 
             try {
-                // Open the input stream for the image file in assets
                 val inputStream = assets.open("icons/${icon.iconPath}")
-
-                // Create a Drawable from the input stream
                 val drawable = Drawable.createFromStream(inputStream, null)
-
-                // Set the drawable as the image source for the ImageView
                 imageView.setImageDrawable(drawable)
-
-                // Close the input stream
                 inputStream.close()
-
                 linearLayout.addView(imageView)
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -90,9 +82,7 @@ abstract class CategoryActivity : BaseActivity() {
                 linearLayout.id = View.generateViewId()
                 rootView.addView(linearLayout)
                 linearLayout.orientation = LinearLayout.HORIZONTAL
-
-                // Set up layout parameters with margins
-                (linearLayout.layoutParams as LinearLayout.LayoutParams).setMargins(0, (factor*25).toInt(), 0, 0) // Add 10dp top margin
+                (linearLayout.layoutParams as LinearLayout.LayoutParams).setMargins(0, (factor*25).toInt(), 0, 0)
             }
 
         }

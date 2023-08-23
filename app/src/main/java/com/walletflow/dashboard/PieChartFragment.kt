@@ -235,6 +235,9 @@ class PieChartFragment(
         pieChart.rotationAngle = 0f
         pieChart.isHighlightPerTapEnabled = false
         pieChart.animateY(1400, Easing.EasingOption.EaseInOutQuad)
+        val holeRadius = 35f
+        pieChart.holeRadius = holeRadius
+        pieChart.transparentCircleRadius = holeRadius-8f
     }
 
     private fun groupAndSumRecords(queryRecords: MutableList<Map<String, Any>?>): Map<String, Double> {
