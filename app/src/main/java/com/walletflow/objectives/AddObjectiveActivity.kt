@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
@@ -19,6 +20,7 @@ import com.walletflow.R
 import com.walletflow.data.Objective
 import com.walletflow.data.Participant
 import com.walletflow.transactions.ChooseCategoryActivity
+import com.walletflow.utils.DecimalDigitsInputFilter
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -75,7 +77,7 @@ class AddObjectiveActivity : BaseActivity() {
         etSelectDate = findViewById(R.id.etSelectDate)
 
         etAmount.setText(0.0.toString())
-
+        etAmount.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(7, 2))
         btnSubmitObjective.isEnabled = false
         etName.addTextChangedListener(textWatcher2)
         etAmount.addTextChangedListener(textWatcher)
@@ -102,6 +104,7 @@ class AddObjectiveActivity : BaseActivity() {
                 val factor: Float = this.resources.displayMetrics.density
                 friendUsernameTextView.text = friend
                 friendQuoteEditText.setText(0.0.toString())
+                friendQuoteEditText.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(7, 2))
                 friendQuoteEditText.addTextChangedListener(textWatcher2)
                 friendQuotesLayout.addView(friendQuoteView)
                 (friendQuoteView.layoutParams as LinearLayout.LayoutParams).setMargins(

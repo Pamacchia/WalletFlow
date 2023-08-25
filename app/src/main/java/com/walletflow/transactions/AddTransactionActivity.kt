@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
@@ -14,6 +15,7 @@ import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.BaseActivity
 import com.walletflow.R
+import com.walletflow.utils.DecimalDigitsInputFilter
 import com.walletflow.utils.TransactionManager
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -31,6 +33,7 @@ class AddTransactionActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         amountEditText = findViewById(R.id.etAmount)
+        amountEditText.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(7, 2))
         noteEditText = findViewById(R.id.etNote)
         frequentCheck = findViewById(R.id.cbFrequent)
         chooseCategoryBtn = findViewById(R.id.btnChooseCategory)
