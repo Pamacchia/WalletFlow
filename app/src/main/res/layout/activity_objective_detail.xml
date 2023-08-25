@@ -80,7 +80,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/edittext_rectangle"
                 android:hint="Add savings"
-                android:inputType="numberDecimal"
+                android:inputType="numberSigned"
                 android:textAlignment="center"></EditText>
 
             <Button
