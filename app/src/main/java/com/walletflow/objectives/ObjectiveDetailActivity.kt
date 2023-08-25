@@ -49,7 +49,7 @@ class ObjectiveDetailActivity : BaseActivity() {
 
         addSavingsBtn.setOnClickListener {
             var amount = addSavingsEt.text.toString().toDouble()
-            if (amount <= (currentUser!!.quote - currentUser.saved) || (amount < 0 && kotlin.math.abs(amount) < currentUser.saved)) {
+            if ((amount > 0 && amount <= (currentUser!!.quote - currentUser.saved)) || (amount < 0 && kotlin.math.abs(amount) < currentUser!!.saved)) {
                 amount = ((amount * 100).roundToInt() / 100.0)
                 currentUser.saved = currentUser.saved.plus(amount)
 

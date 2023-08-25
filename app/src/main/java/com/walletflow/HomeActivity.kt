@@ -117,7 +117,7 @@ class HomeActivity : BaseActivity() {
                         objectiveSavedMoney += userParticipantToObjective.saved
                     }
                     objectiveMoneyTv.text =
-                        StringHelper.getShrunkForm(objectiveSavedMoney) + "" + "€"
+                        StringHelper.getShrunkForm(objectiveSavedMoney) + "€"
                 }
             }
     }
