@@ -1,6 +1,7 @@
 package com.walletflow.objectives
 
 import android.os.Bundle
+import android.text.InputFilter
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
@@ -15,11 +16,13 @@ import com.walletflow.R
 import com.walletflow.data.Objective
 import com.walletflow.data.Participant
 import com.walletflow.data.Transaction
+import com.walletflow.utils.DecimalDigitsInputFilter
 import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import kotlin.math.roundToInt
+
 
 class ObjectiveDetailActivity : BaseActivity() {
 
@@ -42,6 +45,7 @@ class ObjectiveDetailActivity : BaseActivity() {
         deleteObjBtn = findViewById(R.id.btnDeleteObjective)
         addSavingsBtn = findViewById(R.id.btnAddSavings)
         addSavingsEt = findViewById(R.id.etAddSavings)
+        addSavingsEt.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(7, 2))
         objectiveBudgetTv = findViewById(R.id.tvObjectiveBudget)
 
         titleTv.text = objective.name

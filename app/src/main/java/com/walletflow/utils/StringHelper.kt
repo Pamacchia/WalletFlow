@@ -13,7 +13,7 @@ object StringHelper {
             index++
         }
 
-        val formattedNum = String.format("%.1f", num)
+        val formattedNum = String.format("%.2f", num)
 
         return "$formattedNum${suffixes[index]}"
     }
