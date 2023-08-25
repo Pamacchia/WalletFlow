@@ -12,8 +12,7 @@ internal class DecimalDigitsInputFilter(digitsBeforeZero: Int, digitsAfterZero: 
 
     init {
         mPattern =
-            Pattern.compile("-?[1-9]([0-9]{0," + (digitsBeforeZero - 1) + "}?)((\\.[0-9]{0," + (digitsAfterZero) + "})?)" +
-                    "|(0\\.[0-9]{0," + (digitsAfterZero) + "})")
+            Pattern.compile("-?([1-9][0-9]*||0)((\\.[0-9]{0," + (digitsAfterZero - 1) +"})?)")
     }
 
     override fun filter(
