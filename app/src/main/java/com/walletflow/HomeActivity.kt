@@ -145,7 +145,10 @@ class HomeActivity : BaseActivity() {
                             )
                         }
 
-                    if (budget == 0.0) {
+                    if (balance < 0){
+                        showProgressBar(0.0, 100.0)
+                        totalBudget.text = "0.0€"
+                    }  else if (budget == 0.0 || balance < budget) {
                         budget = balance
                         showProgressBar(budget, budget + thisMonthExpense)
                         totalBudget.text = " ${StringHelper.getShrunkForm(budget)}€"
