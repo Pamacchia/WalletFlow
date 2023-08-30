@@ -32,6 +32,7 @@ class FriendsRequestFragment(
     private lateinit var etAddFriend: EditText
     private lateinit var tvSent : TextView
     private lateinit var tvReceived : TextView
+    var selectedRequestType = "receiver"
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -78,6 +79,7 @@ class FriendsRequestFragment(
         tvSent.setOnClickListener {
             tvSent.setTypeface(null, Typeface.BOLD)
             tvReceived.setTypeface(null, Typeface.NORMAL)
+            selectedRequestType = "sender"
             listener(friendCollection.whereEqualTo("accepted", false)
                 .whereEqualTo("sender", fragmentActivity.userID)) { documents ->
                 filterRequestedFriends(
@@ -89,6 +91,7 @@ class FriendsRequestFragment(
         tvReceived.setOnClickListener {
             tvReceived.setTypeface(null, Typeface.BOLD)
             tvSent.setTypeface(null, Typeface.NORMAL)
+            selectedRequestType = "receiver"
             listener(friendCollection.whereEqualTo("accepted", false)
                 .whereEqualTo("receiver", fragmentActivity.userID)) { documents ->
                 filterRequestedFriends(
@@ -127,7 +130,7 @@ class FriendsRequestFragment(
             layoutParams.gravity = Gravity.CENTER
             layoutParams.leftMargin = 12 * factor.toInt()
 
-            if (fragmentActivity.userID == sender) {
+            if (fragmentActivity.userID == sender && (selectedRequestType == "sender")) {
                 tvUsername.text = receiver
 
                 val cancelButton = Button(cardView.context)
@@ -141,7 +144,7 @@ class FriendsRequestFragment(
                     document.reference.delete()
                 }
                 rootView.addView(cardView)
-            } else if (fragmentActivity.userID == receiver) {
+            } else if (fragmentActivity.userID == receiver && (selectedRequestType == "receiver")) {
                 tvUsername.text = sender
 
                 val acceptButton = Button(cardView.context)
