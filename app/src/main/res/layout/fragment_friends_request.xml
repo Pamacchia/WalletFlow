@@ -53,6 +53,39 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvFilterFriendReceived"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Received"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="17sp">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/tvFilterFriendSent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sent"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="17sp">
+
+        </TextView>
+
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,5 +1,6 @@
 package com.walletflow.friends
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -29,7 +30,8 @@ class FriendsRequestFragment(
     private lateinit var fragmentActivity: BaseActivity
     private lateinit var btnAddFriend: Button
     private lateinit var etAddFriend: EditText
-
+    private lateinit var tvSent : TextView
+    private lateinit var tvReceived : TextView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -43,10 +45,14 @@ class FriendsRequestFragment(
         fragmentActivity = activity as BaseActivity
         btnAddFriend = view.findViewById(R.id.btnAddFriend)
         etAddFriend = view.findViewById(R.id.etAddFriend)
+        tvSent = view.findViewById(R.id.tvFilterFriendSent)
+        tvReceived = view.findViewById(R.id.tvFilterFriendReceived)
+        tvReceived.setTypeface(null, Typeface.BOLD)
 
         val friendCollection = fragmentActivity.db.collection("friends")
 
-        friendCollection.whereEqualTo("accepted", false).get().addOnSuccessListener {
+        friendCollection.whereEqualTo("accepted", false)
+            .whereEqualTo("receiver", fragmentActivity.userID).get().addOnSuccessListener {
             listener(it.query) { documentSnapshots ->
                 filterRequestedFriends(documentSnapshots)
             }
@@ -67,6 +73,28 @@ class FriendsRequestFragment(
                 checkFriends(fragmentActivity.db, friendRequest, friendCollection)
             }
 
+        }
+
+        tvSent.setOnClickListener {
+            tvSent.setTypeface(null, Typeface.BOLD)
+            tvReceived.setTypeface(null, Typeface.NORMAL)
+            listener(friendCollection.whereEqualTo("accepted", false)
+                .whereEqualTo("sender", fragmentActivity.userID)) { documents ->
+                filterRequestedFriends(
+                    documents
+                )
+            }
+        }
+
+        tvReceived.setOnClickListener {
+            tvReceived.setTypeface(null, Typeface.BOLD)
+            tvSent.setTypeface(null, Typeface.NORMAL)
+            listener(friendCollection.whereEqualTo("accepted", false)
+                .whereEqualTo("receiver", fragmentActivity.userID)) { documents ->
+                filterRequestedFriends(
+                    documents
+                )
+            }
         }
 
     }
