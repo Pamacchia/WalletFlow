@@ -49,6 +49,7 @@ class ObjectivesActivity : BaseActivity() {
         val rootView = findViewById<LinearLayout>(R.id.objectivesLayout)
 
         db.collection("participants").whereEqualTo("participant", userID)
+            .orderBy("date")
             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
                     Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
@@ -57,15 +58,10 @@ class ObjectivesActivity : BaseActivity() {
                 querySnapshot?.let {
                     rootView.removeAllViews()
                     it.documents.forEach { participant ->
-                        val currentUser = Participant(
-                            participant.getString("objectiveId")!!,
-                            participant.getString("participant")!!,
-                            participant.getDouble("quote")!!,
-                            participant.getDouble("saved")!!
-                        )
+                        val currentUser = participant.toObject(Participant::class.java)
 
                         val objectiveQueries =
-                            db.collection("objectives").document(currentUser.objectiveId).get()
+                            db.collection("objectives").document(currentUser!!.objectiveId).get()
                         val otherParticipantsQuery = db.collection("participants")
                             .whereEqualTo("objectiveId", currentUser.objectiveId).get()
 
@@ -96,12 +92,7 @@ class ObjectivesActivity : BaseActivity() {
                                 val participantList = ArrayList<Participant>()
 
                                 for (otherParticipant in resultQueryList) {
-                                    val tempParticipant = Participant(
-                                        otherParticipant.getString("objectiveId")!!,
-                                        otherParticipant.getString("participant")!!,
-                                        otherParticipant.getDouble("quote")!!,
-                                        otherParticipant.getDouble("saved")!!
-                                    )
+                                    val tempParticipant = otherParticipant.toObject(Participant::class.java)
                                     participantList.add(tempParticipant)
                                 }
                                 val calendar = Calendar.getInstance()
@@ -124,7 +115,7 @@ class ObjectivesActivity : BaseActivity() {
                                 }
 
                                 tvSavings.text =
-                                    "You saved ${StringHelper.getShrunkForm(currentUser.saved)}€ out of ${StringHelper.getShrunkForm(currentUser.quote)}€"
+                                    "You saved ${StringHelper.getShrunkForm(currentUser!!.saved)}€ out of ${StringHelper.getShrunkForm(currentUser.quote)}€"
                                 rootView.addView(cardView)
 
 

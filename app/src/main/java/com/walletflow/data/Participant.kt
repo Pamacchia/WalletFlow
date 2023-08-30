@@ -4,6 +4,7 @@ import java.io.Serializable
 
 data class Participant(
     val objectiveId: String = "",
+    val objectiveDate : String = "",
     var participant: String = "",
     val quote: Double = 0.0,
     var saved: Double = 0.0,
@@ -13,6 +14,7 @@ data class Participant(
             "objectiveId" to objectiveId,
             "participant" to participant,
             "quote" to quote,
+            "date" to objectiveDate,
             "saved" to saved
         )
     }

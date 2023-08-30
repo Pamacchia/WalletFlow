@@ -215,13 +215,14 @@ class AddObjectiveActivity : BaseActivity() {
         db.collection("objectives")
             .add(obj)
             .addOnSuccessListener { documentReference ->
-                saveParticipants(db, documentReference)
+                saveParticipants(db, documentReference, obj.date)
             }
     }
 
     private fun saveParticipants(
         db: FirebaseFirestore,
-        documentReference: DocumentReference
+        documentReference: DocumentReference,
+        date : String
     ) {
         val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
 
@@ -231,6 +232,7 @@ class AddObjectiveActivity : BaseActivity() {
                 db.collection("participants").add(
                     Participant(
                         documentReference.id,
+                        date,
                         friendQuoteView.findViewById<TextView>(R.id.friendUsernameTextView).text.toString(),
                         friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText).text.toString()
                             .toDouble(),
@@ -242,6 +244,7 @@ class AddObjectiveActivity : BaseActivity() {
             db.collection("participants").add(
                 Participant(
                     documentReference.id,
+                    date,
                     userID,
                     etAmount.text.toString().toDouble(),
                     0.0
