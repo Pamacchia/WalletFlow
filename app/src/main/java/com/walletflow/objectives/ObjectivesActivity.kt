@@ -60,11 +60,12 @@ class ObjectivesActivity : BaseActivity() {
                     it.documents.forEach { participant ->
                         val currentUser = participant.toObject(Participant::class.java)
 
-                        val objectiveQueries =
+                        val userObjectiveQuery =
                             db.collection("objectives").document(currentUser!!.objectiveId).get()
                         val otherParticipantsQuery = db.collection("participants")
                             .whereEqualTo("objectiveId", currentUser.objectiveId).get()
 
+                        // Initialize objective card
                         val cardView = LayoutInflater.from(this).inflate(
                                 R.layout.objective_cardview,
                                 rootView,
@@ -76,7 +77,7 @@ class ObjectivesActivity : BaseActivity() {
                         val tvSavings =
                             cardView.findViewById<TextView>(R.id.tvObjectiveCardProgress)
 
-                        objectiveQueries.addOnCompleteListener { objectiveQuery ->
+                        userObjectiveQuery.addOnCompleteListener { objectiveQuery ->
 
                             otherParticipantsQuery.addOnSuccessListener { resultQueryList ->
 
@@ -95,17 +96,10 @@ class ObjectivesActivity : BaseActivity() {
                                     val tempParticipant = otherParticipant.toObject(Participant::class.java)
                                     participantList.add(tempParticipant)
                                 }
-                                val calendar = Calendar.getInstance()
-                                val date = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
-                                calendar.add(Calendar.DAY_OF_MONTH, 3)
-                                val date2 = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
 
-                                if (objective.date < date) {
-                                    cardView.strokeColor = resources.getColor(R.color.nordRed)
-                                } else if (objective.date < date2) {
-                                    cardView.strokeColor = resources.getColor(R.color.nordOrange)
-                                }
+                                associateColorToExpirationDate(objective, cardView)
 
+                                // Initialize card properties
                                 tvTitle.text = objective.name + " | Exp: " + objective.date
 
                                 if (participantList.size > 1) {
@@ -113,11 +107,10 @@ class ObjectivesActivity : BaseActivity() {
                                 } else {
                                     tvParticipants.text = "Solo Objective"
                                 }
-
                                 tvSavings.text =
                                     "You saved ${StringHelper.getShrunkForm(currentUser!!.saved)}€ out of ${StringHelper.getShrunkForm(currentUser.quote)}€"
-                                rootView.addView(cardView)
 
+                                rootView.addView(cardView)
 
                                 cardView.setOnClickListener {
                                     val intent = Intent(this, ObjectiveDetailActivity::class.java)
@@ -136,6 +129,22 @@ class ObjectivesActivity : BaseActivity() {
                     }
                 }
             }
+    }
+
+    private fun associateColorToExpirationDate(
+        objective: Objective,
+        cardView: MaterialCardView
+    ) {
+        val calendar = Calendar.getInstance()
+        val date = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
+        calendar.add(Calendar.DAY_OF_MONTH, 3)
+        val date2 = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
+
+        if (objective.date < date) {
+            cardView.strokeColor = resources.getColor(R.color.nordRed)
+        } else if (objective.date < date2) {
+            cardView.strokeColor = resources.getColor(R.color.nordOrange)
+        }
     }
 
 

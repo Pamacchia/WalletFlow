@@ -21,6 +21,7 @@ import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 
@@ -53,109 +54,142 @@ class ObjectiveDetailActivity : BaseActivity() {
 
         addSavingsBtn.setOnClickListener {
             var amount = addSavingsEt.text.toString().toDouble()
-            if ((amount > 0 && amount <= (currentUser!!.quote - currentUser.saved)) || (amount < 0 && kotlin.math.abs(amount) < currentUser!!.saved)) {
-                amount = ((amount * 100).roundToInt() / 100.0)
-                currentUser.saved = currentUser.saved.plus(amount)
-
-                db.collection("participants").whereEqualTo("objectiveId", currentUser.objectiveId)
-                    .whereEqualTo("participant", currentUser.participant).get()
-                    .addOnSuccessListener { task ->
-                        task.documents.first().reference.update("saved", currentUser.saved)
-                        TransactionManager.updateBalance(db, -amount.toFloat(), userID)
-                    }
+            if (
+                (amount > 0 && amount <= (currentUser!!.quote - currentUser.saved)) ||
+                (amount < 0 && kotlin.math.abs(amount) < currentUser!!.saved)
+            ) {
+                updateUserSavings(amount, currentUser)
             } else {
                 Toast.makeText(this, "Invalid amount.", Toast.LENGTH_LONG).show()
             }
         }
 
         completedBtn.setOnClickListener {
-            db.collection("participants").whereEqualTo("objectiveId", currentUser!!.objectiveId)
-                .get().addOnSuccessListener { task ->
-                    val objectiveRef = db.collection("objectives").document(currentUser.objectiveId)
-
-                    objectiveRef.get().addOnSuccessListener { obj ->
-                        obj.toObject(Objective::class.java)
-                        for (document in task.documents) {
-                            val participant = document.toObject(Participant::class.java)
-                            val userTransaction = Transaction(
-                                -participant!!.quote,
-                                objective.category,
-                                objective.name,
-                                "expense",
-                                participant.participant,
-                                SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
-                            )
-
-                            db.collection("transactions").add(userTransaction)
-                                .addOnSuccessListener { documentReference ->
-                                    Log.d(
-                                        this.localClassName,
-                                        "DocumentSnapshot added with ID: " + documentReference.id
-                                    )
-                                    document.reference.delete().addOnSuccessListener {
-                                        Log.d(
-                                            this.localClassName, "Deleted participant"
-                                        )
-                                    }.addOnFailureListener {
-                                        Log.w(
-                                            this.localClassName, "Error deleting participant"
-                                        )
-                                    }
-                                }.addOnFailureListener { e ->
-                                    Log.w(
-                                        this.localClassName, "Error adding document", e
-                                    )
-                                }
-                        }
-                        objectiveRef.delete().addOnSuccessListener {
-                            finish()
-                        }
-                    }
-
-                }
+            completeObjective(currentUser, objective)
         }
 
         deleteObjBtn.setOnClickListener {
+            deleteObjective(currentUser)
+        }
+    }
 
-            db.collection("objectives").document(currentUser!!.objectiveId).delete()
-                .addOnSuccessListener {
-                    Log.d(this.localClassName, "DocumentSnapshot successfully deleted!")
+    private fun totalRecapInit(
+        currentUser: Participant?, objective: Objective
+    ) {
 
-                    db.collection("participants")
-                        .whereEqualTo("objectiveId", currentUser.objectiveId).get()
-                        .addOnSuccessListener { querySnapshot ->
-                            val batch = db.batch()
-                            for (document in querySnapshot) {
-                                Log.w(
-                                    this.localClassName,
-                                    document.getString("participants").toString()
-                                )
-                                TransactionManager.updateBalance(
-                                    db,
-                                    document.getDouble("saved")!!.toFloat(),
-                                    document.getString("participant")
-                                )
-                                val participantRef =
-                                    db.collection("participants").document(document.id)
-                                batch.delete(participantRef)
+        db.collection("participants").whereEqualTo("objectiveId", currentUser!!.objectiveId)
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                firebaseFirestoreException?.let {
+                    Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
+                    return@addSnapshotListener
+                }
+                querySnapshot?.let {
+                    totalSaved = 0.0
+                    val friends = it.toObjects(Participant::class.java)
+                    friends.forEach { friend ->
+                        totalSaved = if (friend.participant == currentUser.participant) {
+                            currentUser.saved.let { x -> totalSaved?.plus(x) }!!
+                        } else {
+                            friend!!.saved.let { x -> totalSaved?.plus(x) }!!
+                        }
+                    }
+                    objectiveBudgetTv.text = " ${StringHelper.getShrunkForm(totalSaved!!)}€/${StringHelper.getShrunkForm(objective.amount!!)}€"
+                    showProgressBar(objective, objective.amount)
+                    loadParticipantInformation(currentUser, friends, totalSaved, objective)
+                }
+            }
+    }
+
+    private fun showProgressBar(objective: Objective, amount: Double) {
+        val objectiveProgressBar = findViewById<FrameLayout>(R.id.objectiveProgressBar)
+        val difference = abs(objective.amount!! - totalSaved!!)
+        val invRelativeDifference = difference / amount
+        val desiredWidthInDp = 325
+        val minProgressBarWidthInPx = 1
+        val relativeDifference = 1 - invRelativeDifference
+        val newWidthInPx =
+            (minProgressBarWidthInPx + (relativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
+        val layoutParams = objectiveProgressBar.layoutParams
+        layoutParams.width = newWidthInPx
+        objectiveProgressBar.layoutParams = layoutParams
+    }
+
+    private fun deleteObjective(currentUser: Participant?) {
+        db.collection("objectives").document(currentUser!!.objectiveId).delete()
+            .addOnSuccessListener {
+                Log.d(this.localClassName, "DocumentSnapshot successfully deleted!")
+
+                db.collection("participants")
+                    .whereEqualTo("objectiveId", currentUser.objectiveId).get()
+                    .addOnSuccessListener { querySnapshot ->
+                        val batch = db.batch()
+                        for (document in querySnapshot) {
+                            TransactionManager.updateBalance(
+                                db,
+                                document.getDouble("saved")!!.toFloat(),
+                                document.getString("participant")
+                            )
+                            val participantRef =
+                                db.collection("participants").document(document.id)
+                            batch.delete(participantRef)
+                        }
+
+                        batch.commit().addOnSuccessListener {
+                            finish()
+                            overridePendingTransition(0, 0)
+                        }
+
+                    }
+            }
+    }
+
+    private fun completeObjective(
+        currentUser: Participant?,
+        objective: Objective
+    ) {
+        db.collection("participants").whereEqualTo("objectiveId", currentUser!!.objectiveId)
+            .get().addOnSuccessListener { task ->
+                val objectiveRef = db.collection("objectives").document(currentUser.objectiveId)
+
+                objectiveRef.get().addOnSuccessListener { obj ->
+                    obj.toObject(Objective::class.java)
+                    for (document in task.documents) {
+                        val participant = document.toObject(Participant::class.java)
+
+                        val userTransaction = Transaction(
+                            -participant!!.quote,
+                            objective.category,
+                            objective.name,
+                            "expense",
+                            participant.participant,
+                            SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
+                        )
+
+                        db.collection("transactions").add(userTransaction)
+                            .addOnSuccessListener {
+                                document.reference.delete()
                             }
 
-                            batch.commit().addOnSuccessListener {
-                                    Log.d(this.localClassName, "Participants deleted successfully!")
-                                    finish()
-                                    overridePendingTransition(0, 0)
-                                }.addOnFailureListener { e ->
-                                    Log.w(this.localClassName, "Error deleting participants", e)
-                                }
-
-                        }.addOnFailureListener { e ->
-                            Log.w(this.localClassName, "Error querying participants", e)
-                        }
-                }.addOnFailureListener { e ->
-                    Log.w(this.localClassName, "Error deleting document", e)
+                    }
+                    objectiveRef.delete().addOnSuccessListener {
+                        finish()
+                    }
                 }
-        }
 
+            }
+    }
+
+    private fun updateUserSavings(userAmount: Double, currentUser: Participant) {
+        var amount = userAmount
+        amount = ((amount * 100).roundToInt() / 100.0)
+        currentUser.saved = currentUser.saved.plus(amount)
+
+        db.collection("participants").whereEqualTo("objectiveId", currentUser.objectiveId)
+            .whereEqualTo("participant", currentUser.participant).get()
+            .addOnSuccessListener { task ->
+                task.documents.first().reference.update("saved", currentUser.saved)
+                TransactionManager.updateBalance(db, -amount.toFloat(), userID)
+            }
     }
 
     private fun loadParticipantInformation(
@@ -168,6 +202,8 @@ class ObjectiveDetailActivity : BaseActivity() {
         rootView.removeAllViews()
 
         for (participant in friends!!) {
+
+            // Initialize participant card
             val cardView = LayoutInflater.from(this)
                 .inflate(R.layout.participant_detail_item, rootView, false) as CardView
             val usernameTv = cardView.findViewById<TextView>(R.id.tvUsername)
@@ -196,42 +232,5 @@ class ObjectiveDetailActivity : BaseActivity() {
 
     override fun getLayoutResourceId(): Int {
         return R.layout.activity_objective_detail
-    }
-
-    private fun totalRecapInit(
-        currentUser: Participant?, objective: Objective
-    ) {
-
-        db.collection("participants").whereEqualTo("objectiveId", currentUser!!.objectiveId)
-            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                firebaseFirestoreException?.let {
-                    Toast.makeText(this, "Error loading data", Toast.LENGTH_LONG).show()
-                    return@addSnapshotListener
-                }
-                querySnapshot?.let {
-                    totalSaved = 0.0
-                    val friends = it.toObjects(Participant::class.java)
-                    friends.forEach { friend ->
-                        totalSaved = if (friend.participant == currentUser.participant) {
-                            currentUser.saved.let { x -> totalSaved?.plus(x) }!!
-                        } else {
-                            friend!!.saved.let { x -> totalSaved?.plus(x) }!!
-                        }
-                    }
-                    objectiveBudgetTv.text = " ${StringHelper.getShrunkForm(totalSaved!!)}€/${StringHelper.getShrunkForm(objective.amount!!)}€"
-                    val objectiveProgressBar = findViewById<FrameLayout>(R.id.objectiveProgressBar)
-                    val difference = kotlin.math.abs(objective.amount!! - totalSaved!!)
-                    val invRelativeDifference = difference / objective.amount
-                    val desiredWidthInDp = 325
-                    val minProgressBarWidthInPx = 1
-                    val relativeDifference = 1 - invRelativeDifference
-                    val newWidthInPx =
-                        (minProgressBarWidthInPx + (relativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
-                    val layoutParams = objectiveProgressBar.layoutParams
-                    layoutParams.width = newWidthInPx
-                    objectiveProgressBar.layoutParams = layoutParams
-                    loadParticipantInformation(currentUser, friends, totalSaved, objective)
-                }
-            }
     }
 }

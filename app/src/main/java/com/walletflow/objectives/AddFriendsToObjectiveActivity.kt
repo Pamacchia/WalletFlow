@@ -90,6 +90,8 @@ class AddFriendsToObjectiveActivity : BaseActivity() {
         val cardContainer = findViewById<LinearLayout>(R.id.cardContainer)
 
         for (friend in friendsList) {
+
+            // Initialize friend card
             val cardView = (LayoutInflater.from(this)
                 .inflate(R.layout.select_friend_layout, null) as MaterialCardView)
             val friendNameTextView = cardView.findViewById<TextView>(R.id.friendNameTextView)

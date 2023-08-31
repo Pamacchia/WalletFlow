@@ -21,20 +21,18 @@ class AddCategoryActivity : CategoryActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        transactionType = intent.getStringExtra("typeName")!!
         val db = SQLiteDBHelper(this, null)
 
+        transactionType = intent.getStringExtra("typeName")!!
         val iconList: MutableList<Icon> = getIconList(DEFAULT, transactionType)
 
         loadIcons(iconList)
 
         addCategoryBtn = findViewById(R.id.btnAddCategory)
         iconNameEt = findViewById(R.id.etCategoryName)
-
         iconNameEt.addTextChangedListener(textWatcher)
 
         addCategoryBtn.setOnClickListener {
-
             if (selected == null) {
                 Toast.makeText(this, "Select one icon", Toast.LENGTH_SHORT).show()
             } else {

@@ -15,6 +15,7 @@ import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.BaseActivity
 import com.walletflow.R
+import com.walletflow.data.Transaction
 import com.walletflow.utils.DecimalDigitsInputFilter
 import com.walletflow.utils.TransactionManager
 import java.text.SimpleDateFormat
@@ -23,6 +24,7 @@ import java.util.Calendar
 class AddTransactionActivity : BaseActivity() {
 
     private val chooseCategoryRequestCode = 1
+
     private lateinit var introDateTextView: TextView
     lateinit var amountEditText: EditText
     private lateinit var noteEditText: EditText
@@ -41,7 +43,6 @@ class AddTransactionActivity : BaseActivity() {
 
         amountEditText.addTextChangedListener(textWatcher)
         chooseCategoryBtn.isEnabled = amountEditText.text.isNotEmpty()
-
         introDateTextView.append(SimpleDateFormat("EEEE, d MMMM").format(Calendar.getInstance().time))
 
         chooseCategoryBtn.setOnClickListener {
@@ -63,9 +64,7 @@ class AddTransactionActivity : BaseActivity() {
                 intent.putExtra("typeName", this.intent.getStringExtra("type_name"))
                 startActivityForResult(intent, chooseCategoryRequestCode)
             }
-
         }
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
@@ -79,7 +78,6 @@ class AddTransactionActivity : BaseActivity() {
 
         if (requestCode == chooseCategoryRequestCode && resultCode == Activity.RESULT_OK) {
             intentData?.let { data ->
-
                 addTransaction(
                     db,
                     amount.toFloat() * type,
@@ -89,7 +87,6 @@ class AddTransactionActivity : BaseActivity() {
                     typeName,
                     data.getStringExtra("category")
                 )
-
                 TransactionManager.updateBalance(
                     db, amount.toFloat() * type, userID
                 )
@@ -107,25 +104,16 @@ class AddTransactionActivity : BaseActivity() {
         type_name: String?,
         category: String?
     ) {
-        val transaction: MutableMap<String, Any?> = HashMap()
-        transaction["user"] = userID
-        transaction["type"] = type_name
-        transaction["amount"] = amount
-        transaction["note"] = note
-        transaction["category"] = category
-        transaction["date"] =
+
+        val transaction = Transaction(
+            amount.toDouble(),
+            category,
+            note,
+            type_name,
+            userID,
             SimpleDateFormat("yyyy-MM-dd HH:mm").format(Calendar.getInstance().time)
-
-        db.collection("transactions").add(transaction).addOnSuccessListener { documentReference ->
-                Log.d(
-                    this.localClassName, "DocumentSnapshot added with ID: " + documentReference.id
-                )
-            }.addOnFailureListener { e ->
-                Log.w(
-                    this.localClassName, "Error adding document", e
-                )
-            }
-
+        )
+        TransactionManager.addTransactionRecordToDB(db, transaction, userID)
 
         if (frequent) {
 
@@ -136,18 +124,25 @@ class AddTransactionActivity : BaseActivity() {
             frequentTransaction["note"] = note
             frequentTransaction["category"] = category
 
-            db.collection("frequentTransactions").add(frequentTransaction)
-                .addOnSuccessListener { documentReference ->
-                    Log.d(
-                        this.localClassName,
-                        "DocumentSnapshot added with ID: " + documentReference.id
-                    )
-                }.addOnFailureListener { e ->
-                    Log.w(
-                        this.localClassName, "Error adding document", e
-                    )
-                }
+            addFrequentTransaction(db, frequentTransaction)
         }
+    }
+
+    private fun addFrequentTransaction(
+        db: FirebaseFirestore,
+        frequentTransaction: MutableMap<String, Any?>
+    ) {
+        db.collection("frequentTransactions").add(frequentTransaction)
+            .addOnSuccessListener { documentReference ->
+                Log.d(
+                    this.localClassName,
+                    "DocumentSnapshot added with ID: " + documentReference.id
+                )
+            }.addOnFailureListener { e ->
+                Log.w(
+                    this.localClassName, "Error adding document", e
+                )
+            }
     }
 
     override fun getLayoutResourceId(): Int {

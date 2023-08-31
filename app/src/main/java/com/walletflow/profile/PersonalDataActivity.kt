@@ -21,9 +21,7 @@ class PersonalDataActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         initViews()
-
         submitBtn.setOnClickListener {
             changePassword()
         }
@@ -39,11 +37,11 @@ class PersonalDataActivity : BaseActivity() {
     private fun changePassword() {
 
         val user: FirebaseUser? = FirebaseAuth.getInstance().currentUser
-
         val currentPassword = oldPasswordEt.text.toString()
         val newPassword = newPasswordEt.text.toString()
 
         when {
+
             fieldsAreEmpty(
                 oldPasswordEt.text.toString(),
                 newPasswordEt.text.toString(),
@@ -51,7 +49,9 @@ class PersonalDataActivity : BaseActivity() {
             ) -> showToast("Please specify all the fields")
 
             !isPasswordValid(newPasswordEt.text.toString()) -> showToast("Please create a new valid password")
+
             newPasswordEt.text.toString() != confirmPasswordEt.text.toString() -> showToast("The passwords don't match!")
+
             else -> {
                 user?.reauthenticate(
                     EmailAuthProvider.getCredential(

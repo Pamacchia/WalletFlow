@@ -18,7 +18,6 @@ abstract class CategoryActivity : BaseActivity() {
     fun getIconList(activityType: Int, type: String): MutableList<Icon> {
         val db = SQLiteDBHelper(this, null)
         val cursor = db.getCategories(activityType, type)
-
         val iconList: MutableList<Icon> = mutableListOf()
 
         if (cursor!!.moveToFirst()) {
@@ -30,11 +29,8 @@ abstract class CategoryActivity : BaseActivity() {
                 val iconPath = cursor.getString(pathIndex)
                 val iconName = cursor.getString(nameIndex)
                 val isAdded = cursor.getInt(isAddedIndex)
-
                 val icon = Icon(iconPath, iconName, isAdded == 1)
-
                 iconList.add(icon)
-
             } while (cursor.moveToNext())
         }
         return iconList
@@ -44,10 +40,11 @@ abstract class CategoryActivity : BaseActivity() {
 
         val rootView = findViewById<LinearLayout>(R.id.iconsLinearLayout)
         rootView.removeAllViews()
+
         var count = 0
 
+        // Create icons layout
         lateinit var linearLayout: LinearLayout
-
         linearLayout = LinearLayout(this)
         linearLayout.id = View.generateViewId()
         rootView.addView(linearLayout)
@@ -56,6 +53,7 @@ abstract class CategoryActivity : BaseActivity() {
 
         val factor: Float = this.resources.displayMetrics.density
 
+        // For each icon initialize its elements
         for (icon in iconList) {
 
             val imageView = ImageView(this)
@@ -70,6 +68,7 @@ abstract class CategoryActivity : BaseActivity() {
                 e.printStackTrace()
             }
 
+            // Initialize icon params
             imageView.layoutParams =
                 LinearLayout.LayoutParams((factor * 90).toInt(), (factor * 90).toInt(), 1F)
             imageView.tag = icon.iconName
@@ -78,6 +77,7 @@ abstract class CategoryActivity : BaseActivity() {
             }
             count++
 
+            // Every 3 icons, create a new row in the layout
             if (count % 3 == 0) {
                 linearLayout = LinearLayout(this)
                 linearLayout.id = View.generateViewId()

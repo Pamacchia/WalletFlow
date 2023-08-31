@@ -36,21 +36,6 @@ class AddObjectiveActivity : BaseActivity() {
     private lateinit var selectedDate: Date
     private lateinit var friendQuotesLayout: LinearLayout
 
-    private val textWatcher2 = object : TextWatcher {
-        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-        }
-
-        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            btnSubmitObjective.isEnabled = etName.text.isNotEmpty()
-                    && etAmount.text.isNotEmpty()
-                    && etSelectDate.text.isNotEmpty() && addObjective()
-        }
-
-        override fun afterTextChanged(p0: Editable?) {
-        }
-
-    }
-
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
             if (intent.getStringArrayListExtra("group") != null) {
@@ -66,6 +51,21 @@ class AddObjectiveActivity : BaseActivity() {
                     && etAmount.text.isNotEmpty()
                     && etSelectDate.text.isNotEmpty()
         }
+    }
+
+    private val textWatcher2 = object : TextWatcher {
+        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        }
+
+        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            btnSubmitObjective.isEnabled = etName.text.isNotEmpty()
+                    && etAmount.text.isNotEmpty()
+                    && etSelectDate.text.isNotEmpty() && calculateSumOfQuotes()
+        }
+
+        override fun afterTextChanged(p0: Editable?) {
+        }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,25 +95,7 @@ class AddObjectiveActivity : BaseActivity() {
 
         if (group != null) {
             for (friend in group) {
-                val friendQuoteView =
-                    layoutInflater.inflate(R.layout.friend_quote_layout, null) as LinearLayout
-                val friendUsernameTextView =
-                    friendQuoteView.findViewById<TextView>(R.id.friendUsernameTextView)
-                val friendQuoteEditText =
-                    friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
-                val factor: Float = this.resources.displayMetrics.density
-                friendUsernameTextView.text = friend
-                friendQuoteEditText.setText(0.0.toString())
-                friendQuoteEditText.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(7, 2))
-                friendQuoteEditText.addTextChangedListener(textWatcher2)
-                friendQuotesLayout.addView(friendQuoteView)
-                (friendQuoteView.layoutParams as LinearLayout.LayoutParams).setMargins(
-                    0,
-                    (factor * 15).toInt(),
-                    0,
-                    0
-                )
-
+                displayFriendQuoteFields(friend)
             }
         }
 
@@ -126,6 +108,27 @@ class AddObjectiveActivity : BaseActivity() {
             intent.putExtra("typeName", "expense")
             startActivityForResult(intent, chooseCategoryRequestCode)
         }
+    }
+
+    private fun displayFriendQuoteFields(friend: String?) {
+        val friendQuoteView =
+            layoutInflater.inflate(R.layout.friend_quote_layout, null) as LinearLayout
+        val friendUsernameTextView =
+            friendQuoteView.findViewById<TextView>(R.id.friendUsernameTextView)
+        val friendQuoteEditText =
+            friendQuoteView.findViewById<EditText>(R.id.friendQuoteEditText)
+        val factor: Float = this.resources.displayMetrics.density
+        friendUsernameTextView.text = friend
+        friendQuoteEditText.setText(0.0.toString())
+        friendQuoteEditText.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(7, 2))
+        friendQuoteEditText.addTextChangedListener(textWatcher2)
+        friendQuotesLayout.addView(friendQuoteView)
+        (friendQuoteView.layoutParams as LinearLayout.LayoutParams).setMargins(
+            0,
+            (factor * 15).toInt(),
+            0,
+            0
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intentData: Intent?) {
@@ -147,7 +150,7 @@ class AddObjectiveActivity : BaseActivity() {
         }
     }
 
-    private fun addObjective(): Boolean {
+    private fun calculateSumOfQuotes(): Boolean {
         val group = intent.getStringArrayListExtra("group")
         val friendQuotesLayout = findViewById<LinearLayout>(R.id.friendQuotesLayout)
         var sumOfQuotes = 0.0
@@ -160,9 +163,7 @@ class AddObjectiveActivity : BaseActivity() {
                 sumOfQuotes += quoteValue
             }
         }
-
         return sumOfQuotes == etAmount.text.toString().toDouble() || group == null
-
     }
 
     private fun showDatePicker() {

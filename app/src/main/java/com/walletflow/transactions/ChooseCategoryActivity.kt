@@ -19,10 +19,12 @@ class ChooseCategoryActivity : CategoryActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        transactionType = intent.getStringExtra("typeName")!!
-        val iconList: MutableList<Icon> = getIconList(DEFAULT, transactionType)
         submitBtn = findViewById(R.id.btnSubmitCategory)
         btnAdd = findViewById(R.id.btnAddNewCategory)
+        transactionType = intent.getStringExtra("typeName")!!
+
+        val iconList: MutableList<Icon> = getIconList(DEFAULT, transactionType)
+
         loadIcons(iconList)
 
         submitBtn.setOnClickListener {
