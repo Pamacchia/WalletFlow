@@ -44,9 +44,10 @@ class OnboardingActivity : AppCompatActivity() {
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         val db = FirebaseFirestore.getInstance()
-                        addUser(db, username!!, email, password, onboardingBalance)
+                        addUser(db, username!!, email, onboardingBalance)
                         saveUserID(username)
-                        goToHomeActivity()
+                        finish()
+                        startActivity(Intent(this, HomeActivity::class.java))
                     } else {
                         Toast.makeText(this, "Some error occurred", Toast.LENGTH_SHORT).show()
                     }
@@ -58,7 +59,6 @@ class OnboardingActivity : AppCompatActivity() {
         db: FirebaseFirestore,
         username: String,
         email: String,
-        password: String,
         balance: Float
     ) {
         val user = mapOf(
@@ -74,10 +74,5 @@ class OnboardingActivity : AppCompatActivity() {
         sharedPreferences.edit {
             putString("userID", username)
         }
-    }
-
-    private fun goToHomeActivity() {
-        finish()
-        startActivity(Intent(this, HomeActivity::class.java))
     }
 }

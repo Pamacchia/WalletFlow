@@ -1,10 +1,10 @@
-package com.walletflow.dashboard
+package com.walletflow.fragments
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
-class DashboardAdapter(
+class FragmentAdapter(
     fragmentManager: FragmentManager,
     private val fragmentList: MutableList<Fragment>
 ) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {

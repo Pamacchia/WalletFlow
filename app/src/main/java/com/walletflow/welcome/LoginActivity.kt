@@ -61,23 +61,15 @@ class LoginActivity : AppCompatActivity() {
     private fun validateCredentials(username: String?, email: String, password: String) {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    saveUserID(username!!)
-                    goToHomeActivity()
+                    getSharedPreferencesEditor("MyPrefs") {
+                        putString("userID", username!!)
+                    }
+                    finish()
+                    startActivity(Intent(this, HomeActivity::class.java))
                 } else {
                     Toast.makeText(this, "Wrong credentials", Toast.LENGTH_SHORT).show()
                 }
             }
-    }
-
-    private fun saveUserID(username: String) {
-        getSharedPreferencesEditor("MyPrefs") {
-            putString("userID", username)
-        }
-    }
-
-    private fun goToHomeActivity() {
-        finish()
-        startActivity(Intent(this, HomeActivity::class.java))
     }
 
     private inline fun Context.getSharedPreferencesEditor(

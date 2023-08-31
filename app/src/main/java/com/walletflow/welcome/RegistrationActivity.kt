@@ -61,8 +61,6 @@ class RegistrationActivity : AppCompatActivity() {
         }
     }
 
-    private fun fieldsAreEmpty(vararg fields: String) = fields.any { it.isEmpty() }
-
     private fun handleRegistration(username: String, email: String, password: String) {
         val db = FirebaseFirestore.getInstance()
         db.collection("users")
@@ -73,10 +71,8 @@ class RegistrationActivity : AppCompatActivity() {
                     if (!task.result.isEmpty) {
                         showToast("Already existing username!")
                     } else {
-                        addIfEmailIsNew(db, username, email, password)
+                        addIfEmailIsNew(db, email)
                     }
-                } else {
-                    handleDatabaseError(task.exception)
                 }
             }
     }
@@ -87,15 +83,9 @@ class RegistrationActivity : AppCompatActivity() {
         }
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
-
     private fun addIfEmailIsNew(
         db: FirebaseFirestore,
-        username: String,
         email: String,
-        password: String
     ) {
         db.collection("users")
             .whereEqualTo("email", email)
@@ -107,11 +97,9 @@ class RegistrationActivity : AppCompatActivity() {
                     showToast("Already existing email!")
                 }
             }
-            .addOnFailureListener { exception ->
-                handleDatabaseError(exception)
-            }
     }
 
+    private fun fieldsAreEmpty(vararg fields: String) = fields.any { it.isEmpty() }
     private fun isPasswordValid(password: String): Boolean {
         val lengthRange = 5..20
 
@@ -127,8 +115,8 @@ class RegistrationActivity : AppCompatActivity() {
         return email.matches(emailRegex)
     }
 
-    private fun handleDatabaseError(exception: Exception?) {
-        Log.w(this.localClassName, "Error getting documents from the database.", exception)
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     private fun goToOnboardingActivity() {

@@ -1,6 +1,5 @@
 package com.walletflow
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -25,7 +24,6 @@ import com.walletflow.utils.TransactionManager
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-@SuppressLint("SetTextI18n", "SimpleDateFormat")
 class HomeActivity : BaseActivity() {
 
     companion object {
@@ -60,11 +58,11 @@ class HomeActivity : BaseActivity() {
         greetingUser = findViewById(R.id.tvGreetingUser)
         progressBarContainer = findViewById(R.id.budgetProgressBar)
 
-        "Hello, $userID".also { greetingUser.text = it }
+        greetingUser.text = "Hello, $userID"
 
         balanceListener()
         objectiveBudgetListener()
-        loadFrequentTransactions()
+        frequentTransactionsListener()
 
         earningBtn.setOnClickListener {
             val intent = Intent(this, AddTransactionActivity::class.java)
@@ -122,11 +120,18 @@ class HomeActivity : BaseActivity() {
             }
     }
 
+    /**
+     * Get previous month transactions and this month expenses and then calculate this month budget
+     */
     private fun updateTotalBudget() {
+
+        //date initialization
         val calendar = Calendar.getInstance()
         val dateUpper = SimpleDateFormat("yyyy-MM").format(calendar.time)
         calendar.add(Calendar.MONTH, -1)
         val dateLower = SimpleDateFormat("yyyy-MM").format(calendar.time)
+
+        //user's transactions listener
         db.collection("transactions").whereEqualTo("user", userID)
             .whereGreaterThanOrEqualTo("date", dateLower)
             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
@@ -139,29 +144,34 @@ class HomeActivity : BaseActivity() {
                     var thisMonthExpense = 0.0
                     val transactions = it.toObjects(Transaction::class.java)
                     transactions.forEach { transaction ->
-                            if (transaction.type == "earning" && transaction.date.toString() < dateUpper) budget += transaction.amount!!
+                            if (transaction.type == "earning" && transaction.date.toString() < dateUpper)
+                                budget += transaction.amount!!
                             else if (transaction.type == "expense") thisMonthExpense += kotlin.math.abs(
                                 transaction.amount!!
                             )
                         }
 
-                    if (balance < 0){
-                        showProgressBar(0.0, 100.0)
-                        totalBudget.text = "0.0€"
-                    }  else if (budget == 0.0 || balance < budget) {
-                        budget = balance
-                        showProgressBar(budget, budget + thisMonthExpense)
-                        totalBudget.text = " ${StringHelper.getShrunkForm(budget)}€"
-                    } else {
-                        showProgressBar(budget - thisMonthExpense, budget)
-                        totalBudget.text =
-                            " ${StringHelper.getShrunkForm(budget - thisMonthExpense)}€"
-                    }
+                    createProgressBar(budget, thisMonthExpense)
 
                     expensesTv.text = "${StringHelper.getShrunkForm(thisMonthExpense)}€"
-
                 }
             }
+    }
+
+    private fun createProgressBar(currentBudget: Double, thisMonthExpense: Double) {
+        var budget = currentBudget
+        if (balance < 0) {
+            showProgressBar(0.0, 100.0)
+            totalBudget.text = "0.0€"
+        } else if (budget == 0.0 || balance < budget) {
+            budget = balance
+            showProgressBar(budget, budget + thisMonthExpense)
+            totalBudget.text = " ${StringHelper.getShrunkForm(budget)}€"
+        } else {
+            showProgressBar(budget - thisMonthExpense, budget)
+            totalBudget.text =
+                " ${StringHelper.getShrunkForm(budget - thisMonthExpense)}€"
+        }
     }
 
     private fun showProgressBar(budget: Double, thisMonthBudget: Double) {
@@ -178,9 +188,10 @@ class HomeActivity : BaseActivity() {
         progressBarContainer.layoutParams = layoutParams
     }
 
-    private fun loadFrequentTransactions() {
+    private fun frequentTransactionsListener() {
         val rootView = findViewById<LinearLayout>(R.id.layoutFrequentTransactions)
 
+        //listener for frequent transactions
         db.collection("frequentTransactions").whereEqualTo("user", userID)
             .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
                 firebaseFirestoreException?.let {
@@ -192,6 +203,8 @@ class HomeActivity : BaseActivity() {
                     it.documents.forEach { frequentTransactionDocumentSnapshot ->
                         val frequentTransaction =
                             frequentTransactionDocumentSnapshot.toObject(Transaction::class.java)
+
+                        //get the frequent transaction card elements
                         val inflater = LayoutInflater.from(this)
                         val cardView = inflater.inflate(
                             R.layout.frequent_transaction_cardview, rootView, false
@@ -205,12 +218,11 @@ class HomeActivity : BaseActivity() {
                         val ivCategory =
                             cardView.findViewById<ImageView>(R.id.frequentTransactionIv)
 
+                        //initialize card elements
                         tvNote.text = frequentTransaction!!.note
                         tvType.text = frequentTransaction.type
                         tvAmount.text = StringHelper.getShrunkForm(frequentTransaction.amount!!) + "€"
-
                         setIconCard(frequentTransaction.category, ivCategory)
-
                         val addButton = cardView.findViewById<Button>(R.id.btFrequentTransactionAdd)
                         addButton.setOnClickListener {
                             createAlertForFrequentTransaction(
@@ -221,7 +233,6 @@ class HomeActivity : BaseActivity() {
                                 "Confirm adding operation"
                             )
                         }
-
                         val deleteButton =
                             cardView.findViewById<Button>(R.id.btFrequentTransactionDelete)
                         deleteButton.setOnClickListener {
@@ -248,13 +259,10 @@ class HomeActivity : BaseActivity() {
         add: Boolean,
         message: String
     ) {
-
         val alert: AlertDialog.Builder = AlertDialog.Builder(this)
         alert.setTitle(message)
         alert.setMessage("Are you sure?")
-        alert.setPositiveButton(
-            "Yes"
-        ) { _, _ ->
+        alert.setPositiveButton("Yes") { _, _ ->
 
             val transaction = frequentTransactionDocumentSnapshot.toObject(Transaction::class.java)
             transaction!!.date = SimpleDateFormat("yyyy-MM-dd HH:mm").format(
@@ -269,9 +277,7 @@ class HomeActivity : BaseActivity() {
                 )
             }
         }
-        alert.setNegativeButton(
-            "No"
-        ) { dialog, _ ->
+        alert.setNegativeButton("No") { dialog, _ ->
             dialog.cancel()
         }
         alert.show()
