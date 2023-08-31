@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.walletflow.BaseActivity
 import com.walletflow.R
+import com.walletflow.utils.IconHelper
 import com.walletflow.utils.SQLiteDBHelper
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -55,11 +56,11 @@ class PieChartFragment(
         fragmentActivity = (activity as BaseActivity)
         queryRef = fragmentActivity.db.collection("transactions")
             .whereEqualTo("user", fragmentActivity.userID)
+
         initViews(view)
         initListeners()
 
         date = getDateStringWithOffset(-1, Calendar.MONTH)
-
         queryRef.whereGreaterThan("date", date).get().addOnSuccessListener {
             listener(it.query) { documents -> filterRecordsByDate(documents) }
         }
@@ -179,7 +180,7 @@ class PieChartFragment(
             adviceCategoryTv.text =
                 "You spent the most on: ${maxEntry.label}. Amount spent: $maxAmount$. Percentage: $roundedMaxEntryPercentage%"
 
-            setIconCard(maxEntry)
+            IconHelper.setIconCard(requireContext(), maxEntry!!.label, categoryIv)
         } else {
             adviceCategoryTv.text = "You have no expenses, yet"
         }
@@ -195,15 +196,7 @@ class PieChartFragment(
         pieChart.invalidate()
     }
 
-    private fun setIconCard(maxEntry: PieEntry?) {
-        val localDB = SQLiteDBHelper(requireContext(), null)
-        val filePath = localDB.getCategoryImage(maxEntry!!.label)
 
-        val inputStream = context?.assets?.open("icons/${filePath}")
-        val drawable = Drawable.createFromStream(inputStream, null)
-        categoryIv.setImageDrawable(drawable)
-        inputStream!!.close()
-    }
 
     private fun generatePieEntries(processedRecords: MutableList<Map<String, Any>?>): List<PieEntry> {
         val groupedData = groupAndSumRecords(processedRecords)

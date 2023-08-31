@@ -18,6 +18,7 @@ import com.walletflow.data.Participant
 import com.walletflow.data.Transaction
 import com.walletflow.data.User
 import com.walletflow.transactions.AddTransactionActivity
+import com.walletflow.utils.IconHelper
 import com.walletflow.utils.SQLiteDBHelper
 import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
@@ -222,7 +223,7 @@ class HomeActivity : BaseActivity() {
                         tvNote.text = frequentTransaction!!.note
                         tvType.text = frequentTransaction.type
                         tvAmount.text = StringHelper.getShrunkForm(frequentTransaction.amount!!) + "€"
-                        setIconCard(frequentTransaction.category, ivCategory)
+                        IconHelper.setIconCard(this, frequentTransaction!!.category, ivCategory)
                         val addButton = cardView.findViewById<Button>(R.id.btFrequentTransactionAdd)
                         addButton.setOnClickListener {
                             createAlertForFrequentTransaction(
@@ -281,15 +282,6 @@ class HomeActivity : BaseActivity() {
             dialog.cancel()
         }
         alert.show()
-    }
-
-    private fun setIconCard(categoryName: String?, frequentTransactionIv: ImageView) {
-        val localDB = SQLiteDBHelper(this, null)
-        val filePath = localDB.getCategoryImage(categoryName!!)
-        val inputStream = this.assets?.open("icons/${filePath}")
-        val drawable = Drawable.createFromStream(inputStream, null)
-        frequentTransactionIv.setImageDrawable(drawable)
-        inputStream!!.close()
     }
 
 }

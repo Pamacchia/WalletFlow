@@ -110,20 +110,23 @@ class FriendsRequestFragment(
         rootView.removeAllViews()
 
         documents.forEach { document ->
+
+            val sender = document.getString("sender")
+            val receiver = document.getString("receiver")
+            val factor: Float = this.resources.displayMetrics.density
+
+            // Create friend card
             val inflater = LayoutInflater.from(requireContext())
             val cardView = inflater.inflate(
                 R.layout.friend_request_cardview, rootView, false
             ) as CardView
             val tvUsername = cardView.findViewById<TextView>(R.id.tvFriendRequestUsername)
 
-            val sender = document.getString("sender")
-            val receiver = document.getString("receiver")
-
             val contentLayoutView =
                 cardView.findViewById<LinearLayout>(R.id.contentLayoutFriendRequestCard)
 
-            val factor: Float = this.resources.displayMetrics.density
 
+            // Initialize friend card parameters
             val layoutParams = LinearLayout.LayoutParams(
                 40 * factor.toInt(), 40 * factor.toInt()
             )
@@ -136,13 +139,12 @@ class FriendsRequestFragment(
                 val cancelButton = Button(cardView.context)
                 cancelButton.background = resources.getDrawable(R.drawable.baseline_delete_24)
                 contentLayoutView.addView(cancelButton)
-
                 layoutParams.leftMargin = 70 * factor.toInt()
                 cancelButton.layoutParams = layoutParams
-
                 cancelButton.setOnClickListener {
                     document.reference.delete()
                 }
+
                 rootView.addView(cardView)
             } else if (fragmentActivity.userID == receiver && (selectedRequestType == "receiver")) {
                 tvUsername.text = sender
@@ -161,15 +163,13 @@ class FriendsRequestFragment(
                 rejectButton.setOnClickListener {
                     document.reference.delete()
                 }
-
                 acceptButton.setOnClickListener {
-
                     val updatedFields = mapOf(
                         "accepted" to true
                     )
-
                     document.reference.update(updatedFields)
                 }
+
                 rootView.addView(cardView)
             }
         }
@@ -228,15 +228,7 @@ class FriendsRequestFragment(
     private fun addFriend(
         db: FirebaseFirestore, friendRequest: MutableMap<String, Any?>
     ) {
-        db.collection("friends").add(friendRequest).addOnSuccessListener { documentReference ->
-                Log.d(
-                    "FriendRequest", "DocumentSnapshot added with ID: " + documentReference.id
-                )
-            }.addOnFailureListener { e ->
-                Log.w(
-                    "FriendRequest", "Error adding document", e
-                )
-            }
+        db.collection("friends").add(friendRequest)
     }
 
 }

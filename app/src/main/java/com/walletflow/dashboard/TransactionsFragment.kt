@@ -19,6 +19,7 @@ import com.google.firebase.firestore.Query
 import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Transaction
+import com.walletflow.utils.IconHelper
 import com.walletflow.utils.SQLiteDBHelper
 import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
@@ -88,7 +89,7 @@ class TransactionsFragment(
             val tvAmount = cardView.findViewById<TextView>(R.id.tvTransactionCardAmount)
             val ivCategory = cardView.findViewById<ImageView>(R.id.transactionIv)
 
-            setIconCard(transaction!!.category, ivCategory)
+            IconHelper.setIconCard(requireContext(), transaction!!.category, ivCategory)
 
             tvDate.text = transaction.date
             tvCategory.text = transaction.category
@@ -118,12 +119,4 @@ class TransactionsFragment(
         }
     }
 
-    private fun setIconCard(categoryName: String?, frequentTransactionIv: ImageView) {
-        val localDB = SQLiteDBHelper(requireContext(), null)
-        val filePath = localDB.getCategoryImage(categoryName!!)
-        val inputStream = requireContext().assets?.open("icons/${filePath}")
-        val drawable = Drawable.createFromStream(inputStream, null)
-        frequentTransactionIv.setImageDrawable(drawable)
-        inputStream!!.close()
-    }
 }
