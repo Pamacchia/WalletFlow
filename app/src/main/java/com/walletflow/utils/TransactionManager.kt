@@ -1,6 +1,5 @@
 package com.walletflow.utils
 
-import android.util.Log
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.data.Transaction
@@ -21,18 +20,9 @@ object TransactionManager {
         )
 
         db.collection("transactions").add(transactionMap)
-            .addOnSuccessListener { documentReference ->
+            .addOnSuccessListener {
                 updateBalance(
                     db, transaction.amount!!.toFloat(), userID
-                )
-
-                Log.d(
-                    "HomeFrequentTransactionSuccess",
-                    "DocumentSnapshot added with ID: " + documentReference.id
-                )
-            }.addOnFailureListener { e ->
-                Log.w(
-                    "HomeFrequentTransactionError", "Error adding document", e
                 )
             }
     }
@@ -47,21 +37,13 @@ object TransactionManager {
 
         query.get().addOnSuccessListener { documents ->
                 for (document in documents) {
-
                     val updatedBalance = document.getDouble("balance")?.plus(amount.toDouble())
-
                     document.reference.update(
                             mapOf(
                                 "balance" to updatedBalance
                             )
-                        ).addOnSuccessListener {
-                            println("Document updated successfully.")
-                        }.addOnFailureListener { e ->
-                            println("Error updating document: $e")
-                        }
+                        )
                 }
-            }.addOnFailureListener { e ->
-                println("Error getting documents: $e")
             }
     }
 

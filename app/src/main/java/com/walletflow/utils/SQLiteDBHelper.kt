@@ -39,6 +39,8 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             "sports.png",
             "gifts.png"
         )
+
+        // Initialize default categories
         val arrayEarningDefault = arrayOf("salary.png", "item-sold.png")
         val arrayDefault = arrayExpenseDefault + arrayEarningDefault
         val maskDefault = IntArray(arrayDefault.size) { 1 }
@@ -46,6 +48,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val maskCategoryEarningDefault = Array(arrayEarningDefault.size) { "earning" }
         val maskTypeDefault = maskCategoryExpenseDefault + maskCategoryEarningDefault
 
+        // Initialize additional categories
         val arrayExpenseNotDefault =
             arrayOf("car.png", "gambling.png", "games.png", "pets.png", "home.png")
         val arrayEarningNotDefault = arrayOf("coin.png", "pay.png", "investments.png")
@@ -55,6 +58,7 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val maskCategoryEarningNotDefault = Array(arrayEarningNotDefault.size) { "earning" }
         val maskTypeNotDefault = maskCategoryExpenseNotDefault + maskCategoryEarningNotDefault
 
+        // Concatenate all categories
         val concatenatedArray = arrayDefault + arrayNotDefault
         val concatenatedMaskDefault = maskDefault + maskNotDefault
         val concatenatedMaskType = maskTypeDefault + maskTypeNotDefault
