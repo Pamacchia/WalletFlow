@@ -51,7 +51,7 @@ abstract class FragmentsActivity : BaseActivity() {
         val dots: MutableList<ImageView> = mutableListOf()
         val factor: Float = this.resources.displayMetrics.density
         val layoutParams = LinearLayout.LayoutParams(15 * factor.toInt(), 15 * factor.toInt())
-        layoutParams.rightMargin = 10 * factor.toInt()
+        layoutParams.rightMargin = 5 * factor.toInt()
 
         for (i in 0 until adapter.count) {
             val dot = ImageView(this)
