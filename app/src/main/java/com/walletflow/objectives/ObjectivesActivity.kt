@@ -80,7 +80,6 @@ class ObjectivesActivity : BaseActivity() {
                         userObjectiveQuery.addOnCompleteListener { objectiveQuery ->
 
                             otherParticipantsQuery.addOnSuccessListener { resultQueryList ->
-
                                 val objective = Objective(
                                     objectiveQuery.result.getString("name")!!,
                                     objectiveQuery.result.getDouble("amount"),
@@ -90,6 +89,7 @@ class ObjectivesActivity : BaseActivity() {
                                     objectiveQuery.result.getString("category")
                                 )
 
+                                Log.d(this.localClassName,"Start:" + objective.date)
                                 val participantList = ArrayList<Participant>()
 
                                 for (otherParticipant in resultQueryList) {
@@ -110,6 +110,7 @@ class ObjectivesActivity : BaseActivity() {
                                 tvSavings.text =
                                     "You saved ${StringHelper.getShrunkForm(currentUser!!.saved)}€ out of ${StringHelper.getShrunkForm(currentUser.quote)}€"
 
+                                Log.d(this.localClassName,"End:" + objective.date)
                                 rootView.addView(cardView)
 
                                 cardView.setOnClickListener {
@@ -119,7 +120,6 @@ class ObjectivesActivity : BaseActivity() {
                                     intent.putExtra("currentUser", currentUser)
                                     startActivity(intent)
                                 }
-
                             }.addOnFailureListener {
                                 Log.w(this.localClassName, "QueryError")
                             }
