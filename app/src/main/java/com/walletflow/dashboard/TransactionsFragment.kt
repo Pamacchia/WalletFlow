@@ -1,5 +1,6 @@
 package com.walletflow.dashboard
 
+import android.app.AlertDialog
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -15,6 +16,7 @@ import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.BaseActivity
 import com.walletflow.R
@@ -23,6 +25,8 @@ import com.walletflow.utils.IconHelper
 import com.walletflow.utils.SQLiteDBHelper
 import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 class TransactionsFragment(
     private val listener: (Query, (List<DocumentSnapshot>) -> (Unit)) -> Unit
@@ -97,13 +101,28 @@ class TransactionsFragment(
 
             val deleteButton = cardView.findViewById<Button>(R.id.btTransactionDelete)
             deleteButton.setOnClickListener {
-                deleteTransaction(transactionDocumentSnapshot, transaction.amount)
+                createAlertForFrequentTransaction(transactionDocumentSnapshot, "Confirm deleting operation")
             }
 
             rootView.addView(cardView)
         }
     }
 
+    private fun createAlertForFrequentTransaction(
+        transactionDocumentSnapshot: DocumentSnapshot,
+        message: String
+    ) {
+        val alert: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        alert.setTitle(message)
+        alert.setMessage("Are you sure?")
+        alert.setPositiveButton("Yes") { _, _ ->
+            deleteTransaction(transactionDocumentSnapshot, transactionDocumentSnapshot.getDouble("amount"))
+        }
+        alert.setNegativeButton("No") { dialog, _ ->
+            dialog.cancel()
+        }
+        alert.show()
+    }
     private fun deleteTransaction(document: DocumentSnapshot, amount: Double?) {
         document.reference.delete().addOnSuccessListener {
             amount?.let {
@@ -118,5 +137,4 @@ class TransactionsFragment(
             println("Error deleting document: $e")
         }
     }
-
 }
