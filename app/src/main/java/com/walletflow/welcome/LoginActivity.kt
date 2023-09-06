@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -22,6 +24,18 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var passwordField: EditText
     private lateinit var mAuth: FirebaseAuth
 
+    private val textWatcher = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            loginBtn.isEnabled = passwordField.text.isNotEmpty() && emailField.text.isNotEmpty()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_welcome_login)
@@ -36,6 +50,9 @@ class LoginActivity : AppCompatActivity() {
         loginBtn = findViewById(R.id.btn_login)
         emailField = findViewById(R.id.login_email)
         passwordField = findViewById(R.id.login_password)
+        emailField.addTextChangedListener(textWatcher)
+        passwordField.addTextChangedListener(textWatcher)
+        loginBtn.isEnabled = passwordField.text.isNotEmpty() && emailField.text.isNotEmpty()
     }
 
     private fun setListeners() {
