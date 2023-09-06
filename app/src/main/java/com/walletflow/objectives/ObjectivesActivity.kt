@@ -111,7 +111,6 @@ class ObjectivesActivity : BaseActivity() {
                                     "You saved ${StringHelper.getShrunkForm(currentUser!!.saved)}€ out of ${StringHelper.getShrunkForm(currentUser.quote)}€"
 
                                 Log.d(this.localClassName,"End:" + objective.date)
-                                rootView.addView(cardView)
 
                                 cardView.setOnClickListener {
                                     val intent = Intent(this, ObjectiveDetailActivity::class.java)
@@ -125,7 +124,7 @@ class ObjectivesActivity : BaseActivity() {
                             }
 
                         }
-
+                        rootView.addView(cardView)
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package com.walletflow.objectives
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.text.InputFilter
 import android.util.Log
@@ -69,7 +70,7 @@ class ObjectiveDetailActivity : BaseActivity() {
         }
 
         deleteObjBtn.setOnClickListener {
-            deleteObjective(currentUser)
+            createAlertForObjective(currentUser, "Confirm deleting operation")
         }
     }
 
@@ -114,6 +115,21 @@ class ObjectiveDetailActivity : BaseActivity() {
         objectiveProgressBar.layoutParams = layoutParams
     }
 
+    private fun createAlertForObjective(
+        currentUser: Participant?,
+        message: String
+    ) {
+        val alert: AlertDialog.Builder = AlertDialog.Builder(this)
+        alert.setTitle(message)
+        alert.setMessage("Are you sure?")
+        alert.setPositiveButton("Yes") { _, _ ->
+            deleteObjective(currentUser)
+        }
+        alert.setNegativeButton("No") { dialog, _ ->
+            dialog.cancel()
+        }
+        alert.show()
+    }
     private fun deleteObjective(currentUser: Participant?) {
         db.collection("objectives").document(currentUser!!.objectiveId).delete()
             .addOnSuccessListener {

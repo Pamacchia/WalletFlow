@@ -1,5 +1,6 @@
 package com.walletflow.friends
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -65,13 +66,29 @@ class FriendsListFragment(
 
                 val deleteButton = cardView.findViewById<Button>(R.id.btFriendElimination)
                 deleteButton.setOnClickListener {
-                    document.reference.delete()
+                    createAlertForFriends(document, "Confirm deleting operation")
                 }
 
                 rootView.addView(cardView)
                 Log.w(context.toString(), document.data.toString())
             }
         }
+    }
+
+    private fun createAlertForFriends(
+        documentSnapshot: DocumentSnapshot,
+        message: String
+    ) {
+        val alert: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        alert.setTitle(message)
+        alert.setMessage("Are you sure?")
+        alert.setPositiveButton("Yes") { _, _ ->
+            documentSnapshot.reference.delete()
+        }
+        alert.setNegativeButton("No") { dialog, _ ->
+            dialog.cancel()
+        }
+        alert.show()
     }
 
 }

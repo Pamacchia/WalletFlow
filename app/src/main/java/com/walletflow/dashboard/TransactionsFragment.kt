@@ -2,7 +2,6 @@ package com.walletflow.dashboard
 
 import android.app.AlertDialog
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,17 +15,13 @@ import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.walletflow.BaseActivity
 import com.walletflow.R
 import com.walletflow.data.Transaction
 import com.walletflow.utils.IconHelper
-import com.walletflow.utils.SQLiteDBHelper
 import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
-import java.text.SimpleDateFormat
-import java.util.Calendar
 
 class TransactionsFragment(
     private val listener: (Query, (List<DocumentSnapshot>) -> (Unit)) -> Unit
@@ -101,14 +96,14 @@ class TransactionsFragment(
 
             val deleteButton = cardView.findViewById<Button>(R.id.btTransactionDelete)
             deleteButton.setOnClickListener {
-                createAlertForFrequentTransaction(transactionDocumentSnapshot, "Confirm deleting operation")
+                createAlertForTransaction(transactionDocumentSnapshot, "Confirm deleting operation")
             }
 
             rootView.addView(cardView)
         }
     }
 
-    private fun createAlertForFrequentTransaction(
+    private fun createAlertForTransaction(
         transactionDocumentSnapshot: DocumentSnapshot,
         message: String
     ) {
