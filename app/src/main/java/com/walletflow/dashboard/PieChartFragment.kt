@@ -132,7 +132,7 @@ class PieChartFragment(
         val percentage = calculateSavingsPercentage(totalEarning, totalExpense)
         val formattedPercentage = String.format("%.2f%%", percentage)
         val summaryText =
-            "You earned $totalEarning and you spent ${abs(totalExpense)}$, " + "meaning you saved $formattedPercentage of your earnings since $date."
+            "You earned $totalEarning€ and you spent ${abs(totalExpense)}€, " + "meaning you saved $formattedPercentage of your earnings since $date."
 
         if (percentage > 10) {
             dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.nordGreen)
