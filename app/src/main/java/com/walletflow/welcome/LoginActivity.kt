@@ -41,8 +41,14 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_welcome_login)
         mAuth = FirebaseAuth.getInstance()
 
-        initViews()
-        setListeners()
+        if(mAuth.currentUser==null){
+            initViews()
+            setListeners()
+        }
+        else{
+            finish()
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
     }
 
     private fun initViews() {
