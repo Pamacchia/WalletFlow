@@ -8,7 +8,7 @@ object StringHelper {
         var num = number
         var index = 0
 
-        while (num >= 1000 && index < suffixes.size - 1) {
+        while (num >= 10000 && index < suffixes.size - 1) {
             num /= 1000
             index++
         }

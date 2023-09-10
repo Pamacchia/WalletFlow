@@ -35,7 +35,7 @@ class AddTransactionActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         amountEditText = findViewById(R.id.etAmount)
-        amountEditText.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(7, 2))
+        amountEditText.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(2))
         noteEditText = findViewById(R.id.etNote)
         frequentCheck = findViewById(R.id.cbFrequent)
         chooseCategoryBtn = findViewById(R.id.btnChooseCategory)
@@ -86,9 +86,6 @@ class AddTransactionActivity : BaseActivity() {
                     userID,
                     typeName,
                     data.getStringExtra("category")
-                )
-                TransactionManager.updateBalance(
-                    db, amount.toFloat() * type, userID
                 )
                 finish()
             }

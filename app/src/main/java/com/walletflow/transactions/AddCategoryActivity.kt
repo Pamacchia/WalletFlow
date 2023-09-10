@@ -25,7 +25,7 @@ class AddCategoryActivity : CategoryActivity() {
 
         transactionType = intent.getStringExtra("typeName")!!
         val iconList: MutableList<Icon> = getIconList(DEFAULT, transactionType)
-
+        val nameList: MutableList<String> = db.getAllCategoryNames()
         loadIcons(iconList)
 
         addCategoryBtn = findViewById(R.id.btnAddCategory)
@@ -35,11 +35,24 @@ class AddCategoryActivity : CategoryActivity() {
         addCategoryBtn.setOnClickListener {
             if (selected == null) {
                 Toast.makeText(this, "Select one icon", Toast.LENGTH_SHORT).show()
+            } else if(isNotNameUnique(nameList)){
+                Toast.makeText(this, "Icon name must be unique", Toast.LENGTH_SHORT).show()
             } else {
                 db.addCategory(selected, iconNameEt.text.toString())
                 finish()
             }
         }
+    }
+
+    private fun isNotNameUnique(nameList: MutableList<String>): Boolean {
+        var uniqueName = false
+        nameList.forEach { name ->
+            uniqueName = name == iconNameEt.text.toString().trim()
+            if (uniqueName){
+                return uniqueName
+            }
+        }
+        return uniqueName
     }
 
     override fun getLayoutResourceId(): Int {

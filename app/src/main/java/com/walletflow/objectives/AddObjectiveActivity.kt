@@ -77,7 +77,7 @@ class AddObjectiveActivity : BaseActivity() {
         etSelectDate = findViewById(R.id.etSelectDate)
 
         etAmount.setText(0.0.toString())
-        etAmount.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(7, 2))
+        etAmount.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(2))
         btnSubmitObjective.isEnabled = false
         etName.addTextChangedListener(textWatcher2)
         etAmount.addTextChangedListener(textWatcher)
@@ -120,7 +120,7 @@ class AddObjectiveActivity : BaseActivity() {
         val factor: Float = this.resources.displayMetrics.density
         friendUsernameTextView.text = friend
         friendQuoteEditText.setText(0.0.toString())
-        friendQuoteEditText.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(7, 2))
+        friendQuoteEditText.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(2))
         friendQuoteEditText.addTextChangedListener(textWatcher2)
         friendQuotesLayout.addView(friendQuoteView)
         (friendQuoteView.layoutParams as LinearLayout.LayoutParams).setMargins(

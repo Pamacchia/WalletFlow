@@ -47,7 +47,7 @@ class ObjectiveDetailActivity : BaseActivity() {
         deleteObjBtn = findViewById(R.id.btnDeleteObjective)
         addSavingsBtn = findViewById(R.id.btnAddSavings)
         addSavingsEt = findViewById(R.id.etAddSavings)
-        addSavingsEt.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(7, 2))
+        addSavingsEt.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(2))
         objectiveBudgetTv = findViewById(R.id.tvObjectiveBudget)
 
         titleTv.text = objective.name

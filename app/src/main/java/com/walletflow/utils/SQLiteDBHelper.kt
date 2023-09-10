@@ -50,8 +50,8 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         // Initialize additional categories
         val arrayExpenseNotDefault =
-            arrayOf("car.png", "gambling.png", "games.png", "pets.png", "home.png")
-        val arrayEarningNotDefault = arrayOf("coin.png", "pay.png", "investments.png")
+            arrayOf("expense1.png", "expense2.png", "expense3.png", "expense4.png", "expense5.png")
+        val arrayEarningNotDefault = arrayOf("earning1.png", "earning2.png", "earning3.png")
         val arrayNotDefault = arrayExpenseNotDefault + arrayEarningNotDefault
         val maskNotDefault = IntArray(arrayNotDefault.size) { 0 }
         val maskCategoryExpenseNotDefault = Array(arrayExpenseNotDefault.size) { "expense" }
@@ -100,6 +100,25 @@ class SQLiteDBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
             "SELECT * FROM $CATEGORY_TABLE WHERE $ISADDED = $default AND `$TYPE` = '$type'",
             null
         )
+    }
+
+    fun getAllCategoryNames(): MutableList<String> {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT * FROM $CATEGORY_TABLE",
+            null
+        )
+        val nameList: MutableList<String> = mutableListOf()
+
+        if (cursor!!.moveToFirst()) {
+            val nameIndex = cursor.getColumnIndexOrThrow("icon_name")
+            do {
+
+                val iconName = cursor.getString(nameIndex)
+                nameList.add(iconName)
+            } while (cursor.moveToNext())
+        }
+        return nameList
     }
 
     fun getCategoryImage(type: String): String? {

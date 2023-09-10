@@ -3,6 +3,7 @@ package com.walletflow.welcome
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputFilter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -12,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.HomeActivity
 import com.walletflow.R
+import com.walletflow.utils.DecimalDigitsInputFilter
 
 class OnboardingActivity : AppCompatActivity() {
 
@@ -31,6 +33,7 @@ class OnboardingActivity : AppCompatActivity() {
     private fun initViews() {
         btnStart = findViewById(R.id.btnStartOnboarding)
         etBalance = findViewById(R.id.etBalance)
+        etBalance.filters = arrayOf<InputFilter>(DecimalDigitsInputFilter(2))
     }
 
     private fun setStartClickListener() {

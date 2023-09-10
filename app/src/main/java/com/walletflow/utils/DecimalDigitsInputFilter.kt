@@ -6,7 +6,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 
-internal class DecimalDigitsInputFilter(digitsBeforeZero: Int, digitsAfterZero: Int) :
+internal class DecimalDigitsInputFilter(digitsAfterZero: Int) :
     InputFilter {
     private val mPattern: Pattern
 
