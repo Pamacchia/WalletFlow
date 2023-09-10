@@ -18,6 +18,7 @@ import com.walletflow.R
 import com.walletflow.data.Transaction
 import com.walletflow.utils.DecimalDigitsInputFilter
 import com.walletflow.utils.TransactionManager
+import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -80,7 +81,7 @@ class AddTransactionActivity : BaseActivity() {
             intentData?.let { data ->
                 addTransaction(
                     db,
-                    amount.toFloat() * type,
+                    amount.toDouble() * type,
                     note,
                     frequent,
                     userID,
@@ -94,7 +95,7 @@ class AddTransactionActivity : BaseActivity() {
 
     private fun addTransaction(
         db: FirebaseFirestore,
-        amount: Float,
+        amount: Double,
         note: String?,
         frequent: Boolean,
         userID: String?,
@@ -103,7 +104,7 @@ class AddTransactionActivity : BaseActivity() {
     ) {
 
         val transaction = Transaction(
-            amount.toDouble(),
+            amount,
             category,
             note,
             type_name,

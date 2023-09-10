@@ -147,9 +147,8 @@ class HomeActivity : BaseActivity() {
                     transactions.forEach { transaction ->
                             if (transaction.type == "earning" && transaction.date.toString() < dateUpper)
                                 budget += transaction.amount!!
-                            else if (transaction.type == "expense") thisMonthExpense += kotlin.math.abs(
-                                transaction.amount!!
-                            )
+                            else if (transaction.type == "expense" && transaction.date.toString() > dateUpper)
+                                thisMonthExpense += kotlin.math.abs(transaction.amount!!)
                         }
 
                     createProgressBar(budget, thisMonthExpense)
@@ -164,7 +163,7 @@ class HomeActivity : BaseActivity() {
         if (balance < 0) {
             showProgressBar(0.0, 100.0)
             totalBudget.text = "0.0€"
-        } else if (budget == 0.0 || balance < budget) {
+        } else if (budget == 0.0 || balance < budget-thisMonthExpense) {
             budget = balance
             showProgressBar(budget, budget + thisMonthExpense)
             totalBudget.text = " ${StringHelper.getShrunkForm(budget)}€"

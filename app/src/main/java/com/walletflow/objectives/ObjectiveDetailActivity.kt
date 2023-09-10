@@ -20,9 +20,11 @@ import com.walletflow.data.Transaction
 import com.walletflow.utils.DecimalDigitsInputFilter
 import com.walletflow.utils.StringHelper
 import com.walletflow.utils.TransactionManager
+import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import kotlin.math.abs
+import kotlin.math.round
 import kotlin.math.roundToInt
 
 
@@ -56,10 +58,10 @@ class ObjectiveDetailActivity : BaseActivity() {
         addSavingsBtn.setOnClickListener {
             var amount = addSavingsEt.text.toString().toDouble()
             if (
-                (amount > 0 && amount <= (currentUser!!.quote - currentUser.saved)) ||
-                (amount < 0 && kotlin.math.abs(amount) < currentUser!!.saved)
+                (amount > 0 && amount.toBigDecimal() <= (currentUser!!.quote.toBigDecimal() - currentUser.saved.toBigDecimal())) ||
+                (amount < 0 && abs(amount).toBigDecimal() < currentUser!!.saved.toBigDecimal())
             ) {
-                updateUserSavings(amount, currentUser)
+                updateUserSavings(amount.toBigDecimal(), currentUser)
             } else {
                 Toast.makeText(this, "Invalid amount.", Toast.LENGTH_LONG).show()
             }
@@ -107,7 +109,7 @@ class ObjectiveDetailActivity : BaseActivity() {
         val invRelativeDifference = difference / amount
         val desiredWidthInDp = 325
         val minProgressBarWidthInPx = 1
-        val relativeDifference = 1 - invRelativeDifference
+        val relativeDifference = 1 - invRelativeDifference.toDouble()
         val newWidthInPx =
             (minProgressBarWidthInPx + (relativeDifference * (desiredWidthInDp - minProgressBarWidthInPx)) * resources.displayMetrics.density).toInt()
         val layoutParams = objectiveProgressBar.layoutParams
@@ -195,10 +197,9 @@ class ObjectiveDetailActivity : BaseActivity() {
             }
     }
 
-    private fun updateUserSavings(userAmount: Double, currentUser: Participant) {
+    private fun updateUserSavings(userAmount: BigDecimal, currentUser: Participant) {
         var amount = userAmount
-        amount = ((amount * 100).roundToInt() / 100.0)
-        currentUser.saved = currentUser.saved.plus(amount)
+        currentUser.saved = (currentUser.saved.toBigDecimal() + amount).toDouble()
 
         db.collection("participants").whereEqualTo("objectiveId", currentUser.objectiveId)
             .whereEqualTo("participant", currentUser.participant).get()

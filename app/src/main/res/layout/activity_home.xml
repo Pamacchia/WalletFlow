@@ -113,7 +113,7 @@
                         android:layout_marginTop="50dp"
                         android:text="0€"
                         android:textAlignment="center"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -143,7 +143,7 @@
                         android:layout_marginTop="50dp"
                         android:text="0€"
                         android:textAlignment="center"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -172,7 +172,7 @@
                         android:layout_marginTop="50dp"
                         android:text="0€"
                         android:textAlignment="center"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>

@@ -66,6 +66,7 @@
         android:contentDescription="submit"
         android:src="@drawable/baseline_done"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        android:backgroundTint="@color/nordGreen"
         app:layout_constraintEnd_toEndOf="parent">
 
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
