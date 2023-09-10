@@ -48,7 +48,7 @@ class TransactionsFragment(
         filterExpenseTv.setTypeface(null, Typeface.BOLD)
         activityFragment = activity as BaseActivity
         queryRef = activityFragment.db.collection("transactions")
-            .whereEqualTo("user", activityFragment.userID)
+            .whereEqualTo("user", activityFragment.userID).orderBy("date", Query.Direction.DESCENDING)
 
         queryRef.whereEqualTo("type", "expense").get().addOnSuccessListener {
                 listener(it.query) { documents -> filterRecordsByType(documents) }
