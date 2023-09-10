@@ -140,6 +140,9 @@ class PieChartFragment(
         } else if (percentage < 0) {
             dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.nordRed)
             emojiSavingTv.text = "\uD83E\uDD2C"
+        } else {
+            dashboardAdviceSavingsCard.strokeColor = resources.getColor(R.color.vividYellow)
+            emojiSavingTv.text = "🫥"
         }
 
         savedRecapTv.text = summaryText
