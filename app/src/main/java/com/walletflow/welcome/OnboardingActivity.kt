@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.HomeActivity
@@ -73,9 +72,9 @@ class OnboardingActivity : AppCompatActivity() {
     }
 
     private fun saveUserID(username: String) {
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        sharedPreferences.edit {
-            putString("userID", username)
+        val filename = "userfile"
+        this.openFileOutput(filename, Context.MODE_PRIVATE).use {
+            it.write(username?.toByteArray())
         }
     }
 }

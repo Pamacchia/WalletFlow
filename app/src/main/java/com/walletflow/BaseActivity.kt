@@ -10,6 +10,8 @@ import com.walletflow.dashboard.DashboardActivity
 import com.walletflow.friends.FriendsActivity
 import com.walletflow.objectives.ObjectivesActivity
 import com.walletflow.profile.ProfileActivity
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -23,7 +25,21 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(getLayoutResourceId())
 
-        userID = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE).getString("userID", "") ?: ""
+        val filename = "userfile"
+        val fileInputStream = openFileInput(filename)
+        val inputStreamReader = InputStreamReader(fileInputStream)
+        val bufferedReader = BufferedReader(inputStreamReader)
+        val stringBuilder = StringBuilder()
+        var line: String?
+        while (bufferedReader.readLine().also { line = it } != null) {
+            stringBuilder.append(line)
+        }
+        userID = stringBuilder.toString()
+
+        bufferedReader.close()
+        inputStreamReader.close()
+        fileInputStream.close()
+
         bottomNavBar = findViewById(R.id.bottom_navigation)
 
         bottomNavBar.setOnItemSelectedListener {

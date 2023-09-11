@@ -2,7 +2,6 @@ package com.walletflow.welcome
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -84,8 +83,9 @@ class LoginActivity : AppCompatActivity() {
     private fun validateCredentials(username: String?, email: String, password: String) {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    getSharedPreferencesEditor("MyPrefs") {
-                        putString("userID", username!!)
+                    val filename = "userfile"
+                    openFileOutput(filename, Context.MODE_PRIVATE).use {
+                        it.write(username?.toByteArray())
                     }
                     finish()
                     startActivity(Intent(this, HomeActivity::class.java))
@@ -93,14 +93,5 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this, "Wrong credentials", Toast.LENGTH_SHORT).show()
                 }
             }
-    }
-
-    private inline fun Context.getSharedPreferencesEditor(
-        name: String, mode: Int = Context.MODE_PRIVATE, action: SharedPreferences.Editor.() -> Unit
-    ) {
-        val sharedPreferences = getSharedPreferences(name, mode)
-        val editor = sharedPreferences.edit()
-        action(editor)
-        editor.apply()
     }
 }
