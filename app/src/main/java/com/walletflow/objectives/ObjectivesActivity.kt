@@ -115,7 +115,6 @@ class ObjectivesActivity : BaseActivity() {
                                 cardView.setOnClickListener {
                                     val intent = Intent(this, ObjectiveDetailActivity::class.java)
                                     intent.putExtra("objective", objective)
-                                    intent.putExtra("participants", participantList)
                                     intent.putExtra("currentUser", currentUser)
                                     startActivity(intent)
                                 }
