@@ -1,20 +1,17 @@
 package com.walletflow.welcome
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.HomeActivity
 import com.walletflow.R
-import com.walletflow.data.User
 
 class LoginActivity : AppCompatActivity() {
 
@@ -42,6 +39,7 @@ class LoginActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
 
         if(mAuth.currentUser==null){
+            Log.d(this.toString(), mAuth.currentUser?.email!!)
             initViews()
             setListeners()
         }
@@ -69,38 +67,18 @@ class LoginActivity : AppCompatActivity() {
         loginBtn.setOnClickListener {
             val email = emailField.text.toString()
             val password = passwordField.text.toString()
-            FirebaseFirestore.getInstance().collection("users").whereEqualTo("email", email).get()
-                .addOnSuccessListener { task ->
-                    if (task.documents.isNotEmpty()) {
-                        val user = task.documents.first().toObject(User::class.java)
-                        validateCredentials(user!!.username, email, password)
-                    } else {
-                        Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show()
-                    }
-                }
+            validateCredentials(email, password)
         }
     }
 
-    private fun validateCredentials(username: String?, email: String, password: String) {
+    private fun validateCredentials(email: String, password: String) {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    getSharedPreferencesEditor("MyPrefs") {
-                        putString("userID", username!!)
-                    }
                     finish()
                     startActivity(Intent(this, HomeActivity::class.java))
                 } else {
                     Toast.makeText(this, "Wrong credentials", Toast.LENGTH_SHORT).show()
                 }
             }
-    }
-
-    private inline fun Context.getSharedPreferencesEditor(
-        name: String, mode: Int = Context.MODE_PRIVATE, action: SharedPreferences.Editor.() -> Unit
-    ) {
-        val sharedPreferences = getSharedPreferences(name, mode)
-        val editor = sharedPreferences.edit()
-        action(editor)
-        editor.apply()
     }
 }

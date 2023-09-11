@@ -1,6 +1,5 @@
 package com.walletflow.welcome
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputFilter
@@ -8,7 +7,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.walletflow.HomeActivity
@@ -48,7 +46,6 @@ class OnboardingActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         val db = FirebaseFirestore.getInstance()
                         addUser(db, username!!, email, onboardingBalance)
-                        saveUserID(username)
                         finish()
                         startActivity(Intent(this, HomeActivity::class.java))
                     } else {
@@ -70,12 +67,5 @@ class OnboardingActivity : AppCompatActivity() {
             "balance" to balance
         )
         db.collection("users").add(user)
-    }
-
-    private fun saveUserID(username: String) {
-        val sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-        sharedPreferences.edit {
-            putString("userID", username)
-        }
     }
 }
