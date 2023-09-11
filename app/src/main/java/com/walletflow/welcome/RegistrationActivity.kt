@@ -24,21 +24,7 @@ class RegistrationActivity : AppCompatActivity() {
         setContentView(R.layout.activity_welcome_registration)
 
         initViews()
-        setSubmitClickListener()
-        setBackToLoginClickListener()
-    }
 
-    private fun initViews() {
-        usernameField = findViewById(R.id.registration_user_name)
-        emailField = findViewById(R.id.registraiton_email)
-        passwordField = findViewById(R.id.registration_password)
-        passwordConfirmField = findViewById(R.id.registration_confirm_password)
-
-        submitBtn = findViewById(R.id.btn_submit)
-        backToLoginBtn = findViewById(R.id.btn_back)
-    }
-
-    private fun setSubmitClickListener() {
         submitBtn.setOnClickListener {
             val username = usernameField.text.toString()
             val email = emailField.text.toString()
@@ -59,7 +45,22 @@ class RegistrationActivity : AppCompatActivity() {
                 else -> handleRegistration(username, email, password)
             }
         }
+
+        backToLoginBtn.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
     }
+
+    private fun initViews() {
+        usernameField = findViewById(R.id.registration_user_name)
+        emailField = findViewById(R.id.registraiton_email)
+        passwordField = findViewById(R.id.registration_password)
+        passwordConfirmField = findViewById(R.id.registration_confirm_password)
+
+        submitBtn = findViewById(R.id.btn_submit)
+        backToLoginBtn = findViewById(R.id.btn_back)
+    }
+
 
     private fun handleRegistration(username: String, email: String, password: String) {
         val db = FirebaseFirestore.getInstance()
@@ -75,12 +76,6 @@ class RegistrationActivity : AppCompatActivity() {
                     }
                 }
             }
-    }
-
-    private fun setBackToLoginClickListener() {
-        backToLoginBtn.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
-        }
     }
 
     private fun addIfEmailIsNew(

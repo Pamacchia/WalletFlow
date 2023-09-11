@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:background="@drawable/round_button"
-        android:text="register" />
+        android:text="next" />
 
     <Button
         android:id="@+id/btn_back"

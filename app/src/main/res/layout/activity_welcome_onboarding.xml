@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="20dp"
-        android:text="Welcome to the onboarding phase. If you want you can set your initial balance"
+        android:text="Welcome to the onboarding phase. \n\nIf you want you can set your initial balance."
         android:textAlignment="center"
         android:textSize="20sp" />
 
@@ -35,7 +35,7 @@
         android:layout_height="48dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/edittext_rectangle"
-        android:hint="Balance"
+        android:hint="0.00"
         android:inputType="numberDecimal"
         android:textAlignment="center" />
 
@@ -46,6 +46,6 @@
         android:layout_marginTop="40dp"
         android:background="@drawable/round_button"
         android:clickable="false"
-        android:text="Start" />
+        android:text="Complete registration" />
 
 </LinearLayout>

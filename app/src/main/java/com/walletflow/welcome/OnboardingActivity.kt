@@ -40,7 +40,13 @@ class OnboardingActivity : AppCompatActivity() {
             val username = intent.getStringExtra("username")
             val email = intent.getStringExtra("email")
             val password = intent.getStringExtra("password")
-            val onboardingBalance = etBalance.text.toString().toFloat()
+
+            val onboardingBalance = if (etBalance.text.toString().isEmpty()) 0.00f else try {
+                etBalance.text.toString().toFloat()
+            } catch (e: NumberFormatException) {
+                0.00f
+            }
+
 
             mAuth.createUserWithEmailAndPassword(email!!, password!!)
                 .addOnCompleteListener(this) { task ->
