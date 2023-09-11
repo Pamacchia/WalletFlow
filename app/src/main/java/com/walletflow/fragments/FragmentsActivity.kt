@@ -22,10 +22,10 @@ abstract class FragmentsActivity : BaseActivity() {
 
         val viewPager: ViewPager = findViewById(R.id.viewPager)
         val dotLayout : LinearLayout = findViewById(R.id.dotLayout)
-        val fragmentLit: MutableList<Fragment> =
+        val fragmentList: MutableList<Fragment> =
             mutableListOf(firstFragment, secondFragment)
 
-        val adapter = FragmentAdapter(supportFragmentManager, fragmentLit)
+        val adapter = FragmentAdapter(supportFragmentManager, fragmentList)
         viewPager.adapter = adapter
 
         val dots: MutableList<ImageView> = addDots(adapter, dotLayout)

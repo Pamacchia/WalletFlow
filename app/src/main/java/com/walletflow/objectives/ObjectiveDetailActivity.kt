@@ -59,7 +59,7 @@ class ObjectiveDetailActivity : BaseActivity() {
             var amount = addSavingsEt.text.toString().toDouble()
             if (
                 (amount > 0 && amount.toBigDecimal() <= (currentUser!!.quote.toBigDecimal() - currentUser.saved.toBigDecimal())) ||
-                (amount < 0 && abs(amount).toBigDecimal() < currentUser!!.saved.toBigDecimal())
+                (amount < 0 && abs(amount).toBigDecimal() <= currentUser!!.saved.toBigDecimal())
             ) {
                 updateUserSavings(amount.toBigDecimal(), currentUser)
             } else {
